@@ -1,5 +1,5 @@
 #include <kernel.h>		/*includes most kernel functions*/
-#include <util.h>
+#include <kutil.h>
 
 
 /*this is for the system as a whole so that the current IRQ mask can be tracked*/
