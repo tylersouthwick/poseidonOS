@@ -1,15 +1,14 @@
 #makefile to compile the fat12 fs driver
 include ../rules.mk
 
-FAT_OBJS = fat.o open.o read.o write.o
+FAT_OBJS = fat.o file.o directory.o 
 
 default: fat.a
 
 #################################compile stuff###############################
 fat.o : fat.c ../include/fat.h ../include/vfs.h
-open.o : open.c ../include/fat.h 
-read.o : read.c ../include/fat.h 
-write.o : write.c ../include/fat.h 
+file.o : file.c ../include/fat.h 
+directory.o : directory.c ../include/fat.h 
 ######################################floppy.a###############################
 fat.a: $(FAT_OBJS)
 	$(AR) $(ARFLAGS) fat.a $(FAT_OBJS)
@@ -17,7 +16,6 @@ fat.a: $(FAT_OBJS)
 clean:
 	rm -f fat.a
 	rm -f fat.o
-	rm -f open.o
-	rm -f read.o
-	rm -f write.o
+	rm -f file.o
+	rm -f directory.o
 ###########################################################################
