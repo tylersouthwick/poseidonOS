@@ -24,18 +24,20 @@ void fat_get_sector(char *path, int *sector_start, int *sector_count, int *direc
 {		
 	int token_count=0;
 	int i;
-		int h;
-		char *temp_path;
-		char *buffer;
-		vfs_entry *entries;
-		int item_count;
+	int h;
+	char *temp_path;
+	char *buffer;
+	vfs_entry *entries;
+	int item_count;
+	int g;
+	int len;
 		
 	*sector_count = fat_root_sector_count;
 	*sector_start = fat_root_sector_start;
 
 	///if we're only looking for root, then we don't need to do any more
 //	if (strcmp(path, "/"))
-//		return;
+//	return;
 	
 	///clean off the trailing '/' if there is one
 	if (path[strlen(path)] == '/')
@@ -43,43 +45,55 @@ void fat_get_sector(char *path, int *sector_start, int *sector_count, int *direc
 
 	///if it isn't the root, then let's follow the fat tree
 	//find the first directory
-	for (i=0; i < strlen(path); i++)
+	len = strlen(path);
+	for (i=0; i < len; i++)
 		if (path[i] == '/')
-			token_count++;
-
-	temp_path = kmalloc(sizeof(char) * strlen(path));
-	strcpy(temp_path, path);
-	buffer = temp_path;
-
-	for (h=1; h <= strlen(temp_path); h++)
-		if (path[h] == '/' || path[h] == 0)
 		{
-			char *temp;
-			int i;
-			
-			temp_path[h] = 0;
-			temp = ((char *)(buffer+sizeof(char)));
-
-			entries = fat_do_ls(*sector_start, *sector_count, &item_count);
-			for(i=0; i<item_count; i++)
-			{
-				if (strcmp(entries[i].name, temp))
-				{
-					if (FAT_IS_DIRECTORY(entries[i].attributes))
-						*directory = 1;
-					else
-						*directory = 0;
-
-					*sector_start = entries[i].data;
-					goto fat_get_sector_done;
-				}
-			}
-
-			buffer = temp_path + h;
-			temp_path[h] = '/';
+			path[i] = 0;
+			token_count++;
 		}
-fat_get_sector_done:
-	return;
+
+	//temp_path = kmalloc(sizeof(char) * strlen(path));
+	//strcpy(temp_path, path);
+	temp_path = path;
+	buffer = path;
+
+	g=0;
+	for (h=token_count; h > 0; h--)
+	{
+		char *dir_name;
+		int found = 0;
+
+		while(path[g] != 0)	
+			g++;
+
+		g++;
+		dir_name = &path[g];
+		entries = fat_do_ls(*sector_start, *sector_count, &item_count);
+
+		for(i=0; i<item_count; i++)
+		{
+			if (strcmp(entries[i].name, dir_name))
+			{
+				if (FAT_IS_DIRECTORY(entries[i].attributes))
+					*directory = 1;
+				else
+					*directory = 0;
+
+				found = 1;
+
+				*sector_start = entries[i].data;
+			}
+		}
+
+		if (found)
+			continue;
+		else
+		{
+			*sector_start = -1;
+			return;
+		}
+	}
 }
 
 /*******************************************************************************
@@ -107,6 +121,12 @@ vfs_entry *fat_ls(char *path, int *item_count)
 	int isDirectory;
 		
 	fat_get_sector(path, &sector_start, &sector_count, &isDirectory);
+
+	if (sector_start < 0)
+	{
+		*item_count = 0;
+		return (vfs_entry *)0;
+	}
 
 	if (isDirectory)
 	{
@@ -181,20 +201,20 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 
 	*item_count = 0;
 	i = 0;
+
 	while (fat_entries[i].name[0] != FAT_FLAG_EMPTY)
 	{
 		if (fat_entries[i].name[0] == FAT_FLAG_DELETED)
+		{
+			i++;
 			continue;
+		}
 
 		/// we don't want volume id files or files that have been deleted
 		if (!FAT_IS_LONG_NAME(fat_entries[i].attr))
 			(*item_count)++;
 		i++;
 	}
-
-	//kprint("there are: ");
-	//put_int(*item_count, 10);
-	//kprint(" items in this directory\n");
 
 	vfs_entries = kmalloc(sizeof(vfs_entry) * (*item_count));
 
@@ -218,6 +238,7 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 		vfs_entries[i].modified_date = fat_entries[fat_counter].WrtDate;
 		vfs_entries[i].create_time = fat_entries[fat_counter].CrtTime;
 		vfs_entries[i].modified_time = fat_entries[fat_counter].WrtTime;
+		vfs_entries[i].size = fat_entries[fat_counter].FileSize;
 
 		///setup the data field of the vfs entry
 		///this will be the cluster
