@@ -10,7 +10,15 @@ fat_info *fat_data;
 int FATSz;
 int fat_root_sector_start;
 int fat_root_sector_count;
-vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count);
+
+unsigned static inline int fat_cluster_to_sector(unsigned int cluster_num)
+{
+	unsigned int sector;
+	sector = cluster_num - 2;
+	sector += 33;
+
+	return sector;
+}
 
 void fat_get_sector(char *path, int *sector_start, int *sector_count)
 {		
@@ -29,81 +37,60 @@ void fat_get_sector(char *path, int *sector_start, int *sector_count)
 	if (strcmp(path, "/"))
 		return;
 	
+	///clean off the trailing '/' if there is one
+	if (path[strlen(path)] == '/')
+		path[strlen(path)] == 0;
+
 	///if it isn't the root, then let's follow the fat tree
 	//find the first directory
-	kprint("finding path: ");
-	kprint(path);
-	kprint("\n");
-		
 	for (i=0; i < strlen(path); i++)
 		if (path[i] == '/')
 			token_count++;
-				
-	kprint("Directory count: ");
-	put_int(token_count, 10);
-	kprint("\n");
 
-		
 	temp_path = kmalloc(sizeof(char) * strlen(path));
 	strcpy(temp_path, path);
 	buffer = temp_path;
-	/*	
-	for (h=1; h < strlen(temp_path); h++)
-	{
-		if (path[h] == '/')
+
+	for (h=1; h <= strlen(temp_path); h++)
+		if (path[h] == '/' || path[h] == 0)
 		{
 			char *temp;
+			int i;
 			
 			temp_path[h] = 0;
-			kprint("dir: ");
 			temp = ((char *)(buffer+sizeof(char)));
-			kprint(temp);
-			kprint("...");
+
 			entries = fat_do_ls(*sector_start, *sector_count, &item_count);
-			while(entries!=0)
+			for(i=0; i<item_count; i++)
 			{
-				if (strcmp(entries->name, temp))
-				{
-					kprint("found!");
-					kprint(" -> ");
-					if (VFS_IS_DIRECTORY(entries->attributes))
+				if (strcmp(entries[i].name, temp))
+					if (VFS_IS_DIRECTORY(entries[i].attributes))
 					{
-						kprint("<DIR>");
-						break;
+						*sector_start = entries[i].data;
+						goto fat_get_sector_done;
 					}
-				}
-				entries = entries->next;
 			}
-			kprint("\n");
+
 			buffer = temp_path + h;
 			temp_path[h] = '/';
 		}
-	}
-	///get the last token
-	kprint("dir: ");
-	kprint(((char *)(buffer+sizeof(char))));
-	kprint("\n");
-
-	*/
-	
+fat_get_sector_done:
 	return;
 }
 
 /*******************************************************************************
- * bool fat_ls(char *path, vfs_entry *entries, int *item_count)
+ * bool fat_ls(char *path, int *item_count)
  * 
  * This returns a directory listing of a given path.
  * 
  * Parameters:
  * 	1) char *path
  * 		The path (relative to the root directory of the device)
- * 	2) vfs_entry *entries
- * 		A pointer to a preallocated buffer
- * 	3) int *item_count
+ * 	2) int *item_count
  * 		This will contain the number of items in the directory
  * 
  * Return value:
- * 	bool value that says if it completed the operation successfully or not
+ * 	A vfs_entry array where the number of elements is designated by item_count
  * 
  * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	January 3, 2005
@@ -140,11 +127,18 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 	i = 0;
 	while (fat_entries[i].name[0] != FAT_FLAG_EMPTY)
 	{
+		if (fat_entries[i].name[0] == FAT_FLAG_DELETED)
+			continue;
+
 		/// we don't want volume id files or files that have been deleted
 		if (!FAT_IS_LONG_NAME(fat_entries[i].attr))
 			(*item_count)++;
 		i++;
 	}
+
+	//kprint("there are: ");
+	//put_int(*item_count, 10);
+	//kprint(" items in this directory\n");
 
 	vfs_entries = kmalloc(sizeof(vfs_entry) * (*item_count));
 
@@ -153,8 +147,8 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 	for (i=0; i < *item_count; i++)
 	{
 		//is fat_counter a valid index?
-		while (FAT_IS_LONG_NAME(fat_entries[fat_counter].attr))
-				fat_counter++;
+		while ((FAT_IS_LONG_NAME(fat_entries[fat_counter].attr)) || fat_entries[fat_counter].name[0] == FAT_FLAG_DELETED)
+			fat_counter++;
 
 		///build name
 		memset(vfs_entries[i].name, 0, VFS_NAME_MAXLEN + 1);
@@ -164,6 +158,10 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 
 		///copy attributes
 		vfs_entries[i].attributes = fat_entries[fat_counter].attr;
+
+		///setup the data field of the vfs entry
+		///this will be the cluster
+		vfs_entries[i].data = fat_cluster_to_sector(fat_entries[fat_counter].FstClusLO);
 
 		///clean up extension
 		strip_whitespace(fat_entries[fat_counter].ext, FAT_EXT_MAXLEN);
@@ -194,16 +192,19 @@ void fat_mount()
 	
 	read_buffer = (unsigned char *)kmalloc(512);
 	
-	/*get the fat data*/
+	///get the fat data
 	floppy_block_read(0, read_buffer, 1);
-	fat_data = (fat_info *)read_buffer;
+
+	///allocate data for the fat_data structure
+	fat_data = kmalloc(sizeof(fat_info));
+	memcpy(fat_data, read_buffer, sizeof(fat_info));
+	kfree(read_buffer);
 	
 	///determine FATSz
 	if (fat_data->FATSz16 != 0)
 		FATSz = fat_data->FATSz16;
 	else
 		FATSz = 0;//fat_data->FATSz32;
-		
 		
 	fat_root_sector_count = ((fat_data->RootEntCnt * 32) + (fat_data->BytsPerSec - 1)) / (fat_data->BytsPerSec);
 	fat_root_sector_start = fat_data->RsvdSecCnt + (fat_data->NumFATs * FATSz);

@@ -22,11 +22,11 @@
 
 typedef struct vfs_entry
 {
-	char name[VFS_NAME_MAXLEN+1];
-	int attributes;
-	int mode;
-	int date;
-	int data;
+	unsigned char name[VFS_NAME_MAXLEN+1];
+	unsigned int attributes;
+	unsigned int mode;
+	unsigned int date;
+	unsigned int data;
 } vfs_entry;
 
 #endif

@@ -1,6 +1,11 @@
 #ifndef FS_FAT_H
 #define FS_FAT_H
 
+/****************************************Includes*****************************/
+#include <vfs.h>
+/*****************************************************************************/
+
+/****************************************Constants*****************************/
 #define FAT_ATTR_NONE		0 /* no attribute bits */
 #define FAT_ATTR_READ_ONLY	1  /* read-only */
 #define FAT_ATTR_HIDDEN		2  /* hidden */
@@ -17,6 +22,9 @@
 #define FAT_FLAG_DELETED	(229 /*0xe5*/)
 #define FAT_FLAG_EMPTY		0
 
+#define FAT_SIZEOF			4096
+/*****************************************************************************/
+
 #define FAT_IS_READ_ONLY(a) ((a) & FAT_ATTR_READ_ONLY)
 #define FAT_IS_HIDDEN(a)	((a) & FAT_ATTR_HIDDEN)
 #define FAT_IS_SYSTEM(a)	((a) & FAT_ATTR_SYSTEM)
@@ -24,6 +32,9 @@
 #define FAT_IS_DIRECTORY(a)	((a) & FAT_ATTR_DIRECTORY)
 #define FAT_IS_ARCHIVE(a)	((a) & FAT_ATTR_ARCHIVE)
 #define FAT_IS_LONG_NAME(a)	(a == 0xf)
+#define FAT_IS_DELETED(a)		(0)
+			//	a[0] == FAT_FLAG_DELETED)
+
 //(FAT_IS_READ_ONLY(a) & FAT_IS_HIDDEN(a) & FAT_IS_SYSTEM(a) & FAT_IS_VOLUME_ID(a))
 
 typedef struct fat_info {
@@ -66,6 +77,10 @@ typedef struct fat_entry {
 } __attribute__ ((packed)) fat_entry;
 
 void fat_mount();
+void fat_umount();
+vfs_entry *fat_ls(char *path, int *item_count);
+vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count);
+void fat_Get_sector(char *path, int *sector_start, int *sector_count);
 
 #endif
 

@@ -6,24 +6,44 @@
 #include <mm.h>
 #include <bios.h>
 #include <paging.h>
+#include <poseidonos.h>
 
 #define MASTER 0x20
 #define EOI 0x20
 
-void panic()
+void kpanic(char *error_message)
 {
-	kprint("\nKernel Panic:\n");
+	asm("cli");
+
+	screen_setColor(SCREEN_BG_BLUE | SCREEN_FG_BRIGHT_WHITE);
+	screen_clear();
+
+	kprint("PoseidonOS v");
+	put_int(POSEIDONOS_VERSION_MAJOR, 10);
+	kprint(".");
+	put_int(POSEIDONOS_VERSION_MINOR, 10);
+	kprint(POSEIDONOS_VERSION_TYPE);
+	kprint(" Kernel Panic:\n");
+
+	kprint("\nWhat does this mean?\n");
+	kprint("\tThere has been a fatal crash in the core of the system (called the kernel).  If you feel so inclined, then you can take note of the stack and register dump and attempt to fix the problem yourself.  Or else, please go to http://poseidonos.sf.net and report the bug.  Thanks!\n");
+
+	kprint("\nError Message: ");
+	kprint(error_message);
+
+	kprint("\n\nStack dump: \n");
+
+	kprint("\nRegister dump:\n");
 	kprint("\teax: ");
 	kprint("\tebx: ");
 	kprint("\tecx: ");
 	kprint("\tedx: ");
+	asm("hlt");
+	while(1);
 }
 
 void int_00() {
-	kprint("ERROR: Divide by Zero Error (#00)");
-	asm("cli");
-	panic();
-	while(1);
+	kpanic("Divide by Zero Error (#00)");
 }
 void int_01() {
 	kprint("ERROR: Debug Exception (#DB)");
@@ -38,46 +58,34 @@ void int_03() {
 	outportb(MASTER,EOI);
 }
 void int_04() {
-	kprint("ERROR: Overflow (#OF)");
-	outportb(MASTER,EOI);
+	kpanic("ERROR: Overflow (#OF)");
 }
 void int_05() {
-	kprint("ERROR: BOUND Range Exceeded (#BR)");
-	outportb(MASTER,EOI);
+	kpanic("BOUND Range Exceeded (#BR)");
 }
 void int_06() {
-	kprint("ERROR: Invalid Opcode (#UD)");
-	outportb(MASTER,EOI);
+	kpanic("Invalid Opcode (#UD)");
 }
 void int_07() {
-	kprint("ERROR: Device Not Available (#NM)");
-	outportb(MASTER,EOI);
+	kpanic("Device Not Available (#NM)");
 }
 void int_08() {
-	kprint("ERROR: Double Fault (#DF)");
-	outportb(MASTER,EOI);
+	kpanic("Double Fault (#DF)");
 }
 void int_09() {
-	kprint("ERROR: Coprocessor Segment Overrun");
-	outportb(MASTER,EOI);
+	kpanic("Coprocessor Segment Overrun");
 }
 void int_10() {
-	kprint("ERROR: Invalid TSS (#TS)");
-	outportb(MASTER,EOI);
+	kpanic("Invalid TSS (#TS)");
 }
 void int_11() {
-	kprint("ERROR: Segment Not Present (#NP)");
-	outportb(MASTER,EOI);
+	kpanic("Segment Not Present (#NP)");
 }
 void int_12() {
-	kprint("ERROR: Stack-Segment Fault (#SS)");
-	outportb(MASTER,EOI);
+	kpanic("Stack-Segment Fault (#SS)");
 }
 void int_13() {
-	kprint("ERROR: General Protection (#GP)");
-	asm("cli");
-	panic();
-	while(1);
+	kpanic("General Protection (#GP)");
 }
 
 void int_14() {
@@ -87,23 +95,17 @@ void int_14() {
 	//print error if not successful return
 	kprint("\nERROR: Page Fault (#PF) at: ");
 	put_int((int)(read_cr2()),16);
-	asm("cli");
-	asm("hlt");
-	while(1);
+	kpanic("Page Fault (#PF) at:");
 }
 void int_16() {
-	kprint("ERROR: x87 FPU Floating-Point Error (#MF)");
-	outportb(MASTER,EOI);
+	kpanic("x87 FPU Floating-Point Error (#MF)");
 }
 void int_17() {
-	kprint("ERROR: Alignment Check (#AC)");
-	outportb(MASTER,EOI);
+	kpanic("Alignment Check (#AC)");
 }
 void int_18() {
-	kprint("ERROR: Machine Check (#MC)");
-	outportb(MASTER,EOI);
+	kpanic("Machine Check (#MC)");
 }
 void int_19() {
-	kprint("ERROR: SIMD Floating-Point Exception (#XF)");
-	outportb(MASTER,EOI);
+	kpanic("SIMD Floating-Point Exception (#XF)");
 }
