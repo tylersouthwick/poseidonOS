@@ -15,4 +15,6 @@
 #include <devicemanager.h>
 #include <bios.h>
 
+#include <poseidonos.h>
+
 #endif

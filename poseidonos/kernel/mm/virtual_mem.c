@@ -1,6 +1,9 @@
-#include <mm.h>
-#include <screen.h>
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
+
 #include <paging.h>
+#include <virtual_mem.h>
 
 unsigned long current_pte;
 mm_page_header_t *base_page;

@@ -1,12 +1,12 @@
-#makefile to compile the floppy tatic library
+#makefile to compile the floppy static library
 include ../rules.mk
 
 FLOPPY_OBJS = floppy.o floppy_wrapper.o
 
-default: floppy.a
+compile: floppy.a
 
 #################################compile stuff###############################
-floppy.o : floppy.c ../include/floppy.h ../include/bios.h
+floppy.o : floppy.c ../include/irq.h devices.h kernel.h ktypes.h kdebug.h 
 floppy_wrapper.o : floppy.asm
 	$(AS) -f ${AS_FORMAT} -o floppy_wrapper.o floppy.asm
 ######################################floppy.a###############################

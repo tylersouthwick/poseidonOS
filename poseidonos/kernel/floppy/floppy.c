@@ -1,3 +1,10 @@
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
+
+#include <devices.h>
+#include <irq.h>
+
 /***********************************************************
  * floppy.c
  * 
@@ -9,15 +16,6 @@
  * 
  * License: GPL (see readme or the GPL website)
  * *********************************************************/
-
-#include <bios.h>
-#include <floppy.h>
-#include <screen.h>
-#include <devicemanager.h>
-#include <irq.h>
-#include <idt.h>
-#include <multitasking.h>
-#include <dma.h>
 
 void temp_sleep(int mill);
 #define FLOPPY_SLEEP_TIME 5
@@ -76,27 +74,36 @@ void floppy_init()
 	if (a > 0)
 	{
 		floppy_count++;
-		device_register(DEV_FLOPPY, DEV_FLOPPY_0, 0,0 );
+		device_register("fd0", DEV_FLOPPY, DEV_FLOPPY_0, 0,0 );
 	}
 	
 	if (b > 0)
 	{
 		floppy_count++;
-		device_register(DEV_FLOPPY, DEV_FLOPPY_1, 0,0 );
+		device_register("fd1", DEV_FLOPPY, DEV_FLOPPY_1, 0,0 );
 	}
 	
+#ifdef DEBUG_FLOPPY_1
 	kprint("Found ");
 	put_int(floppy_count, 10);
 	kprint(" floppy drive(s)\n");
+#endif
 	
 	idt_interrupt_add(0x26, floppy_isr, 0);
 	irq_umask(IRQ_6);
 	floppy_timer_process = multitasking_process_new(floppy_timer, "floppy timer", PRIORITY_LOW);
 	multitasking_process_add(floppy_timer_process);
 
+
+#ifdef DEBUG_FLOPPY
 	kprint("resetting floppy...");
+#endif
+
 	floppy_reset();
+
+#ifdef DEBUG_FLOPPY
 	kprint("done\n");
+#endif
 }
 
 /*******************************************************************************
@@ -277,9 +284,15 @@ void floppy_reset()
 	
 	/*the reset triggered an interrupt, wait for it to be handled*/
 	floppy_done = true;
+#ifdef DEBUG_FLOPPY
 	kprint("\nwaiting for floppy...");
+#endif
+
 	floppy_wait(true);
+
+#ifdef DEBUG_FLOPPY
 	kprint("done\n");
+#endif
 	
 	/*specify driv timings*/
 	floppy_sendbyte(CMD_SPECIFY);
@@ -287,13 +300,25 @@ void floppy_reset()
 	floppy_sendbyte(0x02);
 	
 	/*clear the "disk change" status */
+#ifdef DEBUG_FLOPPY
 	kprint("floppy is seeking...");
+#endif
+
 	floppy_seek(1);
+
+#ifdef DEBUG_FLOPPY
 	kprint("done\n");
+#endif
 	
+#ifdef DEBUG_FLOPPY
 	kprint("floppy is being calibrated...");
+#endif
+
 	floppy_recalibrate();
+
+#ifdef DEBUG_FLOPPY
 	kprint("done\n");
+#endif
 	
 	floppy_dchange = false;
 }
@@ -395,16 +420,12 @@ bool floppy_seek(int track)
 	floppy_sendbyte(0);
 	floppy_sendbyte(track);
 	
-	//kprint("waiting....");
 	///wait until seek is finished
 	if (!floppy_wait(true))
 		return false;		///timeout
-	//kprint("done\n");
 	
-	//kprint("sleeping...");
 	///wait for the head to settle
 	SLEEP(FLOPPY_SLEEP_TIME);
-	//kprint("awake!\n");
 	
 	///make sure that seek worked
 	if ((floppy_sr0 != 0x20) || (floppy_track != track))

@@ -31,25 +31,37 @@ extern process_t *current_process;
 *   will just stop if the system is not running in 32-bit Protected Mode.
 **********************************************************************************/
 void k_main(unsigned long magic, multiboot_info_t *mm_info) {
-	int test = 1;
-	kprint("PoseidonOS v0.1 testing\n");
+	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
+	show_ascii();
+	screen_set_color(SCREEN_FG_YELLOW | SCREEN_BG_BLACK);
+	kprint("PoseidonOS v0.1 testing\n\n");
+	screen_set_color(SCREEN_DEFAULT);
 	
 	kprint("Initilizing new GDT...");
 	gdt_init();
+	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
 	kprint("ok\n");
+	screen_set_color(SCREEN_DEFAULT);
 
 	kprint("Setting up IDT...");
 	idt_setup();
+	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
 	kprint("ok\n");
+	screen_set_color(SCREEN_DEFAULT);
 
-	kprint("Initilizing MM...\n");
+	kprint("Initilizing MM...");
 	mm_init(mm_info);
-	kprint("MM Initilized\n");
+	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
+	kprint("ok\n");
+	screen_set_color(SCREEN_DEFAULT);
 	
 	kprint("Starting devicemanager...");
 	devicemanager_init();
+	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
+	kprint("ok\n");
+	screen_set_color(SCREEN_DEFAULT);
 	
-	kprint("Initilizing multitasking...");
+	kprint("Entering multitasking environment...\n");
 	multitasking_init();
 }
 
@@ -57,6 +69,8 @@ void temp_sleep(int mill)
 {
 	sleep(mill);
 }
+
+void show_ascii();
 
 /***************************************************************
  * void kernel_init()
@@ -72,12 +86,47 @@ void temp_sleep(int mill)
  * **************************************************************/
 void kernel_init() {
 	process_t *system_init_process;
+	int drivers_count;
+	int status;
 	
-	kprint("starting kernel init....\n");
-	drivers_load();
-	
-	//kprint("mounting root filesystem (read-only) at /\n");
-	//mount_root();
+	screen_set_color(SCREEN_FG_BRIGHT_BLUE | SCREEN_BG_BLACK);
+	kprint("\nEntered multitasking environment!\n");
+	screen_set_color(SCREEN_DEFAULT);
+
+	kprint("initilizing devices..");
+	devicemanager_init_devices();
+	kprint("\n");
+
+	kprint("mounting root filesystem (read-only) at / ...");
+	status = mount_root();
+	if (status == -1)
+	{
+		screen_set_color(SCREEN_FG_RED | SCREEN_BG_BLACK);
+		kprint("unable to mount root fs\n");
+		screen_set_color(SCREEN_DEFAULT);
+		kprint("halting sytsem...");
+		while(1);
+	}
+	kprint("\n");
+
+	kprint("loading drivers...");
+	drivers_count = drivers_load();
+	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
+	kprint("loaded ");
+	put_int(drivers_count, 10);
+	kprint(" driver(s)\n");
+	screen_set_color(SCREEN_DEFAULT);
 	
 	while(1);
+}
+
+void show_ascii()
+{
+	kprint("PPPPPPP  OOOOOO  SSSSSSS  EEEEEEE  IIIIIIII  DDDDDD   OOOOOO  NN    NN\n");
+	kprint("PP   PP  OO  OO  SS       EE          II     DD   DD  OO  OO  NNN   NN\n");
+	kprint("PP   PP  OO  OO  SS       EE          II     DD   DD  OO  OO  NN N  NN\n");
+	kprint("PPPPPPP  OO  OO  SSSSSSS  EEEE        II     DD   DD  OO  OO  NN  N NN\n");
+	kprint("PP       OO  OO       SS  EE          II     DD   DD  OO  OO  NN   NNN\n");
+	kprint("PP       OO  OO       SS  EE          II     DD   DD  OO  OO  NN    NN\n");
+	kprint("PP       OOOOOO  SSSSSSS  EEEEEEE  IIIIIIII  DDDDDD   OOOOOO  NN    NN\n");
 }

@@ -5,15 +5,13 @@
 * Liscensed under the GPL (checkout README or http://www.gnu.org/licenses/gpl.txt)
 *******************************************************************************/
 
-#include <multitasking.h>					/*imports multitasking definitions and prototypes*/
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
+
 #include <scheduler.h>						/*imports scheduler definitions and prototypes*/
 #include <tasks.h>								/*includes prototypes for two dummy tasks*/
-#include <string.h>
 #include <irq.h>
-#include <kmalloc.h>
-#include <screen.h>
-#include <idt.h>
-#include <bios.h>
 
 struct process_queue_item *processes;		/*the pointer to the currently running queue item*/
 process_t *current_process;
@@ -51,12 +49,16 @@ void multitasking_init() {
 	process_t *idle_task;
 	process_t *kernel_task;
 
-	///reprogram pit
+	//reprogram pit
+#ifdef DEBUG_MULTITASKING
 	kprint("\nReprogramming pit...");
+#endif
 	
 	pit_setup(100);
 
+#ifdef DEBUG_MULTITASKING
 	kprint("ok\n");
+#endif
 	
 	//setup system tss
 	
@@ -81,7 +83,6 @@ void multitasking_init() {
 	
 	///load the scheduler ISR into the IDT
 	idt_interrupt_add(0x20, scheduler_isr, 0);
-	kprint("ok\n");
 	
 	asm("sti");
 	irq_umask(IRQ_0);

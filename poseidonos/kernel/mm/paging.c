@@ -1,6 +1,8 @@
-#include <mm.h>
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
+
 #include <physical_mem.h>
-#include <screen.h>
 #include <paging.h>
 
 void mm_paging_init() {
@@ -33,24 +35,14 @@ void mm_paging_init() {
 					temp_pte[buffer] = MM_PHYSICAL_BITMAP_ADR(superpage_index, subpage_index);
 					temp_pte[buffer] |= 3;
 					count++;
-				} else {
+				} else 
 					//put an empty address marked as 'not present'					
 					temp_pte[buffer] = 2;
-					/*clear_screen();
-					kprint("first free physical address at:\n\tsuperpage_index: ");
-					put_int(superpage_index,10);
-					kprint("\n\tsubpage_index: ");
-					put_int(subpage_index, 10);
-					kprint("\n\tpage table index: ");
-					put_int(buffer, 10);
-					kprint("\n\ncount: ");
-					put_int(count,10);
-					while(1);*/
-				}
 			}
 		}
 	}
 
+#ifdef DEBUG_MM
 	//start paging!
 	kprint("kernel end: ");
 	put_int(end_of_kernel,16);
@@ -63,12 +55,15 @@ void mm_paging_init() {
 	kprint("\n\t");
 	put_int(count,10);
 	kprint(" pages translated from physical to virtual address space\n");
+#endif
 
 	write_cr3(temp_pde);
 	asm("cli");
 	write_cr0(read_cr0() | 0x80000000);
 
+#ifdef DEBUG_MM
 	kprint("paging succesfully enabled\n");
+#endif
 }
 
 //void *mm_paging_pde_new()

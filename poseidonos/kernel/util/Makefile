@@ -6,10 +6,10 @@ include ../rules.mk
 
 UTIL_OBJS = map.o
 
-default: util.a
+compile: util.a
 
 ###########################hashmap stuff###################################
-map.o : map.c include/map.h
+map.o : map.c include/map.h kernel.h kutil.h ktypes.h kdebug.h
 ###########################################################################
 
 #link util.a

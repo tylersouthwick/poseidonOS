@@ -5,6 +5,9 @@ IMG_NAME=poseidonos.img
 all: 
 	cd kernel; make
 
+bochs : image
+	bochs -q
+
 image: poseidonos.img
 	mount floppy/
 	cp -f kernel/kernel.elf floppy/

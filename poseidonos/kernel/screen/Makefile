@@ -3,9 +3,11 @@ include ../rules.mk
 
 SCREEN_OBJS = screen.o
 
-default: screen.o
+compile: screen.o
 
-screen.o : screen.c ../include/screen.h
+###################################compile stuff##################################
+screen.o : screen.c kernel.h ktypes.h kdebug.h
+##################################################################################
 
 clean:
 	rm -f screen.o

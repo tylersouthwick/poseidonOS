@@ -17,10 +17,10 @@ typedef struct
 /**********************************************************************/
 
 /*****************************prototypes*******************************/
-Map *newMap();
-void addMapValue(Map *map, char *key, char *value, int sizeOfValue);
-char *getMapValue(Map *map, char *key);
-int getMapCount(Map *map);
+Map *mapCreate();
+void mapAdd(Map *map, char *key, char *value, int sizeOfValue);
+char *mapGet(Map *map, char *key);
+int mapSize(Map *map);
 /**********************************************************************/
 
 #endif

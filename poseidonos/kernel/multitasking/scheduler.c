@@ -3,9 +3,11 @@
  	(c) 2004 Tyler Southwick
 	Liscensed under the GPL (checkout README or http://www.gnu.org/licenses/gpl.txt)*/
 
-#include <multitasking.h>
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
+
 #include <scheduler.h>
-#include <screen.h>
 
 extern struct process_queue_item *processes;		/*the pointer to the currently running queue item*/
 extern process_t *current_process;

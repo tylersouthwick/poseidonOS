@@ -1,11 +1,10 @@
 /* File: mm.h
    Description: define memory manager prototypes and structures*/
 
-//multiboot stuff
-#include <multiboot.h>
-
 #ifndef MM_H
 #define MM_H
+
+#include <multiboot.h>
 
 //general mm stuff
 void mm_init(multiboot_info_t *mm_info);

@@ -1,25 +1,26 @@
+#include <kernel.h>
 #include <ktypes.h>
+#include <kutil.h>
+#include <kdebug.h>
+
 #include <fat.h>
-#include <mount.h>
-#include <vfs.h>
-#include <screen.h>
-#include <kmalloc.h>
-#include <string.h>
 
 ///this is assumed to be at fd0
-void mount_root()
+int mount_root()
 {
 	vfs_entry *entries;
 
-	fat_mount();
-	kprint("mount done!\n");
+	return fat_mount();
 
-	//entries = ls("/some/..");
-	//if (entries != 0)
-	//	kfree(entries);
+	/*
+	entries = ls("/");
+	if (entries != 0)
+		kfree(entries);
 
-//	kprint("\nListing done!\n");
+	kprint("\nListing done!\n");
+	*/
 
+	/*
 	{
 		FILE f;
 
@@ -33,6 +34,7 @@ void mount_root()
 			kprint("file not found!\n");
 		}
 	}
+	*/
 }
 
 

@@ -1,10 +1,9 @@
+#include <kernel.h>
 #include <ktypes.h>
+#include <kdebug.h>
+
+#include <devices.h>
 #include <fat.h>
-#include <floppy.h>
-#include <screen.h>
-#include <kmalloc.h>
-#include <vfs.h>
-#include <string.h>
 
 fat_info *fat_data;
 int FATSz;
@@ -82,7 +81,6 @@ void fat_get_sector(char *path, int *sector_start, int *sector_count, int *direc
 
 				found = 1;
 				*sector_start = entries[i].data;
-				kprint("\n");
 				break;
 			}
 		}
@@ -122,9 +120,11 @@ vfs_entry *fat_ls(char *path, int *item_count)
 	int isDirectory;
 		
 	fat_get_sector(path, &sector_start, &sector_count, &isDirectory);
+#ifdef DEBUG_FAT
 	kprint("sector_start: ");
 	put_int(sector_start,10);
 	kprint("\n");
+#endif
 
 	if (sector_start < 0)
 	{
@@ -270,7 +270,7 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 	return vfs_entries;
 }
 
-void fat_mount()
+int fat_mount()
 {
 	unsigned char *read_buffer;
 	
@@ -293,7 +293,11 @@ void fat_mount()
 	fat_root_sector_count = ((fat_data->RootEntCnt * 32) + (fat_data->BytsPerSec - 1)) / (fat_data->BytsPerSec);
 	fat_root_sector_start = fat_data->RsvdSecCnt + (fat_data->NumFATs * FATSz);
 
-	kprint("fd0: mounted as fat\n");
+	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
+	kprint("fd0: mounted as fat");
+	screen_set_color(SCREEN_DEFAULT);
+
+	return 1;
 }
 
 void fat_umount()

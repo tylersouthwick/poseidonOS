@@ -1,9 +1,12 @@
 /* File: idt.c
    Description: Implements Interrupt Descriptor Table access*/
 
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
+
 #include <idt.h>
 #include <interrupt.h>
-#include <bios.h>
 #include <irq.h>
 
 idtr IDTR;

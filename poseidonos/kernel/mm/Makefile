@@ -3,15 +3,15 @@ include ../rules.mk
 
 MM_OBJS = mm.o paging.o paging_wrapper.o physical_mem.o sbrk.o virtual_mem.o kmalloc.o
 
-default: mm.a
+compile: mm.a
 
 #############################compile stuff#################################
-mm.o : mm.c ../include/mm.h ../include/paging.h ../include/multiboot.h
-paging.o : paging.c ../include/mm.h ../include/paging.h
-physical_mem.o : physical_mem.c ../include/mm.h ../include/physical_mem.h
-sbrk.o : sbrk.c ../include/mm.h ../include/sbrk.h
-virtual_mem.o : virtual_mem.c ../include/mm.h ../include/physical_mem.h ../include/virtual_mem.h
-kmalloc.o : kmalloc.c ../include/mm.h ../include/sbrk.h ../include/kmalloc.h
+mm.o : mm.c 										../include/paging.h ../include/multiboot.h ../include/sbrk.h kernel.h ktypes.h kdebug.h
+paging.o : paging.c 						../include/paging.h kernel.h ktypes.h kdebug.h
+physical_mem.o : physical_mem.c ../include/physical_mem.h kernel.h ktypes.h kdebug.h
+sbrk.o : sbrk.c ../include/mm.h ../include/sbrk.h kernel.h ktypes.h kdebug.h
+virtual_mem.o : virtual_mem.c 	../include/physical_mem.h ../include/virtual_mem.h kernel.h ktypes.h kdebug.h
+kmalloc.o : kmalloc.c 					../include/sbrk.h kernel.h ktypes.h kdebug.h
 
 paging_wrapper.o : paging_wrapper.asm
 	$(AS) -f ${AS_FORMAT} -o $@ $<

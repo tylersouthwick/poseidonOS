@@ -1,7 +1,6 @@
 #ifndef DRIVERS_H
 #define DRIVERS_H
 
-void drivers_load();
-void register_device();
+int drivers_load();
 
 #endif

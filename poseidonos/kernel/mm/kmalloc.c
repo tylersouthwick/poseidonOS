@@ -1,6 +1,7 @@
-#include <mm.h>					/*includes global memory manager definitions and prototypes*/
-#include <kmalloc.h>				/*kmalloc prototypes and definitions*/
+#include <kernel.h>
 #include <ktypes.h>
+#include <kdebug.h>
+
 #include <sbrk.h>
 
 kmalloc_free *free_mem=(kmalloc_free*)0;					/*the free memory linked list.  When memory is free'd it is hooked onto this list*/

@@ -90,7 +90,7 @@ typedef struct fat_entry {
 	unsigned int FileSize;
 } __attribute__ ((packed)) fat_entry;
 
-void fat_mount();
+int fat_mount();
 void fat_umount();
 vfs_entry *fat_ls(char *path, int *item_count);
 vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count);

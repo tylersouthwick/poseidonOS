@@ -3,12 +3,14 @@ include ../rules.mk
 
 STRING_OBJS = string.o string_assembly.o 
 
-default: string.a
+compile: string.a
 
-string_assembly.o : string.asm ../include/string.h
+############################################compile stuff#####################################
+string.o : string.c kernel.h ktypes.h kdebug.h
+
+string_assembly.o : string.asm
 	$(AS) -f ${AS_FORMAT} -o string_assembly.o string.asm
-
-string.o : string.c ../include/string.h
+##############################################################################################
 
 string.a : ${STRING_OBJS}
 	$(AR) $(ARFLAGS) string.a $(STRING_OBJS)

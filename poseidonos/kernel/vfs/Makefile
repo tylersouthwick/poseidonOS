@@ -3,11 +3,11 @@ include ../rules.mk
 
 VFS_OBJS = mount.o ls.o
 
-default: vfs.a
+compile: vfs.a
 
 #############################compile stuff#################################
-mount.o : mount.c ../include/kmalloc.h ../include/vfs.h ../include/ktypes.h
-ls.o : ls.c ../include/kmalloc.h ../include/vfs.h ../include/ktypes.h
+mount.o : mount.c		kernel.h ktypes.h kdebug.h ../include/fat.h
+ls.o : ls.c					kernel.h ktypes.h kdebug.h
 ###########################################################################
 
 #link and build kernel.bin

@@ -1,9 +1,9 @@
-#include <map.h>
-#include <kmalloc.h>
-#include <string.h>
-#include <screen.h>
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
+#include <kutil.h>
 
-Map *newMap()
+Map *mapCreate()
 {
 	Map *map;
 
@@ -14,7 +14,7 @@ Map *newMap()
 	return map;
 }
 
-void addMapValue(Map *map, char *key, char *value, int sizeOfValue)
+void mapAdd(Map *map, char *key, char *value, int sizeOfValue)
 {
 	MapNode *tempNode;
 	MapNode *newNode;
@@ -46,7 +46,7 @@ void addMapValue(Map *map, char *key, char *value, int sizeOfValue)
 	map->count++;
 }
 
-char *getMapValue(Map *map, char *key)
+char *mapGet(Map *map, char *key)
 {
 	MapNode *tempNode;
 
@@ -62,7 +62,7 @@ char *getMapValue(Map *map, char *key)
 	return tempNode->value;
 }
 
-int getMapCount(Map *map)
+int mapSize(Map *map)
 {
 	return map->count;
 }

@@ -2,7 +2,10 @@
 	sleep.c
 *************************************************/
 
-#include <multitasking.h>
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
+
 extern process_t *current_process;
 
 void sleep(int mill)

@@ -1,8 +1,8 @@
 /* File: screen.c
    Description: Implements rudimentary access to the console screen*/
-#include <screen.h>
-#include <bios.h>
-#include <string.h>
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
 
 /****************************** Internal Functions and Variables **************************/
 unsigned char *video_mem = (unsigned char *)0xB8000;
@@ -132,7 +132,7 @@ void screen_clear() {
 }
 //void screen_init() {
 
-void screen_setColor(int color)
+void screen_set_color(int color)
 {
 	screen_attributes = color;
 }

@@ -1,7 +1,8 @@
-#include <mm.h>
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
+
 #include <physical_mem.h>
-#include <string.h>
-#include <screen.h>
 
 int p_page_count;
 unsigned char *mm_physical_bitmap;
@@ -21,14 +22,20 @@ void mm_physical_pages_init(multiboot_info_t *mm_info) {
 	unsigned int i,h;
 	//unsigned char *buffer1;
 
+#ifdef MM_DEBUG
 	kprint("There is ");
 	put_int(mm_info->mem_upper, 10);
 	kprint("kb of memory.\n");
+#endif
+
 	p_page_count = (mm_info->mem_upper)/4;
+
+#ifdef MM_DEBUG
 	put_int(p_page_count, 10);
 	kprint(" pages found.\n");
 	put_int(p_page_count/8,10);
 	kprint(" superpages created");
+#endif
 
 	mm_physical_bitmap = (unsigned char*)kernel_end;//(0xFFFFF-page_count/8);
 	end_of_kernel = ((int)kernel_end+(((int)p_page_count/8))); //pagealign 
@@ -37,10 +44,12 @@ void mm_physical_pages_init(multiboot_info_t *mm_info) {
 	if (end_of_kernel < (int)kernel_end+p_page_count/8)
 		end_of_kernel += 4096;
 
+#ifdef MM_DEBUG
 	kprint("\n(int)kernel_end+p_page_count/8 = ");
 	put_int((int)kernel_end+p_page_count/8, 16);
 	kprint("\nend_of_kernel = ");
 	put_int(end_of_kernel,16);
+#endif
 
 	/*mm_physical_bitmap:
 	This table will be a char array, with each bit of each char element
@@ -63,13 +72,14 @@ void mm_physical_pages_init(multiboot_info_t *mm_info) {
 	memset(mm_physical_bitmap, 255, end_of_kernel/(4096*8));
 	memset(mm_physical_bitmap + (end_of_kernel/(4096*8)), 1, 1);
 
-	//clear_screen();
+#ifdef MM_DEBUG
 	kprint("\nnumber of pages allocated: ");
 	put_int((((int)end_of_kernel)/4096),10);
-	//while(1);
 
 	kprint("\nPhysical Memory bitmap created at ");
 	put_int((int)mm_physical_bitmap, 16);
+#endif
+
 	buffer = 0;
 
 //clear_screen();	
@@ -82,10 +92,12 @@ void mm_physical_pages_init(multiboot_info_t *mm_info) {
 			}
 		}
 	}
-//while(1);
+
+#ifdef MM_DEBUG
 	put_char('\n');
 	put_int(buffer,10);
 	kprint(" physical page(s) marked as 'present'\n");
+#endif
 }
 
 //need to figure out a better algorithm that is more efficient

@@ -8,7 +8,7 @@ KERNEL_STATIC_LIBS=interrupts/interrupts.a multitasking/multitasking.a mm/mm.a \
 		devicemanager/devicemanager.a drivers.o floppy/floppy.a \
 		vfs/vfs.a fat/fat.a util/util.a
 
-default:
+compile:
 	cd interrupts; make
 	cd mm; make
 	cd multitasking; make
@@ -25,7 +25,7 @@ default:
 kernel_wrapper.o : kernel_wrapper.asm
 	$(AS) -f ${AS_FORMAT} -o $@ $<
 
-kernel.o  : kernel.c include/kernel.h include/ktypes.h
+kernel.o  : kernel.c kernel.h include/ktypes.h
 drivers.o : drivers.c include/drivers.h include/ktypes.h
 dma.o	  : dma.c include/dma.h include/bios.h
 bios.o	  : bios.c include/bios.h
@@ -36,7 +36,7 @@ mount.o	  : mount.c include/mount.h include/floppy.h include/fat.h include/vfs.h
 ####################################System################################3
 
 #link and build kernel.bin
-kernel.elf: kernel_wrapper.o kernel.o include/kernel.h $(KERNEL_STATIC_LIBS)
+kernel.elf: kernel_wrapper.o kernel.o $(KERNEL_STATIC_LIBS)
 	$(LD) $(LDFLAGS) -o kernel.elf $(KERNEL_OBJS) $(KERNEL_STATIC_LIBS) string/string.o
 
 clean:

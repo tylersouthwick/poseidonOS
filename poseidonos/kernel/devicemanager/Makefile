@@ -4,10 +4,10 @@ include ../rules.mk
 
 DEVICEMANAGER_OBJS = devicemanager.o
 
-default: devicemanager.a
+compile: devicemanager.a
 
 #############################compile stuff#################################
-devicemanager.o : devicemanager.c ../include/devicemanager.h ../include/ktypes.h ../include/kmalloc.h ../include/screen.h
+devicemanager.o : devicemanager.c ../include/devicemanager.h kernel.h kutil.h kdebug.h
 ###########################################################################
 
 #link and build kernel.bin

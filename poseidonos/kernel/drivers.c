@@ -1,9 +1,18 @@
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
+
 #include <drivers.h>
 #include <screen.h>
 #include <floppy.h>
 
-void drivers_load()
+int drivers_load()
 {
-	kprint("load drivers...\n");
+				/*
+	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
+	kprint("floppy ");
+	screen_set_color(SCREEN_DEFAULT);
 	floppy_init();
+	*/
+				return 0;
 }

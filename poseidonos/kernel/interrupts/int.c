@@ -1,12 +1,12 @@
 /* File: interrupts.c
    Discription: Implements interrupt function calls*/
 
-#include <screen.h>
+#include <kernel.h>
+#include <ktypes.h>
+#include <kdebug.h>
+
 #include <interrupt.h>
-#include <mm.h>
-#include <bios.h>
 #include <paging.h>
-#include <poseidonos.h>
 
 #define MASTER 0x20
 #define EOI 0x20
@@ -15,7 +15,7 @@ void kpanic(char *error_message)
 {
 	asm("cli");
 
-	screen_setColor(SCREEN_BG_BLUE | SCREEN_FG_BRIGHT_WHITE);
+	screen_set_color(SCREEN_BG_BLUE | SCREEN_FG_BRIGHT_WHITE);
 	screen_clear();
 
 	kprint("PoseidonOS v");

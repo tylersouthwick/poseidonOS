@@ -5,13 +5,13 @@ include ../rules.mk
 
 MULTITASKING_OBJS = multitasking.o scheduler.o scheduler_wrapper.o sleep.o pit.o
 
-default: multitasking.a
+compile: multitasking.a
 
 ####################################Compile stuff##########################
-multitasking.o	: multitasking.c ../include/multitasking.h ../include/mm.h ../include/kmalloc.h
-scheduler.o 		: scheduler.c ../include/multitasking.h ../include/mm.h ../include/kmalloc.h
-sleep.o					: sleep.c ../include/multitasking.h
-pit.o						: pit.c ../include/bios.h
+multitasking.o	: multitasking.c	../include/scheduler.h ../include/tasks.h ../include/irq.h kernel.h ktypes.h kdebug.h
+scheduler.o 		: scheduler.c			../include/scheduler.h kernel.h ktypes.h kdebug.h
+sleep.o					: sleep.c					kernel.h ktypes.h kdebug.h
+pit.o						: pit.c						kernel.h ktypes.h kdebug.h
 
 scheduler_wrapper.o : scheduler.asm
 	$(AS) -f ${AS_FORMAT} -o scheduler_wrapper.o scheduler.asm
