@@ -1,3 +1,7 @@
+
+BASE_URL=poseidonos.sourceforge.net
+IMG_NAME=poseidonos.img
+
 all: 
 	cd kernel; make
 
@@ -10,5 +14,5 @@ clean:
 	cd kernel; make clean
 
 poseidonos.img:
-	wget students.cs.byu.edu/~tylers2/poseidonos.img
+	wget ${BASE_URL}/${IMG_NAME}
 

@@ -1,23 +1,21 @@
-#makefile to compile devicemanager.a
+#makefile to compile util.a
+#this creates a library full of data structures and other utilities
+#that are needed by the kernel
 
 include ../rules.mk
 
-UTIL_OBJS = hashmap/HashMap.o
+UTIL_OBJS = map.o
 
 default: util.a
 
-#############################compile stuff#################################
-#.o : devicemanager.c ../include/devicemanager.h ../include/ktypes.h ../include/kmalloc.h ../include/screen.h
-###########################################################################
-
 ###########################hashmap stuff###################################
-hashmap/HashMap.o : hashmap/HashMap.c include/HashMap.h
+map.o : map.c include/map.h
 ###########################################################################
 
-#link and build kernel.bin
+#link util.a
 util.a: $(UTIL_OBJS)
 	$(AR) $(ARFLAGS) util.a $(UTIL_OBJS)
 
 clean:
-	rm -f hashmap/*.o
+	rm -f *.o
 	rm -f util.a

@@ -1,5 +1,5 @@
-#ifndef UTIL_HASHMAP_H
-#define UTIL_HASHMAP_H
+#ifndef UTIL_MAP_H
+#define UTIL_MAP_H
 
 /************************Structures************************************/
 typedef struct
@@ -7,20 +7,20 @@ typedef struct
 	char *key;
 	char *value;
 	void *next;
-} HashMapNode;
+} MapNode;
 
 typedef struct
 {
 	int count;
-	HashMapNode *node;
-} HashMap;
+	MapNode *first_node;
+} Map;
 /**********************************************************************/
 
 /*****************************prototypes*******************************/
-HashMap *newHashMap();
-void addHashMapValue(HashMap *hashMap, char *key, char *value, int sizeOfValue);
-char *getHashMapValue(HashMap *hashMap, char *key);
-int getHashMapCount(HashMap *hashMap);
+Map *newMap();
+void addMapValue(Map *map, char *key, char *value, int sizeOfValue);
+char *getMapValue(Map *map, char *key);
+int getMapCount(Map *map);
 /**********************************************************************/
 
 #endif
