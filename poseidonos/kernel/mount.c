@@ -20,7 +20,7 @@ void mount_root()
 		int i;
 		
 		kprint("getting listing...");
-		entries = fat_ls("/boot/grub", &entries_count);
+		entries = fat_ls("", &entries_count);
 		kprint("okay!\n");
 	
 		for (i=0; i < entries_count; i++)

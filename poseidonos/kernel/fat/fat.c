@@ -34,8 +34,8 @@ void fat_get_sector(char *path, int *sector_start, int *sector_count)
 	*sector_start = fat_root_sector_start;
 
 	///if we're only looking for root, then we don't need to do any more
-	if (strcmp(path, "/"))
-		return;
+//	if (strcmp(path, "/"))
+//		return;
 	
 	///clean off the trailing '/' if there is one
 	if (path[strlen(path)] == '/')
