@@ -1,0 +1,16 @@
+megs: 32
+
+romimage: file="/usr/share/bochs/BIOS-bochs-latest", address=0xf0000
+vgaromimage: "/usr/share/bochs/VGABIOS-elpin-2.40"
+
+floppya: 1_44=../poseidonos.img, status=inserted
+
+boot: floppy
+
+ips: 3000000
+
+debug: action=ignore
+info: action=report
+error: action=report
+panic: action=ask
+
