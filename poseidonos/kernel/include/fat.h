@@ -66,6 +66,20 @@ typedef struct fat_entry {
 	unsigned char attr;
 	unsigned char NTRes;
 	unsigned char CrtTimeTenth;
+#ifdef FAT_USE_BITFIELDS_IN_STRUCT
+	struct CrtTime
+	{
+		unsigned short sec:5;
+		unsigned short min:6;
+		unsigned short hour:5;
+	};
+	struct CrtDate
+	{
+		unsigned short day:5;
+		unsigned short month:4;
+		unsigned short:7;
+	};
+#endif
 	unsigned short CrtTime;
 	unsigned short CrtDate;
 	unsigned short LstAccDate;
@@ -80,7 +94,14 @@ void fat_mount();
 void fat_umount();
 vfs_entry *fat_ls(char *path, int *item_count);
 vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count);
-void fat_Get_sector(char *path, int *sector_start, int *sector_count);
+void fat_get_sector(char *path, int *sector_start, int *sector_count, int *directory);
+
+FILE *fat_fopen(char *fname, char *mode);
+void fat_fclose(FILE file);
+FILE *fat_file_create(char *fname);
+int fat_file_remove(char *fname);
+int fat_file_write(char *fname, char *data);
+int fat_file_read(char *fname, char *data);
 
 #endif
 

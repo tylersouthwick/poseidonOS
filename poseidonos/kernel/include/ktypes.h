@@ -12,6 +12,20 @@
 
 #define NULL 0
 
+struct ktime
+{
+	unsigned short sec:5;
+	unsigned short min:6;
+	unsigned short hour:5;
+};
+
+struct kdate
+{
+	unsigned short day:5;
+	unsigned short month:4;
+	unsigned short year:7;
+};
+
 typedef enum { false=0,true=1 } bool; /* boolean value */
 
 #endif

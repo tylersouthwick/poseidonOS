@@ -25,8 +25,13 @@ typedef struct vfs_entry
 	unsigned char name[VFS_NAME_MAXLEN+1];
 	unsigned int attributes;
 	unsigned int mode;
-	unsigned int date;
+	unsigned short create_date;
+	unsigned short modified_date;
+	unsigned short create_time;
+	unsigned short modified_time;
 	unsigned int data;
 } vfs_entry;
+
+#define FILE int
 
 #endif

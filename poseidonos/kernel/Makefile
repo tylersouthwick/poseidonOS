@@ -6,7 +6,7 @@ KERNEL_OBJS = kernel_wrapper.o kernel.o
 KERNEL_STATIC_LIBS=interrupts/interrupts.a multitasking/multitasking.a mm/mm.a \
 		screen/screen.o string/string.a bios.o dma.o \
 		devicemanager/devicemanager.a drivers.o floppy/floppy.a \
-		mount.o fat/fat.a
+		vfs/vfs.a fat/fat.a 
 
 default:
 	cd interrupts; make
@@ -17,6 +17,7 @@ default:
 	cd devicemanager; make
 	cd floppy; make
 	cd fat; make
+	cd vfs; make
 	make kernel.elf
 
 ######################################Kernel###############################
@@ -46,6 +47,7 @@ clean:
 	cd devicemanager; make clean
 	cd fat; make clean
 	cd floppy; make clean
+	cd vfs; make clean
 	rm -f kernel.o
 	rm -f kernel_wrapper.o
 	rm -f dma.o

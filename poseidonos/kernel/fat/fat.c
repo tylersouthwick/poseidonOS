@@ -20,7 +20,7 @@ unsigned static inline int fat_cluster_to_sector(unsigned int cluster_num)
 	return sector;
 }
 
-void fat_get_sector(char *path, int *sector_start, int *sector_count)
+void fat_get_sector(char *path, int *sector_start, int *sector_count, int *directory)
 {		
 	int token_count=0;
 	int i;
@@ -64,11 +64,15 @@ void fat_get_sector(char *path, int *sector_start, int *sector_count)
 			for(i=0; i<item_count; i++)
 			{
 				if (strcmp(entries[i].name, temp))
-					if (VFS_IS_DIRECTORY(entries[i].attributes))
-					{
-						*sector_start = entries[i].data;
-						goto fat_get_sector_done;
-					}
+				{
+					if (FAT_IS_DIRECTORY(entries[i].attributes))
+						*directory = 1;
+					else
+						*directory = 0;
+
+					*sector_start = entries[i].data;
+					goto fat_get_sector_done;
+				}
 			}
 
 			buffer = temp_path + h;
@@ -79,7 +83,7 @@ fat_get_sector_done:
 }
 
 /*******************************************************************************
- * bool fat_ls(char *path, int *item_count)
+ * vfs_entry *fat_ls(char *path, int *item_count)
  * 
  * This returns a directory listing of a given path.
  * 
@@ -100,12 +104,64 @@ vfs_entry *fat_ls(char *path, int *item_count)
 	int sector_count;
 	int sector_start;
 	vfs_entry *entries;
+	int isDirectory;
 		
-	fat_get_sector(path, &sector_start, &sector_count);
+	fat_get_sector(path, &sector_start, &sector_count, &isDirectory);
 
-	entries = fat_do_ls(sector_start, sector_count, item_count);
+	if (isDirectory)
+	{
+		/*do normal ls*/
+		entries = fat_do_ls(sector_start, sector_count, item_count);
+		return entries;
+	} else {
+		/*if it is really a file, then ls the directory
+		 * and extract just the file*/
+		char *dir;
+		char *fname;
+		int i;
+		vfs_entry *single_entry;
 
-	return entries;
+		entries = 0;
+
+		/*find just the name of the file*/
+		dir = kmalloc(strlen(path)+1);
+		strcpy(dir, path);
+
+		for (i=strlen(dir)-1; i>=0; i--)
+		{
+			if (dir[i] == '/')
+			{
+				fname = kmalloc(strlen(dir) - i + 2);
+				strcpy(fname, (char *)((int)&dir[i] + 1));
+				dir[i+1] = 0;
+				break;
+			}
+		}
+
+		fat_get_sector(dir, &sector_start, &sector_count, &isDirectory);
+		entries = fat_do_ls(sector_start, sector_count, item_count);
+
+		for (i=0; i< *item_count; i++)
+		{
+			if (strcmp(entries[i].name, fname))
+			{
+				single_entry = kmalloc(sizeof(vfs_entry));
+				memcpy(single_entry, (void *)((int)entries + i*sizeof(vfs_entry)), sizeof(vfs_entry));
+				kfree(entries);
+				kfree(dir);
+				kfree(fname);
+				*item_count = 1;
+				return single_entry;
+			}
+		}
+		kfree(dir);
+		kfree(fname);
+	}
+
+	/*if the file wasn't found (which shouldn't happen), just return 0*/
+	*item_count = 0;
+	kfree(entries);
+	return (vfs_entry *)0;
 }
 
 vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
@@ -156,8 +212,12 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 		memcpy(vfs_entries[i].name, fat_entries[fat_counter].name, FAT_NAME_MAXLEN);
 		tolower(vfs_entries[i].name);
 
-		///copy attributes
+		///copy attributes,dates,times
 		vfs_entries[i].attributes = fat_entries[fat_counter].attr;
+		vfs_entries[i].create_date = fat_entries[fat_counter].CrtDate;
+		vfs_entries[i].modified_date = fat_entries[fat_counter].WrtDate;
+		vfs_entries[i].create_time = fat_entries[fat_counter].CrtTime;
+		vfs_entries[i].modified_time = fat_entries[fat_counter].WrtTime;
 
 		///setup the data field of the vfs entry
 		///this will be the cluster
@@ -179,7 +239,6 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 
 		fat_counter++;
 	}
-
 	///clean up memory
 	kfree(fat_entries);
 
