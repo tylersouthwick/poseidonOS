@@ -7,7 +7,7 @@
 /****************************** Internal Functions and Variables **************************/
 unsigned char *video_mem = (unsigned char *)0xB8000;
 int scr_x=0, scr_y=0;
-unsigned char screen_attributes=0x07;
+unsigned char screen_attributes=SCREEN_FG_WHITE | SCREEN_BG_BLACK;
 
 void kprint_str(char *str);
 void update_cursor();
@@ -118,13 +118,13 @@ void kprint_str(char *str) {
 	update_cursor();
 }
 
-void clear_screen() {
+void screen_clear() {
 	unsigned int i=0;
 	while (i< (80*25*2))
 	{
 		video_mem[i] = ' ';
 		i++;
-		video_mem[i] = 0x07;
+		video_mem[i] = screen_attributes;
 		i++;
 	};
 	scr_x=scr_y=0;
@@ -132,3 +132,7 @@ void clear_screen() {
 }
 //void screen_init() {
 
+void screen_setColor(int color)
+{
+	screen_attributes = color;
+}
