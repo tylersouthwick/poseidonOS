@@ -23,7 +23,8 @@
 #define FAT_IS_VOLUME_ID(a)	((a) & FAT_ATTR_VOLUME_ID)
 #define FAT_IS_DIRECTORY(a)	((a) & FAT_ATTR_DIRECTORY)
 #define FAT_IS_ARCHIVE(a)	((a) & FAT_ATTR_ARCHIVE)
-#define FAT_IS_LONG_NAME(a)	((a) & FAT_ATTR_LONG_NAME)
+#define FAT_IS_LONG_NAME(a)	(a == 0xf)
+//(FAT_IS_READ_ONLY(a) & FAT_IS_HIDDEN(a) & FAT_IS_SYSTEM(a) & FAT_IS_VOLUME_ID(a))
 
 typedef struct fat_info {
 	unsigned char jmpBoot[3];

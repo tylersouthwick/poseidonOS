@@ -11,9 +11,8 @@ void mount_root()
 	fat_mount();
 	kprint("mount done!\n");
 	
-	fat_open("/hello.msg");
+	//fat_open("/hello.msg");
 	
-	while(1);
 	{
 		vfs_entry *entries;
 		vfs_entry *temp;
@@ -21,7 +20,7 @@ void mount_root()
 		int i;
 		
 		kprint("getting listing...");
-		entries = fat_ls("/boot", &entries_count);
+		entries = fat_ls("/", &entries_count);
 		kprint("okay!\n");
 	
 		for (i=0; i < entries_count; i++)

@@ -14,7 +14,6 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count);
 
 void fat_get_sector(char *path, int *sector_start, int *sector_count)
 {		
-	/*
 	int token_count=0;
 	int i;
 		int h;
@@ -48,7 +47,7 @@ void fat_get_sector(char *path, int *sector_start, int *sector_count)
 	temp_path = kmalloc(sizeof(char) * strlen(path));
 	strcpy(temp_path, path);
 	buffer = temp_path;
-		
+	/*	
 	for (h=1; h < strlen(temp_path); h++)
 	{
 		if (path[h] == '/')
@@ -85,9 +84,9 @@ void fat_get_sector(char *path, int *sector_start, int *sector_count)
 	kprint(((char *)(buffer+sizeof(char))));
 	kprint("\n");
 
+	*/
 	
 	return;
-	*/
 }
 
 /*******************************************************************************
@@ -116,68 +115,77 @@ vfs_entry *fat_ls(char *path, int *item_count)
 	vfs_entry *entries;
 		
 	fat_get_sector(path, &sector_start, &sector_count);
-	
+
 	entries = fat_do_ls(sector_start, sector_count, item_count);
+
 	return entries;
 }
 
 vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 {
-	/*fat_entry *entry;
+	fat_entry *fat_entries;
 	vfs_entry *p_entries;
-	vfs_entry *entries;
+	vfs_entry *vfs_entries;
 	int i=0;
 	char *read_buffer;
+	int fat_counter;
+	int vfs_counter;
 	
 	read_buffer = kmalloc(512 * sector_count);
 	floppy_block_read(sector_start, read_buffer, 1);
 	
-	*item_count=0;
-	entry = (fat_entry*)(read_buffer);
-	entries = kmalloc(sizeof(vfs_entry));
-	p_entries = entries;
-	
-	while(entry->name[0] != FAT_FLAG_EMPTY)
-	{
-		///is the entry part of a long file name?
-		if (entry->attr != ATTR_LONG_NAME)
-			///make sure the entry isn't deleted :P
-			if (entry->name[0] != FAT_FLAG_DELETED)
-			{				
-				(*item_count)++;
-				p_entries->next = kmalloc(sizeof(vfs_entry));
-				
-				///build name
-				memset(p_entries->name, 0, VFS_NAME_MAXLEN + 1);
-				strip_whitespace(entry->name, FAT_NAME_MAXLEN);
-				memcpy(p_entries->name, entry->name, FAT_NAME_MAXLEN);
-				tolower(p_entries->name);
-				
-				p_entries->attributes = entry->attr;
-				strip_whitespace(entry->ext, FAT_EXT_MAXLEN);
-				
-				if ((!FAT_IS_DIRECTORY(p_entries->attributes)) && (entry->ext[0] != 0))
-				{
-					char *temp_name;
-					temp_name = p_entries->name;
-					tolower(entry->ext);
-					
-					p_entries->name[strlen(temp_name)] = '.';
-					memcpy((char *)((int)temp_name +strlen(temp_name)), entry->ext, FAT_EXT_MAXLEN);
-				}
-				
-				p_entries = (vfs_entry *)p_entries->next;
-			}
-			
-		///get the next entry
-		i++;
-		entry = (fat_entry*)((int)read_buffer + (i*sizeof(fat_entry)));
-	}
-	
-	return entries;
-	*/
+	fat_entries = (fat_entry*)(read_buffer);
 
-	return 0;
+	*item_count = 0;
+	i = 0;
+	while (fat_entries[i].name[0] != FAT_FLAG_EMPTY)
+	{
+		/// we don't want volume id files or files that have been deleted
+		if (!FAT_IS_LONG_NAME(fat_entries[i].attr))
+			(*item_count)++;
+		i++;
+	}
+
+	vfs_entries = kmalloc(sizeof(vfs_entry) * (*item_count));
+
+	///add the fat entries to a vfs structure (array)
+	fat_counter = 0;
+	for (i=0; i < *item_count; i++)
+	{
+		//is fat_counter a valid index?
+		while (FAT_IS_LONG_NAME(fat_entries[fat_counter].attr))
+				fat_counter++;
+
+		///build name
+		memset(vfs_entries[i].name, 0, VFS_NAME_MAXLEN + 1);
+		strip_whitespace(fat_entries[fat_counter].name, FAT_NAME_MAXLEN);
+		memcpy(vfs_entries[i].name, fat_entries[fat_counter].name, FAT_NAME_MAXLEN);
+		tolower(vfs_entries[i].name);
+
+		///copy attributes
+		vfs_entries[i].attributes = fat_entries[fat_counter].attr;
+
+		///clean up extension
+		strip_whitespace(fat_entries[fat_counter].ext, FAT_EXT_MAXLEN);
+		
+		///add extension to valid files
+		if ((!FAT_IS_DIRECTORY(vfs_entries[i].attributes)) && (fat_entries[fat_counter].ext[0] != 0))
+		{
+			char *temp_name;
+			temp_name = vfs_entries[i].name;
+			tolower(fat_entries[fat_counter].ext);
+
+			temp_name[strlen(temp_name)] = '.';
+			memcpy((char *)((int)temp_name + strlen(temp_name)), fat_entries[fat_counter].ext, FAT_EXT_MAXLEN);
+		}
+
+		fat_counter++;
+	}
+
+	///clean up memory
+	kfree(fat_entries);
+
+	return vfs_entries;
 }
 
 void fat_mount()

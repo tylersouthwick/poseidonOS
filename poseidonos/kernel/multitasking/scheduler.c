@@ -10,19 +10,19 @@
 extern struct process_queue_item *processes;		/*the pointer to the currently running queue item*/
 extern process_t *current_process;
 
-int system_time = 0;
+int millisecond_count = 0;
+int second_count = 0;
 int timer_count = 0;
 
 void floppy_timer();
 
 int getCurrentProcess()
 {
-	system_time++;
-	if (system_time > 100)
+	millisecond_count++;
+	if (millisecond_count > 100)
 	{
-		put_int(timer_count++, 10);
-		put_char(32);
-		system_time = 0;
+		millisecond_count = 0;
+		second_count++;
 	}
 	
 	///check to see if the process is finished with its timeslice
