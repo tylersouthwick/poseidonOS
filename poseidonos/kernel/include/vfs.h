@@ -29,6 +29,7 @@ typedef struct vfs_entry
 	unsigned short modified_date;
 	unsigned short create_time;
 	unsigned short modified_time;
+	unsigned int size;
 	unsigned int data;
 } vfs_entry;
 

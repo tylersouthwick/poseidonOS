@@ -10,19 +10,10 @@ FILE *fat_fopen(char *fname, char *mode)
 	int sector_count;
 	int isDirectory;
 
-	kprint("opening file ");
-	kprint(fname);
-	kprint(" (");
-	kprint(mode);
-	kprint(")\n");
-
 	fat_get_sector(fname, &sector_start, &sector_count, &isDirectory);
 
-	if (isDirectory)
-		kprint("this is a directory\n");
-	else
-		kprint("this is not a directory\n");
 
+	if (!isDirectory && sector_start > 0)
 	{
 		char *read_buffer;
 		int i;
@@ -30,9 +21,19 @@ FILE *fat_fopen(char *fname, char *mode)
 		read_buffer = kmalloc(512);
 		floppy_block_read(sector_start, read_buffer, 1);
 		
+#ifdef USE_FOR_LOOP
 		for (i=0; i<512; i++)
-			put_char(read_buffer[i]);
-	}
+		{
+			put_int(read_buffer[i], 10);
+			put_char(32);
+		}
+#else
+		i=0;
+		while (read_buffer[i] != 10)
+			put_char(read_buffer[i++]);
+#endif
+	} else 
+		kprint("ERROR! reading file\n");
 	return (FILE *)0;
 }
 

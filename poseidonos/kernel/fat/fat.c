@@ -36,12 +36,12 @@ void fat_get_sector(char *path, int *sector_start, int *sector_count, int *direc
 	*sector_start = fat_root_sector_start;
 
 	///if we're only looking for root, then we don't need to do any more
-//	if (strcmp(path, "/"))
-//	return;
+	if (strcmp(path, "/"))
+		return;
 	
 	///clean off the trailing '/' if there is one
-	if (path[strlen(path)] == '/')
-		path[strlen(path)] == 0;
+	//if (path[strlen(path)] == '/')
+	//	path[strlen(path)] == 0;
 
 	///if it isn't the root, then let's follow the fat tree
 	//find the first directory
@@ -81,8 +81,9 @@ void fat_get_sector(char *path, int *sector_start, int *sector_count, int *direc
 					*directory = 0;
 
 				found = 1;
-
 				*sector_start = entries[i].data;
+				kprint("\n");
+				break;
 			}
 		}
 
@@ -121,6 +122,9 @@ vfs_entry *fat_ls(char *path, int *item_count)
 	int isDirectory;
 		
 	fat_get_sector(path, &sector_start, &sector_count, &isDirectory);
+	kprint("sector_start: ");
+	put_int(sector_start,10);
+	kprint("\n");
 
 	if (sector_start < 0)
 	{

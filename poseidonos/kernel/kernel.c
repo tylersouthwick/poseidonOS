@@ -1,4 +1,5 @@
 #include <kernel.h>		/*includes most kernel functions*/
+#include <HashMap.h>
 
 
 /*this is for the system as a whole so that the current IRQ mask can be tracked*/
@@ -77,6 +78,36 @@ void kernel_init() {
 	
 	kprint("mounting root filesystem (read-only) at /\n");
 	mount_root();
+
+	/*
+	kprint("Hashmap time!\n");
+	{
+		HashMap *hashMap;
+		char key1[] = "key1";
+		char value1[] = "something";
+		char key2[] = "key2";
+		char value2[] = "hello world";
+		char key3[] = "key3";
+		char value3[] = "ice skating";
+
+		hashMap = newHashMap();
+		addHashMapValue(hashMap, key1, value1, sizeof(value1));
+		addHashMapValue(hashMap, key2, value2, sizeof(value2));
+		addHashMapValue(hashMap, key3, value3, sizeof(value3));
+
+		{
+			char *value;
+			char *key = key1;
+			value = getHashMapValue(hashMap, key);
+
+			kprint("getting ");
+			kprint(key);
+			kprint(" -> value: ");
+			kprint(value);
+			kprint("\n");
+		}
+	}
+	*/
 	
 	while(1);
 }

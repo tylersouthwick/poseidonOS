@@ -14,13 +14,16 @@ void mount_root()
 	fat_mount();
 	kprint("mount done!\n");
 
-	entries = ls("/boot");
-	if (entries != 0)
-		kfree(entries);
+	//entries = ls("/some/..");
+	//if (entries != 0)
+	//	kfree(entries);
+
+//	kprint("\nListing done!\n");
 
 	{
 		FILE f;
 
+		f = fat_fopen("/boot/grub/menu.lst", "rw");
 		//f = fat_fopen("/hello.msg", "rw");
 
 		if (f > -1)
