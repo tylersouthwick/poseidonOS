@@ -1,12 +1,12 @@
 #makefile to compile stage2.bin and kernel.bin
 include rules.mk
 
-KERNEL_OBJS = kernel_wrapper.o kernel.o exec.o
+KERNEL_OBJS = kernel_wrapper.o kernel.o 
 
 KERNEL_STATIC_LIBS=interrupts/interrupts.a multitasking/multitasking.a mm/mm.a \
 		screen/screen.o string/string.a bios.o dma.o \
 		devicemanager/devicemanager.a drivers.o floppy/floppy.a \
-		vfs/vfs.a fat/fat.a util/util.a 
+		exec/exec.a vfs/vfs.a fat/fat.a util/util.a
 
 compile:
 	cd interrupts; make
@@ -19,10 +19,14 @@ compile:
 	cd fat; make
 	cd vfs; make
 	cd util; make
+	cd exec; make
 	make kernel.elf
 
 ######################################Kernel###############################
 kernel_wrapper.o : kernel_wrapper.asm
+	$(AS) -f ${AS_FORMAT} -o $@ $<
+
+exec_wrapper.o : exec_wrapper.asm
 	$(AS) -f ${AS_FORMAT} -o $@ $<
 
 kernel.o  : kernel.c kernel.h include/ktypes.h
