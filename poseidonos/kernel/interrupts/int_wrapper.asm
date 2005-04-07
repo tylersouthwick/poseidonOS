@@ -404,11 +404,13 @@ user_interrupt_hook_asm:
 	push es
 	push fs
 	push gs
-	mov eax, 0x10
-	mov ds, eax
-	mov es, eax
+	mov ecx, 0x10
+	mov ds, ecx
+	mov es, ecx
 	cld
+	push ebx
 	call user_interrupt_hook 
+	pop ebx
 	pop gs
 	pop fs
 	pop es
@@ -416,7 +418,3 @@ user_interrupt_hook_asm:
 	popa
 	iret
 
-[global user_test]
-user_test:
-	int 45h
-	ret

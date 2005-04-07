@@ -9,7 +9,9 @@ void idt_user_setup()
 	idt_interrupt_add(0x45, user_interrupt_hook_asm, 3);
 }
 
-void user_interrupt_hook()
+void user_interrupt_hook(char test)
 {
-	kprint("you called the user interrupt hook!\n");
+	kprint("\n\npasswd char: ");
+	put_char(test);
+	kprint("\n\n");
 }

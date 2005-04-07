@@ -17,6 +17,7 @@ image: poseidonos.img
 
 clean:
 	cd kernel; make clean
+	cd system; make clean
 
 poseidonos.img:
 	wget ${BASE_URL}/${IMG_NAME}
