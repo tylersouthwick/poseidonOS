@@ -35,4 +35,17 @@ typedef struct vfs_entry
 
 #define FILE int
 
+/*mount prototypes*/
+int mount(char *dev, char *path);
+int umount(char *path);
+void umount_all();
+void mount_all();
+
+/*ls prototypes*/
+
+/*file prototypes*/
+FILE *fopen(char *path, char *mode);
+void fclose(FILE *file);
+
 #endif
+

@@ -4,6 +4,9 @@
 #include <kmalloc.h>
 #include <ktypes.h>
 
+#define FILE_PUTCHAR
+
+/*this only supports reading right now*/
 FILE *fat_fopen(char *fname, char *mode)
 {
 	int sector_start;
@@ -21,23 +24,22 @@ FILE *fat_fopen(char *fname, char *mode)
 		read_buffer = kmalloc(512);
 		floppy_block_read(sector_start, read_buffer, 1);
 		
-#ifdef USE_FOR_LOOP
 		for (i=0; i<512; i++)
 		{
+			#ifdef FILE_PUTCHAR
+			put_char(read_buffer[i]);
+			put_char(32);
+			#else
 			put_int(read_buffer[i], 10);
 			put_char(32);
+			#endif
 		}
-#else
-		i=0;
-		while (read_buffer[i] != 10)
-			put_char(read_buffer[i++]);
-#endif
 	} else 
 		kprint("ERROR! reading file\n");
 	return (FILE *)0;
 }
 
-void fat_fclose(FILE file)
+void fat_fclose(FILE *file)
 {
 }
 

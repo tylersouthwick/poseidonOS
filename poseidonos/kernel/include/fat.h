@@ -97,7 +97,7 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count);
 void fat_get_sector(char *path, int *sector_start, int *sector_count, int *directory);
 
 FILE *fat_fopen(char *fname, char *mode);
-void fat_fclose(FILE file);
+void fat_fclose(FILE *file);
 FILE *fat_file_create(char *fname);
 int fat_file_remove(char *fname);
 int fat_file_write(char *fname, char *data);

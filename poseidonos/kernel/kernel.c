@@ -9,6 +9,9 @@ unsigned int irq_mask=0;
  * treated much like the 'this' pointer in Java or C++.*/
 extern process_t *current_process;
 
+void shutdown();
+void show_ascii();
+
 /********************************************************************************
 * void k_main(unsigned long magic, multiboot_info_t *mm_info)
 *
@@ -98,14 +101,13 @@ void kernel_init() {
 	kprint("\n");
 
 	kprint("mounting root filesystem (read-only) at / ...");
-	status = mount_root();
+	status = mount("fd0", "/");
 	if (status == -1)
 	{
 		screen_set_color(SCREEN_FG_RED | SCREEN_BG_BLACK);
 		kprint("unable to mount root fs\n");
 		screen_set_color(SCREEN_DEFAULT);
-		kprint("halting sytsem...");
-		while(1);
+		shutdown();
 	}
 	kprint("\n");
 
@@ -116,17 +118,34 @@ void kernel_init() {
 	put_int(drivers_count, 10);
 	kprint(" driver(s)\n");
 	screen_set_color(SCREEN_DEFAULT);
-	
-	while(1);
+
+	kprint("\nStarting init.app...\n");
+
+	exec("/init.app");
+
+	/*shutdown the system when everything is done*/
+	shutdown();
 }
 
 void show_ascii()
 {
-	kprint("PPPPPPP  OOOOOO  SSSSSSS  EEEEEEE  IIIIIIII  DDDDDD   OOOOOO  NN    NN\n");
-	kprint("PP   PP  OO  OO  SS       EE          II     DD   DD  OO  OO  NNN   NN\n");
-	kprint("PP   PP  OO  OO  SS       EE          II     DD   DD  OO  OO  NN N  NN\n");
-	kprint("PPPPPPP  OO  OO  SSSSSSS  EEEE        II     DD   DD  OO  OO  NN  N NN\n");
-	kprint("PP       OO  OO       SS  EE          II     DD   DD  OO  OO  NN   NNN\n");
-	kprint("PP       OO  OO       SS  EE          II     DD   DD  OO  OO  NN    NN\n");
-	kprint("PP       OOOOOO  SSSSSSS  EEEEEEE  IIIIIIII  DDDDDD   OOOOOO  NN    NN\n");
+	kprint("PPPP  OOOO  SSSS  EEEE  IIIII  DDDD   OOOO  N     N  OOOO  SSSS\n");
+	kprint("P  P  O  O  S     E       I    D   D  O  O  N N   N  O  O  S\n");
+	kprint("PPPP  O  O  SSSS  EEE     I    D   D  O  O  N  N  N  O  O  SSSS\n");
+	kprint("P     O  O     S  E       I    D   D  O  O  N   N N  O  O     S\n");
+	kprint("P     OOOO  SSSS  EEEE  IIIII  DDDD   OOOO  N     N  OOOO  SSSS\n");
+}
+
+void shutdown()
+{
+	screen_set_color(SCREEN_FG_MAGENTA | SCREEN_BG_BLACK);
+	kprint("\n\nSystem Shutting Down!\n");
+	screen_set_color(SCREEN_DEFAULT);
+	kprint("\tumounting all drives...");
+	umount_all();
+
+	screen_set_color(SCREEN_FG_YELLOW | SCREEN_BG_BLACK);
+	kprint("\n\tSystem Halted");
+
+	while(1);
 }

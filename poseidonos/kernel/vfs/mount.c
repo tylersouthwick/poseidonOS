@@ -6,7 +6,7 @@
 #include <fat.h>
 
 ///this is assumed to be at fd0
-int mount_root()
+int mount(char *dev, char *path)
 {
 	vfs_entry *entries;
 
@@ -35,6 +35,10 @@ int mount_root()
 		}
 	}
 	*/
+}
+
+void umount_all()
+{
 }
 
 
