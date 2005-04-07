@@ -43,4 +43,6 @@ void isr16();
 void isr17();
 void isr18();
 void isr19();
+
+void user_interrupt_hook_asm();
 #endif
