@@ -121,7 +121,9 @@ void kernel_init() {
 
 	kprint("\nStarting init.app...\n");
 
-	exec("/init.app");
+	status = exec("/init.app");
+	if (status == -1)
+		kprint("unable to find /init.app\n");
 
 	/*shutdown the system when everything is done*/
 	shutdown();

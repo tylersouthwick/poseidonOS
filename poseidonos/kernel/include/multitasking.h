@@ -10,7 +10,7 @@
 #include <kmalloc.h>
 
 //constants
-#define MULTITASKING_UPROCESS_STACK_SIZE 1024*3
+#define MULTITASKING_UPROCESS_STACK_SIZE 2048
 #define MULTITASKING_KPROCESS_STACK_SIZE 1024
 
 /*priority levels*/

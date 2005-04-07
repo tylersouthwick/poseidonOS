@@ -33,7 +33,12 @@ typedef struct vfs_entry
 	unsigned int data;
 } vfs_entry;
 
-#define FILE int
+typedef struct FILE
+{
+	unsigned int offset;
+	unsigned int size;
+	unsigned char *data;
+} FILE;
 
 /*mount prototypes*/
 int mount(char *dev, char *path);
@@ -44,8 +49,12 @@ void mount_all();
 /*ls prototypes*/
 
 /*file prototypes*/
+#define EOF -1
+
 FILE *fopen(char *path, char *mode);
 void fclose(FILE *file);
+int fgetsize(FILE *file);
+char getchar(FILE *file);
 
 #endif
 

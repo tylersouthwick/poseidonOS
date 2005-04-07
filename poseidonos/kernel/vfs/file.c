@@ -7,11 +7,21 @@
 
 FILE *fopen(char *path, char *mode)
 {
-	return  fat_fopen(path, mode);
+	return fat_fopen(path, mode);
 }
 
 void fclose(FILE *file)
 {
 	fat_fclose(file);
+}
+
+char getchar(FILE *file)
+{
+	return fat_getchar(file);
+}
+
+int fgetsize(FILE *file)
+{
+	return file->size;
 }
 

@@ -37,7 +37,7 @@ exec.o	  : exec.c kernel.h ktypes.h kdebug.h
 ####################################System################################3
 
 #link and build kernel.bin
-kernel.elf: kernel_wrapper.o kernel.o $(KERNEL_STATIC_LIBS)
+kernel.elf: ${KERNEL_OBJS} $(KERNEL_STATIC_LIBS)
 	$(LD) $(LDFLAGS) -o kernel.elf $(KERNEL_OBJS) $(KERNEL_STATIC_LIBS) string/string.o
 
 clean:
@@ -51,10 +51,5 @@ clean:
 	cd floppy; make clean
 	cd vfs; make clean
 	cd util; make clean
-	rm -f kernel.o
-	rm -f kernel_wrapper.o
-	rm -f dma.o
-	rm -f bios.o
-	rm -f mount.o
-	rm -f drivers.o
+	rm -f *.o
 	rm -f kernel.elf

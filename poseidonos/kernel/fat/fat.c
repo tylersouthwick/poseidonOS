@@ -19,7 +19,7 @@ unsigned static inline int fat_cluster_to_sector(unsigned int cluster_num)
 	return sector;
 }
 
-void fat_get_sector(char *path, int *sector_start, int *sector_count, int *directory)
+void fat_get_sector(char *origPath, int *sector_start, int *sector_count, int *directory)
 {		
 	int token_count=0;
 	int i;
@@ -30,6 +30,9 @@ void fat_get_sector(char *path, int *sector_start, int *sector_count, int *direc
 	int item_count;
 	int g;
 	int len;
+	char path[strlen(origPath) + 1];
+
+	strcpy(path, origPath);
 		
 	*sector_count = fat_root_sector_count;
 	*sector_start = fat_root_sector_start;

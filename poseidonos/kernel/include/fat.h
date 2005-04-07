@@ -102,6 +102,7 @@ FILE *fat_file_create(char *fname);
 int fat_file_remove(char *fname);
 int fat_file_write(char *fname, char *data);
 int fat_file_read(char *fname, char *data);
+char fat_getchar(FILE *file);
 
 #endif
 
