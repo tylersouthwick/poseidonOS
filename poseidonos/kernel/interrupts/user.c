@@ -11,7 +11,5 @@ void idt_user_setup()
 
 void user_interrupt_hook(char test)
 {
-	kprint("\n\npasswd char: ");
 	put_char(test);
-	kprint("\n\n");
 }
