@@ -1,8 +1,9 @@
-#include <fat.h>
-#include <vfs.h>
-#include <screen.h>
-#include <kmalloc.h>
+#include <kernel.h>
 #include <ktypes.h>
+#include <kdebug.h>
+
+#include <fat.h>
+#include <floppy.h>
 
 #define FILE_PUTCHAR
 
@@ -33,7 +34,6 @@ FILE *fat_fopen(char *fname, char *mode)
 	if (!isDirectory && sector_start > 0)
 	{
 		char *read_buffer;
-		int i;
 
 		read_buffer = kmalloc(512);
 		floppy_block_read(sector_start, read_buffer, 1);
@@ -54,18 +54,29 @@ void fat_fclose(FILE *file)
 
 FILE *fat_file_create(char *fname)
 {
+	FILE *file;
+
+	/*create a new file here*/
+
+	return file;
 }
 
 int fat_file_remove(char *fname)
 {
+	/*remove file*/
+	return -1;
 }
 
 int fat_file_write(char *fname, char *data)
 {
+	/*write a file*/
+	return -1;
 }
 
 int fat_file_read(char *fname, char *data)
 {
+	/*read file*/
+	return -1;
 }
 
 char fat_getchar(FILE *file)

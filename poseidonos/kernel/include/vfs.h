@@ -47,6 +47,7 @@ void umount_all();
 void mount_all();
 
 /*ls prototypes*/
+vfs_entry *ls(char *path);
 
 /*file prototypes*/
 #define EOF -1

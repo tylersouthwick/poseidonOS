@@ -2,7 +2,7 @@
 #include <kutil.h>
 
 #include <vfs.h>
-
+#include <exec.h>
 
 /*this is for the system as a whole so that the current IRQ mask can be tracked*/
 unsigned int irq_mask=0;
@@ -90,7 +90,6 @@ void show_ascii();
  * Date		: December 30, 2004
  * **************************************************************/
 void kernel_init() {
-	process_t *system_init_process;
 	int drivers_count;
 	int status;
 	

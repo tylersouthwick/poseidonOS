@@ -3,6 +3,10 @@
 #include <kdebug.h>
 
 #include <vfs.h>
+#include <exec.h>
+
+/*this is implemented in exec.asm*/
+void exec_asm(void *);
 
 int exec(char *exe)
 {
@@ -15,6 +19,15 @@ int exec(char *exe)
 
 	if (file == NULL)
 		return -1;
+
+
+	//get a virtual page for this process in userspac
+	program = mm_virtual_page_alloc();
+	kprint("allocating userspace address: ");
+	put_int((int)program, 16);
+	kprint("\n");
+	kprint("testing....");
+	program[0] = 'd';
 
 	/*copy the buffer into a buffer*/
 	program = kmalloc(fgetsize(file));

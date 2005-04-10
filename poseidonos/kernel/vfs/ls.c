@@ -19,10 +19,9 @@ char *months[] = {
 		"Dec"
 };
 
-void ls(char *path)
+vfs_entry *ls(char *path)
 {
 	vfs_entry *entries;
-	vfs_entry *temp;
 	int entries_count;
 	int i;
 	

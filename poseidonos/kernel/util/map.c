@@ -14,11 +14,10 @@ Map *mapCreate()
 	return map;
 }
 
-void mapAdd(Map *map, char *key, char *value, int sizeOfValue)
+void mapAdd(Map *map, char *key, void *value, int sizeOfValue)
 {
 	MapNode *tempNode;
 	MapNode *newNode;
-	int count = 0;
 
 	tempNode = map->first_node;
 
@@ -53,7 +52,7 @@ char *mapGet(Map *map, char *key)
 	tempNode = map->first_node;
 
 	if (tempNode == 0)
-		return -1;
+		return (char *)-1;
 
 	/*find the node that has the key*/
 	while (tempNode && tempNode->key && strcmp(tempNode->key, key))

@@ -194,12 +194,10 @@ vfs_entry *fat_ls(char *path, int *item_count)
 vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 {
 	fat_entry *fat_entries;
-	vfs_entry *p_entries;
 	vfs_entry *vfs_entries;
 	int i=0;
 	char *read_buffer;
 	int fat_counter;
-	int vfs_counter;
 	
 	read_buffer = kmalloc(512 * sector_count);
 	floppy_block_read(sector_start, read_buffer, 1);

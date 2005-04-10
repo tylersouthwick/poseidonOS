@@ -6,9 +6,7 @@
 #include <paging.h>
 
 void mm_paging_init() {
-	//unsigned long address=0;
 	unsigned long *temp_pde, *temp_pte;
-	//int i,h;
 	int buffer,count;
 	int superpage_index, subpage_index;
 
@@ -20,7 +18,7 @@ void mm_paging_init() {
 	
 	//mark pages as used according to mm_physical_bitmap
 	//this will only search through the first 4MB of memory to map into a virutal address
-	//there theoretically SOULDN'T be any more (so far its just the kernel running!)
+	//there theoretically SHOULDN'T be any more (so far its just the kernel running!)
 
 	//there are 0x400 pages in 4MB
 	//making 0x80 superpages
@@ -42,55 +40,37 @@ void mm_paging_init() {
 		}
 	}
 
-#ifdef DEBUG_MM
-	//start paging!
-	kprint("kernel end: ");
-	put_int(end_of_kernel,16);
-	kprint("\nenabling paging...");
-	kprint("\n\tpte: ");
-	put_int((unsigned long)temp_pte,16);
-	kprint("\t\tpde: ");
-	put_int((unsigned long)temp_pde,16);
-
-	kprint("\n\t");
-	put_int(count,10);
-	kprint(" pages translated from physical to virtual address space\n");
-#endif
-
 	write_cr3(temp_pde);
 	asm("cli");
 	write_cr0(read_cr0() | 0x80000000);
-
-#ifdef DEBUG_MM
-	kprint("paging succesfully enabled\n");
-#endif
 }
 
-//void *mm_paging_pde_new()
-//sets up a valid pde table, with one pte.  The pde is self-mapped to it's physical address in the pde
+/***************************************************************
+ * void *mm_paging_pde_new()
+ *
+ * sets up a valid pde table, with one pte.  The pde is 
+ * self-mapped to it's physical address in the pde
+ * ************************************************************/
 void *mm_paging_pde_new() {
 	unsigned long *temp_pde;
-	//unsigned long *temp_pte;
 	int i;
 
 	//allocate a new physical page that the pde will be located at
 	temp_pde = (unsigned long*)mm_physical_page_alloc();
-	//temp_pte = (unsigned long*)mm_physical_page_alloc();
 
 	//mark every pde entry as not-present
 	for(i=0; i<1024; i++)
 		temp_pde[i] = 0 | 2;
-	
-	//temp_pde[0] = (unsigned long)temp_pte;
-	//temp_pde[0] |= 3; //the first table entry IS present
 
-	//temp_pde[
 	return temp_pde;
-
 }
 
-//inserts a pte in the current pde
-//will be inserted to the first 'not present' entry
+/***************************************************************
+ * void *mm_paging_pde_insert()
+ *
+ * inserts a pte in the current pde at the first
+ * 'not present' entry
+ * ************************************************************/
 void *mm_paging_pde_insert() {
 	unsigned long *current_pde, *temp_pte;
 	int i;
@@ -114,6 +94,5 @@ void *mm_paging_pde_insert() {
 	
 	kprint("ERROR: Unable to insert a page table into the current page directory");
 	while(1);
-	//return mm_physical_pages_alloc();
 }
 

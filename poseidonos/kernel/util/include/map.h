@@ -18,7 +18,7 @@ typedef struct
 
 /*****************************prototypes*******************************/
 Map *mapCreate();
-void mapAdd(Map *map, char *key, char *value, int sizeOfValue);
+void mapAdd(Map *map, char *key, void *value, int sizeOfValue);
 char *mapGet(Map *map, char *key);
 int mapSize(Map *map);
 /**********************************************************************/

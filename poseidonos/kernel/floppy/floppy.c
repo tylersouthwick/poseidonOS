@@ -4,6 +4,7 @@
 
 #include <devices.h>
 #include <irq.h>
+#include <dma.h>
 
 /***********************************************************
  * floppy.c
