@@ -3,7 +3,7 @@
 #include <kdebug.h>
 #include <kutil.h>
 
-Map *mapCreate()
+Map *LinkedListMapCreate()
 {
 	Map *map;
 
@@ -11,10 +11,15 @@ Map *mapCreate()
 	map->first_node = (MapNode *)0;
 	map->count = 0;
 
+	/*setup function pointers*/
+	map->add = &LinkedListMapAdd;
+	map->get = &LinkedListMapGet;
+	map->size = &LinkedListMapSize;
+
 	return map;
 }
 
-void mapAdd(Map *map, char *key, void *value, int sizeOfValue)
+void LinkedListMapAdd(Map *map, char *key, void *value, int sizeOfValue)
 {
 	MapNode *tempNode;
 	MapNode *newNode;
@@ -45,7 +50,7 @@ void mapAdd(Map *map, char *key, void *value, int sizeOfValue)
 	map->count++;
 }
 
-char *mapGet(Map *map, char *key)
+char *LinkedListMapGet(Map *map, char *key)
 {
 	MapNode *tempNode;
 
@@ -61,7 +66,7 @@ char *mapGet(Map *map, char *key)
 	return tempNode->value;
 }
 
-int mapSize(Map *map)
+int LinkedListMapSize(Map *map)
 {
 	return map->count;
 }

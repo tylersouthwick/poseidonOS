@@ -20,7 +20,7 @@ Map *device_map;
  * *****************************************************************************/
 void devicemanager_init()
 {	
-	device_map = mapCreate();
+	device_map = LinkedListMapCreate();
 }
 
 
@@ -58,7 +58,7 @@ void device_register(char *dev_name, unsigned int major, unsigned int minor,
 	new_device->read_handler = read_handler;
 	new_device->write_handler = write_handler;
 	
-	mapAdd(device_map, dev_name, new_device, sizeof(device_t));
+	device_map->add(device_map, dev_name, new_device, sizeof(device_t));
 
 #ifdef DEBUG_DEVICEMANAGER
 	kprint("registered device ");
