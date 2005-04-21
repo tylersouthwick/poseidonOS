@@ -13,7 +13,7 @@ typedef map_add(struct Map *map, char *key, void *value, int sizeOfValue);
 typedef map_get(struct Map *map, char *key);
 typedef map_size(struct Map *map);
 
-typedef struct
+typedef struct Map
 {
 	int count;
 	MapNode *first_node;

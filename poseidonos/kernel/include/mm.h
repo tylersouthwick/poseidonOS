@@ -47,5 +47,7 @@ int end_of_kernel;
 
 #define size_t int
 
+#define USER_SPACE_START	512
+
 #endif
 

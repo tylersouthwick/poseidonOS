@@ -35,9 +35,29 @@ void kpanic(char *error_message)
 
 	kprint("\nRegister dump:\n");
 	kprint("\teax: ");
+	put_int(stack_poke(0x10), 0x10);
 	kprint("\tebx: ");
 	kprint("\tecx: ");
 	kprint("\tedx: ");
+	kprint("\nControl Registers:\n");
+	kprint("\tCR0: ");
+	put_int(read_cr0(), 0x10);
+	kprint("\tCR2: ");
+	put_int(read_cr2(), 0x10);
+	kprint("\tCR3: ");
+	put_int(read_cr3(), 0x10);
+	/*
+	{
+		int i;
+		for (i=0; i<20; i++)
+		{
+			kprint("\t");
+			put_int(i, 10);
+			kprint(": ");
+			put_int(stack_poke(-i), 0x10);
+		}
+	}
+	*/
 	asm("hlt");
 	while(1);
 }
@@ -93,9 +113,7 @@ void int_14() {
 	//..
 
 	//print error if not successful return
-	kprint("\nERROR: Page Fault (#PF) at: ");
-	put_int((int)(read_cr2()),16);
-	kpanic("Page Fault (#PF) at:");
+	kpanic("Page Fault (#PF)");
 }
 void int_16() {
 	kpanic("x87 FPU Floating-Point Error (#MF)");

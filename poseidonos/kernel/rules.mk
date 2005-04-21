@@ -29,13 +29,6 @@ CFLAGS = ${KERNEL_CFLAGS} ${KERNEL_INCLUDE_DIR} ${DRIVER_INCLUDE_DIR}
 poseidonos : compile
 
 ###include dependencies
-kutil.h : ${KERNEL_INCLUDE}/kutil.h ${UTIL_INCLUDE}/map.h
-
-kernel.h : ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/screen.h ${KERNEL_INCLUDE}/idt.h ${KERNEL_INCLUDE}/mm.h ${KERNEL_INCLUDE}/string.h ${KERNEL_INCLUDE}/gdt.h ${KERNEL_INCLUDE}/multitasking.h ${KERNEL_INCLUDE}/scheduler.h ${KERNEL_INCLUDE}/drivers.h ${KERNEL_INCLUDE}/devicemanager.h ${KERNEL_INCLUDE}/bios.h ${KERNEL_INCLUDE}/irq.h
-
-ktypes.h : ${KERNEL_INCLUDE}/ktypes.h
-
-kdebug.h : ${KERNEL_INCLUDE}/kdebug.h
-
-devices.h : ${KERNEL_INCLUDE}/devices.h
+${KERNEL_INCLUDE}/kutil.h : ${UTIL_INCLUDE}/map.h
+${KERNEL_INCLUDE}/kernel.h : ${KERNEL_INCLUDE}/screen.h ${KERNEL_INCLUDE}/idt.h ${KERNEL_INCLUDE}/mm.h ${KERNEL_INCLUDE}/string.h ${KERNEL_INCLUDE}/gdt.h ${KERNEL_INCLUDE}/multitasking.h ${KERNEL_INCLUDE}/scheduler.h ${KERNEL_INCLUDE}/drivers.h ${KERNEL_INCLUDE}/devicemanager.h ${KERNEL_INCLUDE}/bios.h ${KERNEL_INCLUDE}/irq.h
 ${KERNEL_INCLUDE}/devices.h : ${KERNEL_INCLUDE}/floppy.h

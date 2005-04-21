@@ -12,6 +12,6 @@ shell.app : ${SHELL_OBJS}
 
 clean :
 	rm -f *.o
-	rm shell.app
+	rm -f shell.app
 	
 

@@ -33,3 +33,9 @@ write_cr3:
 	mov cr3, eax
 	pop ebp
 	ret
+
+[global paging_flush_cache]
+paging_flush_cache:
+	mov eax, cr3
+	mov cr3, eax
+	ret

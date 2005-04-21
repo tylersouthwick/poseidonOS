@@ -418,3 +418,12 @@ user_interrupt_hook_asm:
 	popa
 	iret
 
+[global stack_poke]
+stack_poke:
+	push ebp
+	mov ebp, esp
+	mov eax, [ebp+8]
+	shl eax, 2
+	mov eax, [eax+ebp]
+	pop ebp
+	ret

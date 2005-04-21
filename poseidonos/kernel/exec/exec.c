@@ -26,8 +26,6 @@ int exec(char *exe)
 	kprint("allocating userspace address: ");
 	put_int((int)program, 16);
 	kprint("\n");
-	kprint("testing....");
-	program[0] = 'd';
 
 	/*copy the buffer into a buffer*/
 	program = kmalloc(fgetsize(file));
