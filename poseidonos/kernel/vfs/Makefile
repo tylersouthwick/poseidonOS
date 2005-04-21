@@ -6,9 +6,9 @@ VFS_OBJS = mount.o ls.o file.o
 compile: vfs.a
 
 #############################compile stuff#################################
-mount.o : mount.c		kernel.h ktypes.h kdebug.h ../include/fat.h
-file.o : file.c			kernel.h ktypes.h kdebug.h ../include/fat.h
-ls.o : ls.c					kernel.h ktypes.h kdebug.h
+mount.o : mount.c		${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h ../include/fat.h
+file.o : file.c			${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h ../include/fat.h
+ls.o : ls.c					${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
 ###########################################################################
 
 #link and build kernel.bin

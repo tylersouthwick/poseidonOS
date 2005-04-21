@@ -29,12 +29,12 @@ kernel_wrapper.o : kernel_wrapper.asm
 exec_wrapper.o : exec_wrapper.asm
 	$(AS) -f ${AS_FORMAT} -o $@ $<
 
-kernel.o  : kernel.c kernel.h include/ktypes.h
-drivers.o : drivers.c include/drivers.h include/ktypes.h
-dma.o	  	: dma.c include/dma.h include/bios.h
-bios.o	  : bios.c include/bios.h
-mount.o	  : mount.c include/mount.h include/floppy.h include/fat.h include/vfs.h
-exec.o	  : exec.c kernel.h ktypes.h kdebug.h
+kernel.o  : kernel.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h
+drivers.o : drivers.c ${KERNEL_INCLUDE}/drivers.h ${KERNEL_INCLUDE}/ktypes.h
+dma.o	  	: dma.c ${KERNEL_INCLUDE}/dma.h 
+bios.o	  : bios.c ${KERNEL_INCLUDE}/bios.h
+mount.o	  : mount.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
+exec.o	  : exec.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
 
 ###########################################################################
 

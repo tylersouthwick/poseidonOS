@@ -6,7 +6,7 @@ EXEC_OBJS=exec_wrapper.o exec.o
 compile : exec.a
 
 #############################compile stuff#################################
-exec.o : exec.c 					kernel.h ktypes.h kdebug.h ../include/interrupt.h
+exec.o : exec.c 					${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h ../include/interrupt.h
 
 exec_wrapper.o : exec_wrapper.asm
 	$(AS) -f ${AS_FORMAT} -o $@ $<

@@ -6,7 +6,7 @@ SCREEN_OBJS = screen.o
 compile: screen.o
 
 ###################################compile stuff##################################
-screen.o : screen.c kernel.h ktypes.h kdebug.h
+screen.o : screen.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
 ##################################################################################
 
 clean:

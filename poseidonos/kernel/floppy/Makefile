@@ -6,7 +6,7 @@ FLOPPY_OBJS = floppy.o floppy_wrapper.o
 compile: floppy.a
 
 #################################compile stuff###############################
-floppy.o : floppy.c ../include/irq.h devices.h kernel.h ktypes.h kdebug.h 
+floppy.o : floppy.c ../include/irq.h ${KERNEL_INCLUDE}/devices.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h 
 floppy_wrapper.o : floppy.asm
 	$(AS) -f ${AS_FORMAT} -o floppy_wrapper.o floppy.asm
 ######################################floppy.a###############################

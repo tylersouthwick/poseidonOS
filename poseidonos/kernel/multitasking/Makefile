@@ -8,10 +8,10 @@ MULTITASKING_OBJS = multitasking.o scheduler.o scheduler_wrapper.o sleep.o pit.o
 compile: multitasking.a
 
 ####################################Compile stuff##########################
-multitasking.o	: multitasking.c	../include/scheduler.h ../include/tasks.h ../include/irq.h kernel.h ktypes.h kdebug.h
-scheduler.o 		: scheduler.c			../include/scheduler.h kernel.h ktypes.h kdebug.h
-sleep.o					: sleep.c					kernel.h ktypes.h kdebug.h
-pit.o						: pit.c						kernel.h ktypes.h kdebug.h
+multitasking.o	: multitasking.c	../include/scheduler.h ../include/tasks.h ../include/irq.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
+scheduler.o 		: scheduler.c			../include/scheduler.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
+sleep.o					: sleep.c					${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
+pit.o						: pit.c						${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
 
 scheduler_wrapper.o : scheduler.asm
 	$(AS) -f ${AS_FORMAT} -o scheduler_wrapper.o scheduler.asm

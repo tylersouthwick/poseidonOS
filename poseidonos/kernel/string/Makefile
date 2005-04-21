@@ -6,7 +6,7 @@ STRING_OBJS = string.o string_assembly.o
 compile: string.a
 
 ############################################compile stuff#####################################
-string.o : string.c kernel.h ktypes.h kdebug.h
+string.o : string.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
 
 string_assembly.o : string.asm
 	$(AS) -f ${AS_FORMAT} -o string_assembly.o string.asm

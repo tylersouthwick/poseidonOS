@@ -6,9 +6,9 @@ IDT_OBJS = idt.o int.o int_wrapper.o user.o
 compile: interrupts.a
 
 ##############################################compile stuff##############################
-idt.o		: idt.c ../include/idt.h ../include/interrupt.h ../include/irq.h kernel.h ktypes.h kdebug.h
-int.o		: int.c ../include/paging.h ../include/interrupt.h kernel.h ktypes.h kdebug.h
-user.o	: user.c ../include/interrupt.h kernel.h ktypes.h kdebug.h
+idt.o		: idt.c		../include/idt.h ../include/interrupt.h ../include/irq.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
+int.o		: int.c		../include/paging.h ../include/interrupt.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
+user.o	: user.c	../include/interrupt.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
 
 int_wrapper.o : int_wrapper.asm
 	$(AS) -f ${AS_FORMAT} -o int_wrapper.o int_wrapper.asm
