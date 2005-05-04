@@ -9,7 +9,7 @@ UTIL_OBJS = map.o
 compile: util.a
 
 ###########################hashmap stuff###################################
-map.o : map.c include/map.h ${KERNEL_INCLUDE}/kutil.h ${KERNEL_INCLUDE}/kdebug.h
+map.o : map.c ${KERNEL_INCLUDE}/util/map.h ${KERNEL_INCLUDE}/kdebug.h
 ###########################################################################
 
 #link util.a

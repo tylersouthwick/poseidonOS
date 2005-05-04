@@ -2,7 +2,7 @@
 #include <ktypes.h>
 #include <kdebug.h>
 
-#include <sbrk.h>
+#include <mm/sbrk.h>
 
 kmalloc_free *free_mem=(kmalloc_free*)0;					/*the free memory linked list.  When memory is free'd it is hooked onto this list*/
 

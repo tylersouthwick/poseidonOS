@@ -2,8 +2,8 @@
 #include <ktypes.h>
 #include <kdebug.h>
 
-#include <paging.h>
-#include <virtual_mem.h>
+#include <mm/paging.h>
+#include <mm/virtual_mem.h>
 
 unsigned long current_pte;
 mm_page_header_t *base_page;

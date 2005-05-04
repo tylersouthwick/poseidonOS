@@ -6,7 +6,7 @@
 
 #include <screen.h>
 #include <idt.h>
-#include <mm.h>
+#include <mm/mm.h>
 #include <string.h>
 #include <gdt.h>
 #include <multitasking.h>

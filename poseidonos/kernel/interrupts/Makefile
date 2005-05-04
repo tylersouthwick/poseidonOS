@@ -7,7 +7,7 @@ compile: interrupts.a
 
 ##############################################compile stuff##############################
 idt.o		: idt.c		../include/idt.h ../include/interrupt.h ../include/irq.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
-int.o		: int.c		../include/paging.h ../include/interrupt.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
+int.o		: int.c		../include/mm/paging.h ../include/interrupt.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
 user.o	: user.c	../include/interrupt.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
 
 int_wrapper.o : int_wrapper.asm

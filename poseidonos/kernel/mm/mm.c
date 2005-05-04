@@ -5,9 +5,9 @@
 #include <ktypes.h>
 #include <kdebug.h>
 
-#include <paging.h>
-#include <multiboot.h>
-#include <sbrk.h>
+#include <mm/paging.h>
+#include <mm/multiboot.h>
+#include <mm/sbrk.h>
 
 unsigned long floppy_dma_address;
 

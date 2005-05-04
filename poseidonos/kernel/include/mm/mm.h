@@ -4,7 +4,7 @@
 #ifndef MM_H
 #define MM_H
 
-#include <multiboot.h>
+#include <mm/multiboot.h>
 
 //general mm stuff
 void mm_init(multiboot_info_t *mm_info);

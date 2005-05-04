@@ -2,7 +2,7 @@
 #include <ktypes.h>
 #include <kdebug.h>
 
-#include <mm.h>
+#include <mm/mm.h>
 
 int page_offset;	//number of bytes offset in the page that the next block can start from
 unsigned long *current_vpage;

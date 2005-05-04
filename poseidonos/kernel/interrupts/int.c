@@ -6,7 +6,7 @@
 #include <kdebug.h>
 
 #include <interrupt.h>
-#include <paging.h>
+#include <mm/paging.h>
 
 #define MASTER 0x20
 #define EOI 0x20

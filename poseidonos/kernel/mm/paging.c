@@ -2,8 +2,8 @@
 #include <ktypes.h>
 #include <kdebug.h>
 
-#include <physical_mem.h>
-#include <paging.h>
+#include <mm/physical_mem.h>
+#include <mm/paging.h>
 
 void mm_paging_init() {
 	unsigned long *temp_pde, *temp_pte;

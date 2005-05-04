@@ -3,11 +3,11 @@
 
 #include <util/stack.h>
 
-struct mm_physical_zones
+typedef struct mm_physical_zones
 {
-	stack_t dma;
-	stack_t lowmem;
-}
+	long dma;
+	long lowmem;
+} mm_physical_zones;
 
 #endif
 
