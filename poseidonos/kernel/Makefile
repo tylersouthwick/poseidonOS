@@ -5,7 +5,7 @@ KERNEL_OBJS = kernel_wrapper.o kernel.o
 
 KERNEL_STATIC_LIBS=interrupts/interrupts.a multitasking/multitasking.a mm/mm.a \
 		screen/screen.o string/string.a bios.o dma.o \
-		devicemanager/devicemanager.a drivers.o floppy/floppy.a \
+		devices/manager/devicemanager.a drivers.o devices/floppy/floppy.a \
 		exec/exec.a vfs/vfs.a fat/fat.a util/util.a
 
 compile:
@@ -14,8 +14,8 @@ compile:
 	cd multitasking; make
 	cd screen; make
 	cd string; make
-	cd devicemanager; make
-	cd floppy; make
+	cd devices/manager; make
+	cd devices/floppy; make
 	cd fat; make
 	cd vfs; make
 	cd util; make
@@ -50,9 +50,9 @@ clean:
 	cd multitasking; make clean
 	cd screen; make clean
 	cd string; make clean
-	cd devicemanager; make clean
+	cd devices/manager; make clean
 	cd fat; make clean
-	cd floppy; make clean
+	cd devices/floppy; make clean
 	cd vfs; make clean
 	cd util; make clean
 	rm -f *.o
