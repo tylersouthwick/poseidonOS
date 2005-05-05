@@ -102,31 +102,6 @@ void *mm_physical_page_alloc_dma()
 	return (void *)0;
 }
 
-	/*
-	//find a free superpage page
-	for (superpage_index=0; superpage_index<p_page_count/8; superpage_index++) {
-		if (mm_physical_bitmap_dma[superpage_index] != 255)
-			//find a free subpage
-			for (subpage_index = 0; subpage_index < 8; subpage_index++) {
-				buffer = mm_physical_bitmap_dma[superpage_index];
-				buffer = buffer >> subpage_index;
-				buffer = buffer & 0x1;
-				if (buffer == 0) {
-					mm_physical_bitmap_dma[superpage_index] |= (1 << subpage_index);
-					return (void*)MM_PHYSICAL_BITMAP_ADR(superpage_index, subpage_index);
-				}
-			}
-	}
-	*/
-	
-	/*if no physical page was found, out of memory.
-	  Eventually this will add support for a swap
-	  file or disk.  But right now, the system will
-	  enter an infinite loop*/
-	//kprint("SYSTEM ERROR: NO FREE MEMORY!");
-//	while(1);
-//}
-
 void mm_physical_page_free(void *p_addr) {
 	int superpage_index, subpage_index;
 
