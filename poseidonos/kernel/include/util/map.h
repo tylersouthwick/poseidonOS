@@ -7,29 +7,29 @@ typedef struct
 	char *key;
 	char *value;
 	void *next;
-} MapNode;
+} map_node_t;
 
-typedef map_add(struct Map *map, char *key, void *value, int sizeOfValue);
-typedef map_get(struct Map *map, char *key);
-typedef map_size(struct Map *map);
+typedef void map_add(void *map, char *key, void *value, int sizeOfValue);
+typedef char *map_get(void *map, char *key);
+typedef int map_size(void *map);
 
-typedef struct Map
+typedef struct map_t
 {
 	int count;
-	MapNode *first_node;
+	map_node_t *first_node;
 	map_add *add;
 	map_get *get;
 	map_size *size;
-} Map;
+} map_t;
 /**********************************************************************/
 
 /*****************************prototypes*******************************/
 
 //LinkedList Map
-Map *LinkedListMapCreate();
-void LinkedListMapAdd(Map *map, char *key, void *value, int sizeOfValue);
-char *LinkedListMapGet(Map *map, char *key);
-int LinkedListMapSize(Map *map);
+map_t *linked_list_map_create();
+void linked_list_map_add(map_t *map, char *key, void *value, int size_of_value);
+char *linked_list_map_get(map_t *map, char *key);
+int linked_list_map_size(map_t *map);
 /**********************************************************************/
 
 #endif

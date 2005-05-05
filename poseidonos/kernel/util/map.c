@@ -3,70 +3,70 @@
 #include <kdebug.h>
 #include <kutil.h>
 
-Map *LinkedListMapCreate()
+map_t *linked_list_map_create()
 {
-	Map *map;
+	map_t *map;
 
-	map = (Map *)kmalloc(sizeof(Map));
-	map->first_node = (MapNode *)0;
+	map = (map_t *)kmalloc(sizeof(map_t));
+	map->first_node = (map_node_t *)0;
 	map->count = 0;
 
 	/*setup function pointers*/
-	map->add = &LinkedListMapAdd;
-	map->get = &LinkedListMapGet;
-	map->size = &LinkedListMapSize;
+	map->add = &linked_list_map_add;
+	map->get = &linked_list_map_get;
+	map->size = &linked_list_map_size;
 
 	return map;
 }
 
-void LinkedListMapAdd(Map *map, char *key, void *value, int sizeOfValue)
+void linked_list_map_add(map_t *map, char *key, void *value, int size_of_value)
 {
-	MapNode *tempNode;
-	MapNode *newNode;
+	map_node_t *temp_node;
+	map_node_t *new_node;
 
-	tempNode = map->first_node;
+	temp_node = map->first_node;
 
 	/*setup new node*/
-	newNode = (MapNode *)kmalloc(sizeof(MapNode));
-	newNode->key = (char *)kmalloc(strlen(key) + 1);
-	strcpy(newNode->key, key);
-	newNode->value = (char *)kmalloc(sizeOfValue);
-	memcpy(newNode->value, value, sizeOfValue);
-	newNode->next = 0;
+	new_node = (map_node_t *)kmalloc(sizeof(map_node_t));
+	new_node->key = (char *)kmalloc(strlen(key) + 1);
+	strcpy(new_node->key, key);
+	new_node->value = (char *)kmalloc(size_of_value);
+	memcpy(new_node->value, value, size_of_value);
+	new_node->next = 0;
 
 	/*is this the first item in the list?*/
-	if (tempNode == 0)
+	if (temp_node == 0)
 		/*add the new node*/
-		map->first_node = newNode;
+		map->first_node = new_node;
 	else {
 		/*find the last node in the list*/
-		while (tempNode->next != 0)
-			tempNode = (MapNode *)tempNode->next;
+		while (temp_node->next != 0)
+			temp_node = (map_node_t *)temp_node->next;
 
 		/*add the new node*/
-		tempNode->next = newNode;
+		temp_node->next = new_node;
 	}
 
 	map->count++;
 }
 
-char *LinkedListMapGet(Map *map, char *key)
+char *linked_list_map_get(map_t *map, char *key)
 {
-	MapNode *tempNode;
+	map_node_t *temp_node;
 
-	tempNode = map->first_node;
+	temp_node = map->first_node;
 
-	if (tempNode == 0)
+	if (temp_node == 0)
 		return (char *)-1;
 
 	/*find the node that has the key*/
-	while (tempNode && tempNode->key && strcmp(tempNode->key, key))
-		tempNode = (MapNode *)tempNode->next;
+	while (temp_node && temp_node->key && strcmp(temp_node->key, key))
+		temp_node = (map_node_t *)temp_node->next;
 	
-	return tempNode->value;
+	return temp_node->value;
 }
 
-int LinkedListMapSize(Map *map)
+int linked_list_map_size(map_t *map)
 {
 	return map->count;
 }

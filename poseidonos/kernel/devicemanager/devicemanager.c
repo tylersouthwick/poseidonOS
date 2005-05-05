@@ -5,7 +5,9 @@
 #include <devicemanager.h>
 #include <devices.h>
 
-Map *device_map;
+#include <util/map.h>
+
+map_t *device_map;
 
 /*******************************************************************************
  * void devicemanager_init()
@@ -20,7 +22,7 @@ Map *device_map;
  * *****************************************************************************/
 void devicemanager_init()
 {	
-	device_map = LinkedListMapCreate();
+	device_map = linked_list_map_create();
 }
 
 
