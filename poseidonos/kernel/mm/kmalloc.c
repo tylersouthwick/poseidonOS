@@ -36,6 +36,12 @@ void *kmalloc(unsigned int nBytes) {
 	
 	nBytes += sizeof(struct kmalloc_free_type); //add enough space for the header
 
+	/*
+	kprint("\nkmalloc :: ");
+	put_int(nBytes, 10);
+	kprint(" bytes\n");
+	*/
+
 	free_mem_temp = free_mem;
 	while(free_mem_temp != 0) {
 		//check to see if there is suffient mem space in this chunk
@@ -56,6 +62,7 @@ void *kmalloc(unsigned int nBytes) {
 	}
 
 	//there wasn't suffient mem space in any chunk
+	//kprint("sbrk more mem\n");
 	chunk_start = (kmalloc_free *)sbrk(nBytes);
 	chunk_start->size = nBytes;
 	chunk_start->prev = 0;

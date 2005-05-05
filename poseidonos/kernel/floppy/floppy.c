@@ -34,7 +34,7 @@ static unsigned char floppy_sr0 = 0;
 static unsigned char floppy_track = 0xff;
 static drive_geometry floppy_geometry = {DG144_HEADS, DG144_TRACKS, DG144_SPT};
 
-extern unsigned long *floppy_dma_address;
+static unsigned long *floppy_dma_address;
 extern int timer_count;
 /*************************end global floppy variables***********************/
 
@@ -55,17 +55,6 @@ void floppy_init()
 	unsigned char a;
 	unsigned char b;
 	
-	#ifdef FLOPPY_SHOW_TYPE
-	char *drive_type[6] = {
-		"no floppy drive",
-		"360kb 5.25in floppy drive",
-		"1.2mb 5.25in floppy drive",
-		"720kb 3.5in",
-		"1.44mb 3.5in",
-		"2.88mb 3.5in"
-	};
-	#endif
-	
 	outportb(0x70, 0x10);
 	INPORTB(c, 0x71);
 	
@@ -83,28 +72,15 @@ void floppy_init()
 		floppy_count++;
 		device_register("fd1", DEV_FLOPPY, DEV_FLOPPY_1, 0,0 );
 	}
-	
-#ifdef DEBUG_FLOPPY_1
-	kprint("Found ");
-	put_int(floppy_count, 10);
-	kprint(" floppy drive(s)\n");
-#endif
+
+	floppy_dma_address = mm_physical_page_alloc(MM_TYPE_DMA);
 	
 	idt_interrupt_add(0x26, floppy_isr, 0);
 	irq_umask(IRQ_6);
 	floppy_timer_process = multitasking_process_new(floppy_timer, "floppy timer", PRIORITY_LOW);
 	multitasking_process_add(floppy_timer_process);
 
-
-#ifdef DEBUG_FLOPPY
-	kprint("resetting floppy...");
-#endif
-
 	floppy_reset();
-
-#ifdef DEBUG_FLOPPY
-	kprint("done\n");
-#endif
 }
 
 /*******************************************************************************

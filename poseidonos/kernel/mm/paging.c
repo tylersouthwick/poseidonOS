@@ -5,43 +5,52 @@
 #include <mm/physical_mem.h>
 #include <mm/paging.h>
 
+extern  mm_physical_page_zones memory_zones;
+
 void mm_paging_init() {
-	unsigned long *temp_pde, *temp_pte;
-	int buffer,count;
-	int superpage_index, subpage_index;
+	unsigned long *page_directory;
+	unsigned long *page_directory_table;
+	unsigned long *page_table;
+	unsigned int i;
+	unsigned int address;
 
-	temp_pde = mm_paging_pde_new();
+	/*get pages*/
+	page_directory = (unsigned long*)mm_physical_page_alloc(MM_TYPE_NORMAL);
+	page_directory_table = (unsigned long*)mm_physical_page_alloc(MM_TYPE_NORMAL);
+	page_table = (unsigned long*)mm_physical_page_alloc(MM_TYPE_NORMAL);
 
-	//insert pte entry
-	temp_pte = (unsigned long*)mm_physical_page_alloc();
-	temp_pde[0] = ((int)temp_pte) | 3;
-	
-	//mark pages as used according to mm_physical_bitmap
-	//this will only search through the first 4MB of memory to map into a virutal address
-	//there theoretically SHOULDN'T be any more (so far its just the kernel running!)
-
-	//there are 0x400 pages in 4MB
-	//making 0x80 superpages
-	count = 0;
-
-	for (superpage_index=0; superpage_index<0x80; superpage_index++) {
-		if (mm_physical_bitmap[superpage_index] != 0) {//at least one free page
-			for (subpage_index=0; subpage_index<8; subpage_index++) {
-				buffer = ((superpage_index << 3) & 0xFFFFFFF8) + subpage_index;
-				if ((mm_physical_bitmap[superpage_index] >> subpage_index) & 0x1) {
-					//physical page exists
-					temp_pte[buffer] = MM_PHYSICAL_BITMAP_ADR(superpage_index, subpage_index);
-					temp_pte[buffer] |= 3;
-					count++;
-				} else 
-					//put an empty address marked as 'not present'					
-					temp_pte[buffer] = 2;
-			}
-		}
+	/*setup page table*/
+	address = 0;
+	for(i=0; i<1024; i++)
+	{
+		page_table[i] = address | 3;
+		address += 4096;
 	}
 
-	write_cr3(temp_pde);
-	asm("cli");
+	/*insert pte entry*/
+	page_directory[0] = ((int)page_table) | 3;
+
+	for (i=1; i < 1024; i++)
+		page_directory[i] = 0 | 2;
+
+	/*map in page_table and page_directory*/
+	for(i=0; i<1024; i++)
+		page_directory_table[i] = 0 | 2;
+
+	/*add pages to the page table*/
+	page_directory_table[PAGING_GET_TABLE(page_directory)] = page_directory;
+	page_directory_table[PAGING_GET_TABLE(page_directory)] |= 3;
+
+	page_directory_table[PAGING_GET_TABLE(page_directory_table)] = page_directory_table;
+	page_directory_table[PAGING_GET_TABLE(page_directory_table)] |= 3;
+
+	page_directory_table[PAGING_GET_TABLE(page_table)] = page_table;
+	page_directory_table[PAGING_GET_TABLE(page_table)] |= 3;
+
+	page_directory[PAGING_GET_DIRECTORY(page_directory)] = page_directory_table;
+	page_directory[PAGING_GET_DIRECTORY(page_directory)] |= 3;
+
+	write_cr3(page_directory);
 	write_cr0(read_cr0() | 0x80000000);
 }
 
@@ -56,7 +65,7 @@ void *mm_paging_pde_new() {
 	int i;
 
 	//allocate a new physical page that the pde will be located at
-	temp_pde = (unsigned long*)mm_physical_page_alloc();
+	temp_pde = (unsigned long*)mm_physical_page_alloc(MM_TYPE_NORMAL);
 
 	//mark every pde entry as not-present
 	for(i=0; i<1024; i++)
@@ -76,7 +85,7 @@ void *mm_paging_pde_insert() {
 	int i;
 
 	current_pde = (unsigned long*)read_cr3();
-	temp_pte = (unsigned long*) mm_physical_page_alloc();
+	temp_pte = (unsigned long*) mm_physical_page_alloc(MM_TYPE_NORMAL);
 
 	//search through the pde to find a 'not present' entry
 	//set that entry as 'present' and return that address

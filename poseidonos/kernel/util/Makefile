@@ -4,12 +4,13 @@
 
 include ../rules.mk
 
-UTIL_OBJS = map.o
+UTIL_OBJS = map.o stack.o
 
 compile: util.a
 
 ###########################hashmap stuff###################################
-map.o : map.c ${KERNEL_INCLUDE}/util/map.h ${KERNEL_INCLUDE}/kdebug.h
+map.o   : map.c   ${KERNEL_INCLUDE}/util/map.h ${KERNEL_INCLUDE}/kdebug.h
+stack.o : stack.c ${KERNEL_INCLUDE}/util/stack.h ${KERNEL_INCLUDE}/kdebug.h
 ###########################################################################
 
 #link util.a

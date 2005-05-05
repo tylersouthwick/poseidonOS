@@ -14,7 +14,9 @@
 void kpanic(char *error_message)
 {
 	asm("cli");
-
+	kprint("error message: ");
+	kprint(error_message);
+/*
 	screen_set_color(SCREEN_BG_BLUE | SCREEN_FG_BRIGHT_WHITE);
 	screen_clear();
 
@@ -46,6 +48,7 @@ void kpanic(char *error_message)
 	put_int(read_cr2(), 0x10);
 	kprint("\tCR3: ");
 	put_int(read_cr3(), 0x10);
+	*/
 	/*
 	{
 		int i;
@@ -113,6 +116,10 @@ void int_14() {
 	//..
 
 	//print error if not successful return
+	kprint("page fault at ");
+	put_int(read_cr2(), 0x10);
+	kprint("\n");
+
 	kpanic("Page Fault (#PF)");
 }
 void int_16() {
