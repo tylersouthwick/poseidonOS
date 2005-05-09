@@ -3,10 +3,21 @@ include rules.mk
 
 KERNEL_OBJS = kernel_wrapper.o kernel.o 
 
-KERNEL_STATIC_LIBS=interrupts/interrupts.a multitasking/multitasking.a mm/mm.a \
-		screen/screen.o string/string.a bios.o dma.o \
-		devices/manager/devicemanager.a drivers.o devices/floppy/floppy.a \
-		exec/exec.a vfs/vfs.a fat/fat.a util/util.a
+KERNEL_STATIC_LIBS= \
+		screen/screen.o \
+		dma.o \
+		devices/manager/devicemanager.a \
+		drivers.o \
+		devices/floppy/floppy.a \
+		devices/keyboard/keyboard.a \
+		mm/mm.a \
+		interrupts/interrupts.a \
+		multitasking/multitasking.a \
+		exec/exec.a \
+		vfs/vfs.a \
+		fat/fat.a \
+		util/util.a \
+		string/string.a
 
 compile:
 	cd interrupts; make
@@ -14,8 +25,7 @@ compile:
 	cd multitasking; make
 	cd screen; make
 	cd string; make
-	cd devices/manager; make
-	cd devices/floppy; make
+	cd devices; make
 	cd fat; make
 	cd vfs; make
 	cd util; make
@@ -32,7 +42,6 @@ exec_wrapper.o : exec_wrapper.asm
 kernel.o  : kernel.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h
 drivers.o : drivers.c ${KERNEL_INCLUDE}/drivers.h ${KERNEL_INCLUDE}/ktypes.h
 dma.o	  	: dma.c ${KERNEL_INCLUDE}/dma.h 
-bios.o	  : bios.c ${KERNEL_INCLUDE}/bios.h
 mount.o	  : mount.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
 exec.o	  : exec.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
 
@@ -42,7 +51,7 @@ exec.o	  : exec.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL
 
 #link and build kernel.bin
 kernel.elf: ${KERNEL_OBJS} $(KERNEL_STATIC_LIBS)
-	$(LD) $(LDFLAGS) -o kernel.elf $(KERNEL_OBJS) $(KERNEL_STATIC_LIBS) string/string.o
+	$(LD) $(LDFLAGS) -o kernel.elf $(KERNEL_OBJS) $(KERNEL_STATIC_LIBS) 
 
 clean:
 	cd interrupts; make clean
@@ -50,9 +59,8 @@ clean:
 	cd multitasking; make clean
 	cd screen; make clean
 	cd string; make clean
-	cd devices/manager; make clean
+	cd devices; make clean
 	cd fat; make clean
-	cd devices/floppy; make clean
 	cd vfs; make clean
 	cd util; make clean
 	rm -f *.o
