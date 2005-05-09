@@ -39,18 +39,47 @@ static void update_cursor() {
 
 void put_char(char c)
 {
-
-	if (c == '\n') {
-		scr_y++;
-		scr_x = 0;
-		goto put_char_reset_screen;
+	switch (c)
+	{
+		case '\n':
+		{
+			scr_y++;
+			scr_x = 0;
+			break;
+		}
+		case '\b':
+		{
+			if (scr_x - 1 < 0)
+			{
+				if (scr_y > 0)
+					scr_y--;
+				scr_x = 80;
+			} else {
+				scr_x--;
+			}
+			video_mem[screen_get_position()] = 0;
+			video_mem[screen_get_position()+1] = screen_attributes;
+			break;
+		}
+		case '\t':
+		{
+			scr_x++;
+			video_mem[screen_get_position()] = 0;
+			video_mem[screen_get_position()+1] = screen_attributes;
+			scr_x++;
+			video_mem[screen_get_position()] = 0;
+			video_mem[screen_get_position()+1] = screen_attributes;
+			break;
+		}
+		default:
+		{
+			video_mem[screen_get_position()] = c;
+			video_mem[screen_get_position()+1] = screen_attributes;
+			scr_x++;
+			break;
+		}
 	}
-	
-	video_mem[screen_get_position()] = c;
-	video_mem[screen_get_position()+1] = screen_attributes;
-	scr_x++;
 
-put_char_reset_screen:
 	if (scr_x==80) { scr_x=0; scr_y++;}
 	if (scr_y==25) {
 		memcpy(video_mem,(void *)((int)video_mem + 160), 4000);

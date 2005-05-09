@@ -8,7 +8,7 @@
 
 #include <util/map.h>
 
-map_t *device_map;
+static map_t *device_map;
 
 /*******************************************************************************
  * void devicemanager_init()
@@ -17,9 +17,6 @@ map_t *device_map;
  * I'm still trying to think of a good data structure (dynamic structure) that
  * would be best to use here...  At present, it just allocated space for a static
  * amount of devices, which is a temporary fix :).
- * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
- * Date:	December 20, 2004
  * *****************************************************************************/
 void devicemanager_init()
 {	
@@ -33,10 +30,11 @@ void devicemanager_init()
  * *****************************************************************************/
 void devicemanager_init_devices()
 {
+	floppy_init();
 	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
 	kprint("floppy ");
 	screen_set_color(SCREEN_DEFAULT);
-	floppy_init();
+
 	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
 	kprint("keyboard ");
 	screen_set_color(SCREEN_DEFAULT);
@@ -52,9 +50,6 @@ void devicemanager_init_devices()
  * comes to read or write to a device, it is looked up here, and the data is pushed
  * onto the stack and then either the read_handler or write_handler (respectably),
  * is called and performs the desired action.
- * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
- * Date:	December 18, 2004
  * *****************************************************************************/
 void device_register(char *dev_name, unsigned int major, unsigned int minor, 
 					unsigned int read_handler, unsigned int write_handler)
@@ -66,13 +61,5 @@ void device_register(char *dev_name, unsigned int major, unsigned int minor,
 	new_device->write_handler = write_handler;
 	
 	device_map->add(device_map, dev_name, new_device, sizeof(device_t));
-
-#ifdef DEBUG_DEVICEMANAGER
-	kprint("registered device ");
-	put_int(major,10);
-	kprint(",");
-	put_int(minor,10);
-	kprint("\n");
-#endif
 }
 
