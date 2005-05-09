@@ -2,7 +2,6 @@
 include ../rules.mk
 
 IDT_OBJS = idt.o int.o int_wrapper.o user.o
-CFLAGS = ${KERNEL_CFLAGS} -O0 ${KERNEL_INCLUDE_DIR}
 
 compile: interrupts.a
 

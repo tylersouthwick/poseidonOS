@@ -16,7 +16,7 @@
 
 void kpanic(char *error_message)
 {
-	asm("cli");
+	asm volatile ("cli");
 	kprint("error message: ");
 	kprint(error_message);
 /*
@@ -64,7 +64,7 @@ void kpanic(char *error_message)
 		}
 	}
 	*/
-	asm("hlt");
+	asm volatile("hlt");
 	irq_mask_all();
 	while(1);
 }

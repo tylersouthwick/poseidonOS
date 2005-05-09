@@ -34,8 +34,8 @@ void *mm_virtual_page_alloc() {
 	}
 
 	kprint("ERROR: mm_virtual_page_alloc()");
-	asm("cli");
-	asm("hlt");
+	asm volatile ("cli");
+	asm volatile ("hlt");
 	while(1);
 }
 

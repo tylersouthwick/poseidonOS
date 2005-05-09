@@ -54,7 +54,7 @@ void *mm_physical_page_alloc(int type) {
 			return page;
 	}
 mm_physical_page_alloc_error:
-	asm("cli");
+	asm volatile ("cli");
 	kprint("error allocating page!");
 	while(1);
 }

@@ -10,8 +10,8 @@ extern process_t *current_process;
 
 void sleep(int mill)
 {
-	asm("cli");
+	asm volatile("cli");
 	current_process->process_sleep = mill;
-	asm("sti");
+	asm volatile("sti");
 	while(current_process->process_sleep > 0);
 }

@@ -60,7 +60,7 @@ void dma_xfer(uchar channel, unsigned long address, unsigned int length, unsigne
 void _dma_xfer(uchar DMA_channel, unsigned char page, unsigned int offset, unsigned int length, uchar mode)
 {
     /* Don't let anyone else mess up what we're doing. */
-    asm("cli");
+    asm volatile("cli");
 
     /* Set up the DMA channel so we can use it.  This tells the DMA */
     /* that we're going to be using this channel.  (It's masked) */
@@ -88,5 +88,5 @@ void _dma_xfer(uchar DMA_channel, unsigned char page, unsigned int offset, unsig
     outportb(MaskReg[DMA_channel], DMA_channel);
 
     /* Re-enable interrupts before we leave. */
-    asm("sti");
+    asm volatile("sti");
 }

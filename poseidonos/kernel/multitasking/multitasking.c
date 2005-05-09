@@ -86,7 +86,7 @@ void multitasking_init() {
 	///load the scheduler ISR into the IDT
 	idt_interrupt_add(0x20, scheduler_isr, 0);
 	
-	asm("sti");
+	asm volatile ("sti");
 	irq_umask(IRQ_0);
 
 	while(1);	
@@ -163,7 +163,7 @@ void multitasking_process_kill(process_t *pid) {
 	struct process_queue_item *temp_queue;
 	
 	//kill process
-	asm("cli");		//disable interrupts so that no task switch occurs
+	asm volatile("cli");		//disable interrupts so that no task switch occurs
 	kfree((unsigned int*)(pid->process_esp));
 	kfree(pid);
 	
@@ -176,7 +176,7 @@ void multitasking_process_kill(process_t *pid) {
 	temp_queue->next->prev = temp_queue->prev;
 	kfree(temp_queue);
 	
-	asm("sti");		//enable task switch
+	asm volatile("sti");		//enable task switch
 }
 
 /********************************************************************************
@@ -201,7 +201,7 @@ void multitasking_process_add(process_t *pid) {
 	struct process_queue_item *current_process_queue_item;	/*holds the pointer to the entry in the system process queue*/
 
 	/*make sure that no task switch will occur :) */
-	asm("cli");
+	asm volatile("cli");
 
 	/*allocate space for the new queue item*/
 	new_queue_item = kmalloc(sizeof(struct process_queue_item));
@@ -220,7 +220,7 @@ void multitasking_process_add(process_t *pid) {
 	new_queue_item->next = next;
 	
 	/*re-enable interrupts so that task switch WILL occur*/
-	asm("sti");
+	asm volatile("sti");
 }
 
 void task_cleanup()
