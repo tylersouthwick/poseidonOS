@@ -1,4 +1,6 @@
 
+default : all
+
 BASE_URL=poseidonos.sourceforge.net
 IMG_NAME=poseidonos.img
 

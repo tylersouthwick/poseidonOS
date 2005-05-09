@@ -8,14 +8,15 @@
 #include <idt.h>
 #include <interrupt.h>
 #include <irq.h>
+#include <bios.h>
 
-idtr IDTR;
-x86_interrupt IDT[256];
+static idtr_t idtr;
+static x86_interrupt IDT[256];
 
 void idt_setup()
 {
-	IDTR.limit = 256*(sizeof(x86_interrupt)-1);
-	IDTR.base = IDT;
+	idtr.limit = 256*(sizeof(x86_interrupt)-1);
+	idtr.base = IDT;
 
 	idt_interrupt_add(0, isr00, 0);
 	idt_interrupt_add(1, isr01, 0);
@@ -50,7 +51,7 @@ void idt_setup()
 	idt_interrupt_add(31, 0, 0);
 
 	//idt_interrupt_add(0x20, timer_isr, 0);
-	idtr *IDTRptr = &IDTR;
+	idtr_t *IDTRptr = &idtr;
 
 	//remap programable interrupt controller (PIC)
 	pics_init(0x20, 0x28);

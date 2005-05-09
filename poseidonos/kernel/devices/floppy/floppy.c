@@ -5,6 +5,7 @@
 #include <devices.h>
 #include <irq.h>
 #include <dma.h>
+#include <bios.h>
 
 /***********************************************************
  * floppy.c
@@ -56,7 +57,7 @@ void floppy_init()
 	unsigned char b;
 	
 	outportb(0x70, 0x10);
-	INPORTB(c, 0x71);
+	c = inportb(0x71);
 	
 	a = c >> 4; // get the high nibble
 	b = c & 0xF; // get the low nibble by ANDing out the high nibble
@@ -103,13 +104,13 @@ void floppy_sendbyte(int byte)
 	
 	for(tmo = 0; tmo < 128; tmo++)
 	{
-		INPORTB(msr, FDC_MSR);
+		msr = inportb(FDC_MSR);
 		if ((msr & 0xC0) == 0x80)
 		{
 			outportb(FDC_DATA, byte);
 			return;
 		}
-		INPORTB(msr, 0x80);
+		msr = inportb(0x80);
 	}
 }
 
@@ -132,13 +133,12 @@ int floppy_getbyte()
 	
 	for (tmo = 0; tmo < 128; tmo ++)
 	{
-		INPORTB(msr, FDC_MSR);
+		msr = inportb(FDC_MSR);
 		if ((msr & 0xD0) == 0xD0)
 		{
-			INPORTB(msr, FDC_DATA);
-			return msr;
+			return inportb(FDC_DATA);
 		}
-		INPORTB(msr, 0x80);
+		msr = inportb(0x80);
 	}
 	
 	return -1;	/*timeout*/

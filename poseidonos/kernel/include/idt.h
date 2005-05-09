@@ -20,7 +20,7 @@ typedef struct
 {
 	unsigned short limit;				//size of IDT
 	x86_interrupt *base;				//a pointer to IDT base
-} __attribute__ ((packed)) idtr;
+} __attribute__ ((packed)) idtr_t;
 /**************************************************************************/
 
 /*******************************Prototypes*********************************/

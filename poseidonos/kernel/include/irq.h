@@ -22,11 +22,21 @@
 
 extern unsigned int irq_mask;
 
-#define irq_umask(a)\
-	asm volatile ("cli"); \
-	irq_mask |= a; \
-	asm volatile ("outb %%al,%%dx": :"d" (0x21), "a" (~(0xFF & irq_mask))); \
+static inline void irq_mask_all()
+{
+	asm volatile ("cli"); 
+	irq_mask = 0; 
+	asm volatile ("outb %%al,%%dx": :"d" (0x21), "a" (~(0xFF & irq_mask))); 
 	asm volatile ("sti");
+}
+
+static inline void irq_umask(int a)
+{
+	asm volatile ("cli"); 
+	irq_mask |= a; 
+	asm volatile ("outb %%al,%%dx": :"d" (0x21), "a" (~(0xFF & irq_mask))); 
+	asm volatile ("sti");
+}
 
 void pics_init(int pic1, int pic2);
 

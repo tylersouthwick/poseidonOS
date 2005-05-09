@@ -6,6 +6,8 @@
 #include <kdebug.h>
 
 #include <interrupt.h>
+#include <bios.h>
+
 #include <mm/paging.h>
 
 #define MASTER 0x20
@@ -62,6 +64,7 @@ void kpanic(char *error_message)
 	}
 	*/
 	asm("hlt");
+	irq_mask();
 	while(1);
 }
 
@@ -117,7 +120,7 @@ void int_14() {
 
 	//print error if not successful return
 	kprint("page fault at ");
-	put_int(read_cr2(), 0x10);
+	//put_int(read_cr2(), 0x10);
 	kprint("\n");
 
 	kpanic("Page Fault (#PF)");

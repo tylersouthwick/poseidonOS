@@ -41,7 +41,7 @@ void k_main(unsigned long magic, multiboot_info_t *mm_info) {
 	screen_set_color(SCREEN_FG_YELLOW | SCREEN_BG_BLACK);
 	kprint("PoseidonOS v0.1 testing\n\n");
 	screen_set_color(SCREEN_DEFAULT);
-	
+
 	kprint("Initilizing new GDT...");
 	gdt_init();
 	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
@@ -65,7 +65,7 @@ void k_main(unsigned long magic, multiboot_info_t *mm_info) {
 	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
 	kprint("ok\n");
 	screen_set_color(SCREEN_DEFAULT);
-	
+
 	kprint("Entering multitasking environment...\n");
 	multitasking_init();
 }

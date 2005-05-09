@@ -13,7 +13,6 @@
 #include <scheduler.h>
 #include <drivers.h>
 #include <devicemanager.h>
-#include <bios.h>
 
 #include <poseidonos.h>
 

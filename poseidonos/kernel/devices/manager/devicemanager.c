@@ -36,6 +36,10 @@ void devicemanager_init_devices()
 	kprint("floppy ");
 	screen_set_color(SCREEN_DEFAULT);
 	floppy_init();
+	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
+	kprint("keyboard ");
+	screen_set_color(SCREEN_DEFAULT);
+	keyboard_init();
 }
 
 /*******************************************************************************
