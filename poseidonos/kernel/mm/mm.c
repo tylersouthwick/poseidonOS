@@ -23,5 +23,5 @@ void mm_init(multiboot_info_t *mm_info)
 	sbrk_init();
 	
 	/*this is only a temporary fix until something is setup to allocate DMA addresses*/
-	floppy_dma_address = mm_physical_page_alloc(MM_TYPE_DMA);
+	//floppy_dma_address = mm_physical_page_alloc(MM_TYPE_DMA);
 }

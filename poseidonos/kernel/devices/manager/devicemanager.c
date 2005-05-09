@@ -2,8 +2,9 @@
 #include <kutil.h>					/*for all map related functions*/
 #include <kdebug.h>					/*for all map related functions*/
 
-#include <devicemanager.h>
-#include <devices.h>
+#include <devices/manager.h>
+#include <devices/floppy.h>
+#include <devices/keyboard.h>
 
 #include <util/map.h>
 

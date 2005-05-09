@@ -77,7 +77,7 @@ void pics_init(int pic1, int pic2)
 	outportb(PIC1 + 1, 0xFF);
 }
 
-void idt_interrupt_add(int number, void (*handler)(), unsigned int dpl)
+void idt_interrupt_add(int number, void *handler, unsigned int dpl)
 {
 	unsigned short selector = 0x08;
 	unsigned short settings = 0;

@@ -12,8 +12,10 @@
 #include <multitasking.h>
 #include <scheduler.h>
 #include <drivers.h>
-#include <devicemanager.h>
+#include <devices/manager.h>
 
 #include <poseidonos.h>
+
+void kpanic(char *);
 
 #endif

@@ -7,6 +7,7 @@
 
 #include <interrupt.h>
 #include <bios.h>
+#include <irq.h>
 
 #include <mm/paging.h>
 
@@ -64,7 +65,7 @@ void kpanic(char *error_message)
 	}
 	*/
 	asm("hlt");
-	irq_mask();
+	irq_mask_all();
 	while(1);
 }
 

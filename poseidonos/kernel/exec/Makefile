@@ -14,3 +14,7 @@ exec_wrapper.o : exec_wrapper.asm
 
 exec.a : ${EXEC_OBJS}
 	${AR} ${ARFLAGS} exec.a ${EXEC_OBJS}
+
+clean :
+	rm -f *.o
+	rm -f exec.a

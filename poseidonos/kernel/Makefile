@@ -63,5 +63,6 @@ clean:
 	cd fat; make clean
 	cd vfs; make clean
 	cd util; make clean
+	cd exec; make clean
 	rm -f *.o
 	rm -f kernel.elf

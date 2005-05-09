@@ -39,7 +39,7 @@ scheduler_isr:
 	mov [ecx], esp
 
 	;call the scheduler that will decide what thread to execute next it
-	call getCurrentProcess
+	call get_current_process
 	
 	; Exchange the stack with the new process' stack
 	; which is returned in eax by getCurrentProcess
@@ -61,4 +61,4 @@ scheduler_isr:
 
 ; global variables needed by the scheduler
 [extern current_process] 				; the pointer to the process_queue
-[extern getCurrentProcess]				; method that runs the scheduler and gets
+[extern get_current_process]		; fuction that runs the scheduler and gets

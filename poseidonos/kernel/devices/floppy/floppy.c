@@ -2,10 +2,12 @@
 #include <ktypes.h>
 #include <kdebug.h>
 
-#include <devices.h>
 #include <irq.h>
 #include <dma.h>
 #include <bios.h>
+
+#include <devices/floppy.h>
+#include <devices/manager.h>
 
 /***********************************************************
  * floppy.c
@@ -19,9 +21,7 @@
  * License: GPL (see readme or the GPL website)
  * *********************************************************/
 
-void temp_sleep(int mill);
 #define FLOPPY_SLEEP_TIME 5
-#define SLEEP(a) temp_sleep(a)
 
 /***************************global floppy variables*************************/
 static volatile bool floppy_done = false;
@@ -38,6 +38,8 @@ static drive_geometry floppy_geometry = {DG144_HEADS, DG144_TRACKS, DG144_SPT};
 static unsigned long *floppy_dma_address;
 extern int timer_count;
 /*************************end global floppy variables***********************/
+
+bool floppy_log_disk(drive_geometry *);
 
 /*******************************************************************************
  * void floppy_init()
@@ -330,7 +332,7 @@ void floppy_motor_start()
 	{
 		floppy_mtick = -1;
 		outportb(FDC_DOR, 0x1C);
-		SLEEP(FLOPPY_SLEEP_TIME);
+		sleep(FLOPPY_SLEEP_TIME);
 		floppy_motor = true;
 	}
 }
@@ -402,7 +404,7 @@ bool floppy_seek(int track)
 		return false;		///timeout
 	
 	///wait for the head to settle
-	SLEEP(FLOPPY_SLEEP_TIME);
+	sleep(FLOPPY_SLEEP_TIME);
 	
 	///make sure that seek worked
 	if ((floppy_sr0 != 0x20) || (floppy_track != track))

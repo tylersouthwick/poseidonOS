@@ -3,6 +3,8 @@
 #include <kdebug.h>
 
 #include <mm/mm.h>
+#include <mm/virtual_mem.h>
+#include <mm/sbrk.h>
 
 int page_offset;	//number of bytes offset in the page that the next block can start from
 unsigned static long *current_vpage;
@@ -11,7 +13,7 @@ void sbrk_init() {
 	page_offset = 0;
 
 	//set up a new page table entry as the first one for sbrk
-	current_vpage = (unsigned long*)mm_virtual_page_alloc(MM_TYPE_NORMAL);
+	current_vpage = (unsigned long*)mm_virtual_page_alloc();
 	/*
 	kprint("sbrk_init :: current_vpage -> ");
 	put_int(current_vpage, 0x10);

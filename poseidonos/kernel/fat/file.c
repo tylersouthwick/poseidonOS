@@ -2,8 +2,9 @@
 #include <ktypes.h>
 #include <kdebug.h>
 
+#include <devices/floppy.h>
+
 #include <fat.h>
-#include <floppy.h>
 
 #define FILE_PUTCHAR
 

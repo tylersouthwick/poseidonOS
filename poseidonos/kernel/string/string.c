@@ -2,6 +2,8 @@
 #include <ktypes.h>
 #include <kdebug.h>
 
+#include <string.h>
+
 bool strcmp(char *s1, char *s2)
 {
 	int i;

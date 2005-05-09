@@ -7,7 +7,7 @@ DEVICEMANAGER_OBJS = devicemanager.o
 compile: devicemanager.a
 
 #############################compile stuff#################################
-devicemanager.o : devicemanager.c ${KERNEL_INCLUDE}/devicemanager.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/kutil.h ${KERNEL_INCLUDE}/kdebug.h
+devicemanager.o : devicemanager.c ${KERNEL_INCLUDE}/devices/manager.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/kutil.h ${KERNEL_INCLUDE}/kdebug.h
 ###########################################################################
 
 #link and build kernel.bin

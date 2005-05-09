@@ -69,12 +69,12 @@ struct process_queue_item {
 typedef struct process_queue_item_t process_queue_item;
 
 //define prototypes for multitasking functions
-void multitasking_init();
-process_t *multitasking_process_new(void (*handler)(), char *pname, int priority);
-void multitasking_process_kill(process_t *pid);
-void multitasking_process_add(process_t *pid);
-void task_cleanup();
-void sleep(int mill);
-void pit_setup(int freq);
+void multitasking_init(void);
+process_t *multitasking_process_new(void *, char *, int);
+void multitasking_process_kill(process_t *);
+void multitasking_process_add(process_t *);
+void task_cleanup(void);
+void sleep(int);
+void pit_setup(int);
 
 #endif

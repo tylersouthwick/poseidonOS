@@ -11,8 +11,9 @@ unsigned int irq_mask=0;
  * treated much like the 'this' pointer in Java or C++.*/
 extern process_t *current_process;
 
-void shutdown();
-void show_ascii();
+void shutdown(void);
+void show_ascii(void);
+void k_main(unsigned long, multiboot_info_t *);
 
 /********************************************************************************
 * void k_main(unsigned long magic, multiboot_info_t *mm_info)
@@ -68,11 +69,6 @@ void k_main(unsigned long magic, multiboot_info_t *mm_info) {
 
 	kprint("Entering multitasking environment...\n");
 	multitasking_init();
-}
-
-void temp_sleep(int mill)
-{
-	sleep(mill);
 }
 
 void show_ascii();

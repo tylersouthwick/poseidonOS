@@ -38,16 +38,16 @@ void mm_paging_init() {
 		page_directory_table[i] = 0 | 2;
 
 	/*add pages to the page table*/
-	page_directory_table[PAGING_GET_TABLE(page_directory)] = page_directory;
+	page_directory_table[PAGING_GET_TABLE(page_directory)] = (long)page_directory;
 	page_directory_table[PAGING_GET_TABLE(page_directory)] |= 3;
 
-	page_directory_table[PAGING_GET_TABLE(page_directory_table)] = page_directory_table;
+	page_directory_table[PAGING_GET_TABLE(page_directory_table)] = (long)page_directory_table;
 	page_directory_table[PAGING_GET_TABLE(page_directory_table)] |= 3;
 
-	page_directory_table[PAGING_GET_TABLE(page_table)] = page_table;
+	page_directory_table[PAGING_GET_TABLE(page_table)] = (long)page_table;
 	page_directory_table[PAGING_GET_TABLE(page_table)] |= 3;
 
-	page_directory[PAGING_GET_DIRECTORY(page_directory)] = page_directory_table;
+	page_directory[PAGING_GET_DIRECTORY(page_directory)] = (long)page_directory_table;
 	page_directory[PAGING_GET_DIRECTORY(page_directory)] |= 3;
 
 	write_cr3(page_directory);
@@ -80,6 +80,7 @@ void *mm_paging_pde_new() {
  * inserts a pte in the current pde at the first
  * 'not present' entry
  * ************************************************************/
+/*
 void *mm_paging_pde_insert() {
 	unsigned long *current_pde, *temp_pte;
 	int i;
@@ -104,4 +105,5 @@ void *mm_paging_pde_insert() {
 	kprint("ERROR: Unable to insert a page table into the current page directory");
 	while(1);
 }
+*/
 

@@ -6,6 +6,6 @@
 #ifndef SCHEDULING_H
 #define SCHEDULING_H
 
-void scheduler_isr();
+void scheduler_isr(void);
 
 #endif

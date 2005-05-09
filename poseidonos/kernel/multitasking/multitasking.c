@@ -12,13 +12,15 @@
 #include <scheduler.h>						/*imports scheduler definitions and prototypes*/
 #include <tasks.h>								/*includes prototypes for two dummy tasks*/
 #include <irq.h>
+#include <multitasking.h>
 
 struct process_queue_item *processes;		/*the pointer to the currently running queue item*/
 process_t *current_process;
 
-extern void kernel_init();
+extern void kernel_init(void);
+void idle_loop(void);
 
-void idle_loop()
+void idle_loop(void)
 {
 	while(1);
 }
@@ -106,7 +108,7 @@ void multitasking_init() {
  * 	returns a pointer to a process structure, but doubles as a pid (process identification
  * 	descriptor).  This pointer is used to add the process to the system queue.
  * ******************************************************************************/
-process_t *multitasking_process_new(void (*handler)(), char *pname, int priority) {
+process_t *multitasking_process_new(void *handler, char *pname, int priority) {
 	process_t *temp_process;
 	unsigned int *temp_stack;
 	

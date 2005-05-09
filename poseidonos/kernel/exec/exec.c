@@ -5,6 +5,8 @@
 #include <vfs.h>
 #include <exec.h>
 
+#include <mm/virtual_mem.h>
+
 /*this is implemented in exec.asm*/
 extern void exec_asm(void *);
 

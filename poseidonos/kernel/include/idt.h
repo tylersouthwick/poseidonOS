@@ -24,10 +24,13 @@ typedef struct
 /**************************************************************************/
 
 /*******************************Prototypes*********************************/
-void idt_setup();
-void idt_interrupt_add(int number, void (*handler)(), unsigned int dpl);
-void idt_user_setup();
+void idt_setup(void);
+void idt_interrupt_add(int, void *, unsigned int);
+void idt_user_setup(void);
 /**************************************************************************/
-#define enable_ints() outportb(0x21, 0x00);
+
+#include <bios.h>
+
+#define enable_ints() outportb(0x21, 0x00)
 
 #endif

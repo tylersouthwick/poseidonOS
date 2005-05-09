@@ -4,7 +4,8 @@
 
 #include <drivers.h>
 #include <screen.h>
-#include <floppy.h>
+
+#include <devices/floppy.h>
 
 int drivers_load()
 {

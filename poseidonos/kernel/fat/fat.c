@@ -2,7 +2,8 @@
 #include <ktypes.h>
 #include <kdebug.h>
 
-#include <devices.h>
+#include <devices/floppy.h>
+
 #include <fat.h>
 
 fat_info *fat_data;

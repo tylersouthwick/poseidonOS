@@ -14,11 +14,11 @@
  * macros
  * ***********************************/
 //ADR: returns the physical address given two indexes
-#define MM_PHYSICAL_BITMAP_ADR(a,b) (((a << 3) + b) << 12)
+#define MM_PHYSICAL_BITMAP_ADR(a,b) ((((a) << 3) + (b)) << 12)
 //SP: returns the superpage index of a given physical page
-#define MM_PHYSICAL_BITMAP_SP(a) (a >> 15)
+#define MM_PHYSICAL_BITMAP_SP(a) ((a) >> 15)
 //SB: returns the subpage index of a given physical page
-#define MM_PHYSICAL_BITMAP_SB(a) ((a >> 12) % 8)
+#define MM_PHYSICAL_BITMAP_SB(a) (((a) >> 12) % 8)
 
 /**************************************
  * structures

@@ -12,7 +12,7 @@
 #include <devices/manager.h>
 #include <devices/keyboard.h>
 
-extern void keyboard_isr();
+extern void keyboard_isr(void);
 
 void keyboard_init() {
 	kprint("setting up keyboard....\n");

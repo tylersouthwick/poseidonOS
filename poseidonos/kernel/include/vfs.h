@@ -41,21 +41,21 @@ typedef struct FILE
 } FILE;
 
 /*mount prototypes*/
-int mount(char *dev, char *path);
-int umount(char *path);
-void umount_all();
-void mount_all();
+int mount(char *, char *);
+int umount(char *);
+void umount_all(void);
+void mount_all(void);
 
 /*ls prototypes*/
-vfs_entry *ls(char *path);
+vfs_entry *ls(char *);
 
 /*file prototypes*/
 #define EOF -1
 
-FILE *fopen(char *path, char *mode);
-void fclose(FILE *file);
-int fgetsize(FILE *file);
-char getchar(FILE *file);
+FILE *fopen(char *, char *);
+void fclose(FILE *);
+int fgetsize(FILE *);
+char getchar(FILE *);
 
 #endif
 

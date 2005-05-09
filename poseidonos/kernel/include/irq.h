@@ -22,7 +22,7 @@
 
 extern unsigned int irq_mask;
 
-static inline void irq_mask_all()
+static inline void irq_mask_all(void)
 {
 	asm volatile ("cli"); 
 	irq_mask = 0; 
@@ -38,6 +38,6 @@ static inline void irq_umask(int a)
 	asm volatile ("sti");
 }
 
-void pics_init(int pic1, int pic2);
+void pics_init(int, int);
 
 #endif

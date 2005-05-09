@@ -9,9 +9,9 @@ typedef struct
 	void *next;
 } map_node_t;
 
-typedef void map_add(void *map, char *key, void *value, int sizeOfValue);
-typedef char *map_get(void *map, char *key);
-typedef int map_size(void *map);
+typedef void map_add(void *, char *, void *, int);
+typedef char *map_get(void *, char *);
+typedef int map_size(void *);
 
 typedef struct map_t
 {
@@ -26,10 +26,10 @@ typedef struct map_t
 /*****************************prototypes*******************************/
 
 //LinkedList Map
-map_t *linked_list_map_create();
-void linked_list_map_add(map_t *map, char *key, void *value, int size_of_value);
-char *linked_list_map_get(map_t *map, char *key);
-int linked_list_map_size(map_t *map);
+map_t *linked_list_map_create(void);
+void linked_list_map_add(map_t *, char *, void *, int);
+char *linked_list_map_get(map_t *, char *);
+int linked_list_map_size(map_t *);
 /**********************************************************************/
 
 #endif

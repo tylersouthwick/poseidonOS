@@ -16,9 +16,10 @@ int millisecond_count = 0;
 int second_count = 0;
 int timer_count = 0;
 
-void floppy_timer();
+void floppy_timer(void);
+int get_current_process(void);
 
-int getCurrentProcess()
+int get_current_process()
 {
 	millisecond_count++;
 	if (millisecond_count > 100)

@@ -55,25 +55,25 @@ typedef struct drive_geometry {
 /***************************************end structures***************************************/
 
 /******************************************prototypes****************************************/
-void floppy_init();
-void floppy_sendbyte(int byte);
-int floppy_getbyte();
-void floppy_irq();
-void floppy_isr();
-void floppy_timer();
-bool floppy_wait(bool sensei);
-void floppy_reset();
-bool floppy_diskchange();
-void floppy_motor_start();
-void floppy_motor_stop();
-void floppy_recalibrate();
-bool floppy_seek(int track);
-bool flooppy_log_disk(drive_geometry *g);
-void floppy_block2hts(int block, int *head, int *track, int *sector);
-bool floppy_format_track(unsigned char track, drive_geometry *g);
-bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned long nosectors);
-bool floppy_block_read(int block, unsigned char *blockbuff, unsigned long nosectors);
-bool floppy_block_write(int block, unsigned char *blockbuff, unsigned long nosectors);
+void floppy_init(void);
+void floppy_sendbyte(int);
+int floppy_getbyte(void);
+void floppy_irq(void);
+void floppy_isr(void);
+void floppy_timer(void);
+bool floppy_wait(bool);
+void floppy_reset(void);
+bool floppy_diskchange(void);
+void floppy_motor_start(void);
+void floppy_motor_stop(void);
+void floppy_recalibrate(void);
+bool floppy_seek(int);
+bool flooppy_log_disk(drive_geometry *);
+void floppy_block2hts(int, int *, int *, int *);
+bool floppy_format_track(unsigned char, drive_geometry *);
+bool floppy_rw(int, unsigned char *, unsigned char, unsigned long);
+bool floppy_block_read(int, unsigned char *, unsigned long);
+bool floppy_block_write(int, unsigned char *, unsigned long);
 /***************************************end prototypes*****************************************/
 
 #endif

@@ -13,8 +13,8 @@ static unsigned char *video_mem = (unsigned char *)0xB8000;
 static int scr_x=0, scr_y=0;
 static unsigned char screen_attributes=SCREEN_FG_WHITE | SCREEN_BG_BLACK;
 
-static void kprint_str(char *str);
-void update_cursor();
+static void kprint_str(char *);
+static void update_cursor(void);
 /*****************************************************************************************/
 
 /******************************* Macros **************************/
@@ -22,14 +22,8 @@ void update_cursor();
 #define TAB 4		//how many spaces to display when given the '\t' character
 /****************************************************************/
 
-static int scr_getPos() {
+static inline int screen_get_position(void) {
 	return 2*(scr_y*80+scr_x);
-}
-
-static void scr_setPos(int num) {
-	scr_y = num/160;
-	scr_x = (num/2) % 80;
-	update_cursor();
 }
 
 static void update_cursor() {
@@ -52,8 +46,8 @@ void put_char(char c)
 		goto put_char_reset_screen;
 	}
 	
-	video_mem[scr_getPos()] = c;
-	video_mem[scr_getPos()+1] = screen_attributes;
+	video_mem[screen_get_position()] = c;
+	video_mem[screen_get_position()+1] = screen_attributes;
 	scr_x++;
 
 put_char_reset_screen:

@@ -6,11 +6,12 @@
 
 mm_physical_page_zones memory_zones;
 
-void *mm_physical_page_alloc_dma();
-void *mm_physical_page_alloc_normal();
+void *mm_physical_page_alloc_dma(void);
+void *mm_physical_page_alloc_normal(void);
 
 void mm_physical_pages_init(multiboot_info_t *mm_info) {
 	int page_count;
+	int end_of_kernel;
 
 	page_count = (mm_info->mem_upper)/4;
 
@@ -39,7 +40,6 @@ void mm_physical_pages_init(multiboot_info_t *mm_info) {
 }
 
 void *mm_physical_page_alloc(int type) {
-	int superpage_index, subpage_index, buffer;
 	long *page;
 
 	switch (type)
@@ -61,7 +61,6 @@ mm_physical_page_alloc_error:
 
 void *mm_physical_page_alloc_normal()
 {
-	void *page;
 	int superpage_index, subpage_index, buffer;
 
 	for (superpage_index=0; superpage_index<memory_zones.normal_page_count/8; superpage_index++) {
@@ -83,7 +82,6 @@ void *mm_physical_page_alloc_normal()
 
 void *mm_physical_page_alloc_dma()
 {
-	void *page;
 	int superpage_index, subpage_index, buffer;
 
 	for (superpage_index=0; superpage_index<memory_zones.dma_page_count/8; superpage_index++) {

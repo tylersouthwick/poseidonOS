@@ -90,19 +90,19 @@ typedef struct fat_entry {
 	unsigned int FileSize;
 } __attribute__ ((packed)) fat_entry;
 
-int fat_mount();
-void fat_umount();
-vfs_entry *fat_ls(char *path, int *item_count);
-vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count);
-void fat_get_sector(char *path, int *sector_start, int *sector_count, int *directory);
+int fat_mount(void);
+void fat_umount(void);
+vfs_entry *fat_ls(char *, int *);
+vfs_entry *fat_do_ls(int, int, int *);
+void fat_get_sector(char *, int *, int *, int *);
 
-FILE *fat_fopen(char *fname, char *mode);
-void fat_fclose(FILE *file);
-FILE *fat_file_create(char *fname);
-int fat_file_remove(char *fname);
-int fat_file_write(char *fname, char *data);
-int fat_file_read(char *fname, char *data);
-char fat_getchar(FILE *file);
+FILE *fat_fopen(char *, char *);
+void fat_fclose(FILE *);
+FILE *fat_file_create(char *);
+int fat_file_remove(char *);
+int fat_file_write(char *, char *);
+int fat_file_read(char *, char *);
+char fat_getchar(FILE *);
 
 #endif
 
