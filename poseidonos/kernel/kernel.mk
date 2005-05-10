@@ -28,13 +28,22 @@ compile : ${LIB_NAME}.a
 ${LIB_NAME}.a: $(C_OBJS) ${ASM_OBJS}
 	$(AR) $(ARFLAGS) ${LIB_NAME}.a $(C_OBJS) ${ASM_OBJS}
 
-clean:
-	rm -f ${C_OBJS} ${ASM_OBJS} ${LIB_NAME}.a
-
-#C dependencies created by 'make dep'
-include ${KERNEL_ROOT}/dependencies.mk
-
 #looking for a dependency that wasn't already found?
 %.o : %.asm
 	${AS} -f ${AS_FORMAT} -o $@ $?
 
+%.d : %.c
+	@set -e; rm -f $@; \
+		$(CC) -M $(CFLAGS) $< > $@.$$$$; \
+		sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+		rm -f $@.$$$$
+
+C_SRCS=$(subst .o,.c,$(C_OBJS))
+MAKEFILES_D=$(subst .c,.d,$(C_SRCS))
+include $(MAKEFILES_D)
+
+clean:
+	rm -f ${C_OBJS} ${ASM_OBJS} ${LIB_NAME}.a 
+
+depclean : clean
+	rm -f $(MAKEFILES_D)

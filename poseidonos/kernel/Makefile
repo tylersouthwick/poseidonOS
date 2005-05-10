@@ -29,21 +29,6 @@ compile:
 	cd vfs; make
 	cd util; make
 	cd exec; make
-	make kernel.elf
-
-######################################kernel.a###############################
-#kernel_wrapper.o : kernel_wrapper.asm
-#	$(AS) -f ${AS_FORMAT} -o $@ $<
-
-#exec_wrapper.o : exec_wrapper.asm
-#	$(AS) -f ${AS_FORMAT} -o $@ $<
-
-#kernel.o  : kernel.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h
-#drivers.o : drivers.c ${KERNEL_INCLUDE}/drivers.h ${KERNEL_INCLUDE}/ktypes.h
-#dma.o	  	: dma.c ${KERNEL_INCLUDE}/dma.h 
-#mount.o	  : mount.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
-#exec.o	  : exec.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
-###########################################################################
 
 ####################################System################################3
 
@@ -62,4 +47,17 @@ clean:
 	cd vfs; make clean
 	cd util; make clean
 	cd exec; make clean
+	rm -f ${C_OBJS} kernel.elf
+
+depclean:
+	cd interrupts; make depclean
+	cd mm; make depclean
+	cd multitasking; make depclean
+	cd screen; make depclean
+	cd string; make depclean
+	cd devices; make depclean
+	cd fat; make depclean
+	cd vfs; make depclean
+	cd util; make depclean
+	cd exec; make depclean
 	rm -f ${C_OBJS} kernel.elf

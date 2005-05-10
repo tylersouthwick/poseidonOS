@@ -21,6 +21,9 @@ clean:
 	cd kernel; make clean
 	cd system; make clean
 
+depclean:
+	cd kernel; make depclean
+
 poseidonos.img:
 	wget ${BASE_URL}/${IMG_NAME}
 
