@@ -1,19 +1,8 @@
-#makefile to compile devicemanager.a
+LIB_NAME = devicemanager
+C_OBJS = \
+				devicemanager.o
 
-include ../../rules.mk
+ASM_OBJS = 
 
-DEVICEMANAGER_OBJS = devicemanager.o
+include ../../kernel.mk
 
-compile: devicemanager.a
-
-#############################compile stuff#################################
-devicemanager.o : devicemanager.c ${KERNEL_INCLUDE}/devices/manager.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/kutil.h ${KERNEL_INCLUDE}/kdebug.h
-###########################################################################
-
-#link and build kernel.bin
-devicemanager.a: $(DEVICEMANAGER_OBJS)
-	$(AR) $(ARFLAGS) devicemanager.a $(DEVICEMANAGER_OBJS)
-
-clean:
-	rm -f *.o
-	rm -f devicemanager.a

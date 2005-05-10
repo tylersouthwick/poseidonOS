@@ -1,20 +1,9 @@
-#makefile to compile exec.a
-include ../rules.mk
+LIB_NAME = exec
 
-EXEC_OBJS=exec_wrapper.o exec.o
+C_OBJS = \
+				exec.o
 
-compile : exec.a
+ASM_OBJS = \
+				exec_wrapper.o
 
-#############################compile stuff#################################
-exec.o : exec.c 					${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h ../include/interrupt.h
-
-exec_wrapper.o : exec_wrapper.asm
-	$(AS) -f ${AS_FORMAT} -o $@ $<
-###########################################################################
-
-exec.a : ${EXEC_OBJS}
-	${AR} ${ARFLAGS} exec.a ${EXEC_OBJS}
-
-clean :
-	rm -f *.o
-	rm -f exec.a
+include ../kernel.mk

@@ -1,20 +1,8 @@
-#makefile to compile keyboard.a
-include ../../rules.mk
+LIB_NAME = keyboard
+C_OBJS = \
+				keyboard.o
 
-OBJS = keyboard.o keyboard_wrapper.o
-LIB_NAME = keyboard.a
+ASM_OBJS = \
+				keyboard_wrapper.o
 
-compile: ${LIB_NAME} 
-
-#################################compile stuff###############################
-keyboard.o : keyboard.c ${KERNEL_INCLUDE}/irq.h ${KERNEL_INCLUDE}/devices/manager.h ${KERNEL_INCLUDE}/devices/keyboard.h ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h 
-keyboard_wrapper.o : keyboard_wrapper.asm
-	$(AS) -f ${AS_FORMAT} -o keyboard_wrapper.o keyboard_wrapper.asm
-######################################floppy.a###############################
-${LIB_NAME}: $(OBJS)
-	$(AR) $(ARFLAGS) ${LIB_NAME} $(OBJS)
-
-clean:
-	rm -f *.o
-	rm -f ${LIB_NAME}
-###########################################################################
+include ../../kernel.mk

@@ -1,13 +1,8 @@
-#makefile to compile screen.o
-include ../rules.mk
+LIB_NAME = screen
 
-SCREEN_OBJS = screen.o
+C_OBJS = \
+				screen.o
 
-compile: screen.o
+ASM_OBJS = 
 
-###################################compile stuff##################################
-screen.o : screen.c ${KERNEL_INCLUDE}/kernel.h ${KERNEL_INCLUDE}/ktypes.h ${KERNEL_INCLUDE}/kdebug.h
-##################################################################################
-
-clean:
-	rm -f screen.o
+include ../kernel.mk
