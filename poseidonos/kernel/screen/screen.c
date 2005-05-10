@@ -53,7 +53,7 @@ void put_char(char c)
 			{
 				if (scr_y > 0)
 					scr_y--;
-				scr_x = 80;
+				scr_x = 79;
 			} else {
 				scr_x--;
 			}

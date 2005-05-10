@@ -38,7 +38,9 @@ int exec(char *exe)
 	fclose(file);
 
 	/*execute the program*/
-	exec_asm(program);
+	kprint("executing program\n");
+	//exec_asm(program);
+	kprint("executing program finished\n");
 
 	return 0;
 }
