@@ -29,6 +29,7 @@ compile:
 	cd vfs; make
 	cd util; make
 	cd exec; make
+	make kernel.elf
 
 ####################################System################################3
 
