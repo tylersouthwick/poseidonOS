@@ -32,6 +32,7 @@ compile:
 	make kernel.elf
 
 ####################################System################################3
+include kernel.mk
 
 #link and build kernel.bin
 kernel.elf: ${KERNEL_OBJS} $(KERNEL_STATIC_LIBS)

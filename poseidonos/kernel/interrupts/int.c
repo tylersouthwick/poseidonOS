@@ -121,7 +121,7 @@ void int_14() {
 
 	//print error if not successful return
 	kprint("page fault at ");
-	//put_int(read_cr2(), 0x10);
+	put_int(read_cr2(), 0x10);
 	kprint("\n");
 
 	kpanic("Page Fault (#PF)");

@@ -1,4 +1,4 @@
-LIB_NAME = exec
+LIB_NAME = multitasking
 
 C_OBJS = \
 				multitasking.o \

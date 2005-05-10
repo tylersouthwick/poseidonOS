@@ -19,10 +19,9 @@ KERNEL_INCLUDE=${KERNEL_ROOT}/include
 KERNEL_INCLUDE_DIR=-I${KERNEL_INCLUDE}
 DRIVER_INCLUDE_DIR=-I${DRIVERS_ROOT}/include
 
-KERNEL_CFLAGS = -ffreestanding -nostdlib -fno-builtins -Wall -Winline -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions  -fpic
+KERNEL_CFLAGS = -ffreestanding -nostdlib -fno-builtins -Wall -Winline -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions  
 
 CFLAGS = ${KERNEL_CFLAGS} ${KERNEL_INCLUDE_DIR} ${DRIVER_INCLUDE_DIR}
-
 
 compile : ${LIB_NAME}.a
 ${LIB_NAME}.a: $(C_OBJS) ${ASM_OBJS}

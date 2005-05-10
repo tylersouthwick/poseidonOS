@@ -408,9 +408,9 @@ user_interrupt_hook_asm:
 	mov ds, ecx
 	mov es, ecx
 	cld
-	push ecx
+	push ebx
 	call user_interrupt_hook 
-	pop ecx
+	pop ebx
 	pop gs
 	pop fs
 	pop es
