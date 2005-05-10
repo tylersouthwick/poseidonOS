@@ -37,7 +37,7 @@ void k_main(unsigned long, multiboot_info_t *);
 *   will just stop if the system is not running in 32-bit Protected Mode.
 **********************************************************************************/
 void k_main(unsigned long magic, multiboot_info_t *mm_info) {
-	//screen_clear();
+	screen_clear();
 	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
 	show_ascii();
 	screen_set_color(SCREEN_FG_YELLOW | SCREEN_BG_BLACK);
