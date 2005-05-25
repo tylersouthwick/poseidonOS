@@ -1,14 +1,14 @@
 default :
-	cd floppy; make
-	cd keyboard; make
-	cd manager; make
+	@$(MAKE) -C floppy
+	@$(MAKE) -C keyboard
+	@$(MAKE) -C manager
 
 depclean :
-	cd floppy; make depclean
-	cd keyboard; make depclean
-	cd manager; make depclean
+	@$(MAKE) -C floppy depclean
+	@$(MAKE) -C keyboard depclean
+	@$(MAKE) -C manager depclean
 
 clean :
-	cd floppy; make clean
-	cd keyboard; make clean
-	cd manager; make clean
+	@$(MAKE) -C floppy clean
+	@$(MAKE) -C keyboard clean
+	@$(MAKE) -C manager clean

@@ -3,7 +3,11 @@
 # This comes somewhat from minirighi-distrib.  I really liked his idea.
 #
 
-my $mtools_config_file=".mtoolsrc";
+my $mtools_config_file=$ENV{MTOOL_CONFIG};
+if (!defined $mtools_config_file)
+{
+	$mtools_config_file = ".mtoolsrc";
+}
 
 #####
 # command line switches
@@ -12,7 +16,6 @@ my $build_floppy = 0;
 my $clean = 0;
 
 my $floppy_image_name;
-my $directory_src;
 
 #parse the command line options
     my $usage = 1;
@@ -22,16 +25,6 @@ my $directory_src;
         if ($arg eq "--build_floppy")
 				{
 					$build_floppy = 1;
-					$usage = 0;
-				}
-				elsif ($arg eq "--copy_dir" || $arg eq "--copy_directory")
-				{
-					$directory_src = shift @ARGV;
-					if (!defined $directory_src)
-					{
-						print STDERR "you must specify a directory to copy\n";
-						exit;
-					}
 					$usage = 0;
 				}
         elsif ($arg eq "--clean")
@@ -60,7 +53,7 @@ my $directory_src;
         }
     }
 
-		if (!$clean && !($build_floppy || (defined $directory_src)))
+		if (!$clean && !$build_floppy) 
 		{
 			$usage = 1;
 		}
@@ -76,14 +69,13 @@ my $directory_src;
       print STDERR "Usage: install.sh [options] -f <image name>\n";
 			print STDERR "Options:\n";
 			print STDERR "\t--build_floppy: Generates a fat12 floppy image\n";
-			print STDERR "\t--copy_directory: copy the specified directory into the root of the floppy disk.\n";
 			print STDERR "\t--clean: delete image mtool config files\n";
       exit $usage;
     }
 
 ###
 # validate command line arguments
-if ($clean && ($build_floppy || $copy_directory))
+if ($clean && $build_floppy)
 {
 	print "--clean can not be used in conjunction with any other option\n";
 		print "--clean can not be used in conjunction with any other option\n";
@@ -102,11 +94,6 @@ if ($build_floppy)
 	&generate_mtools_config;
 	&build_floppy_image;
 	&install_grub;
-}
-
-if (defined $directory_src)
-{
-	print "copy $directory_src";
 }
 
 sub about {
@@ -168,7 +155,11 @@ sub install_grub {
 	`rm -f .grub_install_script`;
 
 	#run install script
-	$out = system("$grub --batch << .grub_install_script &> /dev/null || exit 1");
+	$out = system("$grub --batch << EOF  &> /dev/null || exit 1
+			device (fd0) $floppy_image_name
+			install (fd0)/boot/grub/stage1 (fd0) (fd0)/boot/grub/stage2 p (fd0)/boot/grub/menu.lst
+			quit
+			EOF");
 	if ($out != 0)
 	{
 		print STDERR "ERROR: something went wrong with the grub install.  Make sure that you have grub on your system and that it is either in your \$PATH or in \$GRUB\n";

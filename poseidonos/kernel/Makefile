@@ -1,3 +1,4 @@
+KERNEL_FILE=poseidon.sys
 KERNEL_STATIC_LIBS= \
 		screen/screen.a \
 		devices/manager/devicemanager.a \
@@ -19,47 +20,54 @@ KERNEL_OBJS = \
 		dma.o
 
 compile:
-	cd interrupts; make
-	cd mm; make
-	cd multitasking; make
-	cd screen; make
-	cd string; make
-	cd devices; make
-	cd fat; make
-	cd vfs; make
-	cd util; make
-	cd exec; make
-	make kernel.elf
+	@$(MAKE) -C interrupts
+	@$(MAKE) -C mm
+	@$(MAKE) -C multitasking
+	@$(MAKE) -C screen
+	@$(MAKE) -C string
+	@$(MAKE) -C devices
+	@$(MAKE) -C fat
+	@$(MAKE) -C vfs
+	@$(MAKE) -C util
+	@$(MAKE) -C exec
+	@$(MAKE) ${KERNEL_FILE}
 
 ####################################System################################3
+KERNEL_TOP="y"
 include kernel.mk
 
 #link and build kernel.bin
-kernel.elf: ${KERNEL_OBJS} $(KERNEL_STATIC_LIBS)
-	ld -Tkernel.ld -o kernel.elf $(KERNEL_OBJS) $(KERNEL_STATIC_LIBS) 
+${KERNEL_FILE}: ${KERNEL_OBJS} $(KERNEL_STATIC_LIBS)
+	@echo "(LD) ${KERNEL_FILE}"
+	@ld -Tkernel.ld -o ${KERNEL_FILE} $(KERNEL_OBJS) $(KERNEL_STATIC_LIBS) 
+	@echo
+	@echo "####################################"
+	@echo "The PoseidonOS kernel has now been built at ${KERNEL_FILE}"
+	@echo "####################################"
+	@echo
 
 clean:
-	cd interrupts; make clean
-	cd mm; make clean
-	cd multitasking; make clean
-	cd screen; make clean
-	cd string; make clean
-	cd devices; make clean
-	cd fat; make clean
-	cd vfs; make clean
-	cd util; make clean
-	cd exec; make clean
-	rm -f ${C_OBJS} kernel.elf
+	@$(MAKE) -C interrupts clean
+	@$(MAKE) -C mm clean
+	@$(MAKE) -C multitasking clean
+	@$(MAKE) -C screen clean
+	@$(MAKE) -C string clean
+	@$(MAKE) -C devices clean
+	@$(MAKE) -C fat clean
+	@$(MAKE) -C vfs clean
+	@$(MAKE) -C util clean
+	@$(MAKE) -C exec clean
+	@rm -f ${C_OBJS} ${KERNEL_FILE} 
 
 depclean:
-	cd interrupts; make depclean
-	cd mm; make depclean
-	cd multitasking; make depclean
-	cd screen; make depclean
-	cd string; make depclean
-	cd devices; make depclean
-	cd fat; make depclean
-	cd vfs; make depclean
-	cd util; make depclean
-	cd exec; make depclean
-	rm -f ${C_OBJS} kernel.elf
+	@$(MAKE) -C interrupts depclean
+	@$(MAKE) -C mm depclean
+	@$(MAKE) -C multitasking depclean
+	@$(MAKE) -C screen depclean
+	@$(MAKE) -C string depclean
+	@$(MAKE) -C devices depclean
+	@$(MAKE) -C fat depclean
+	@$(MAKE) -C vfs depclean
+	@$(MAKE) -C util depclean
+	@$(MAKE) -C exec depclean
+	@rm -f ${C_OBJS} ${KERNEL_FILE} 

@@ -35,18 +35,27 @@ CFLAGS = $(KERNEL_CFLAGS) -I$(KERNEL_INCLUDE)
 ######
 compile : $(LIB_NAME).a
 $(LIB_NAME).a: $(C_OBJS) $(ASM_OBJS)
-	$(AR) $(ARFLAGS) $(LIB_NAME).a $(C_OBJS) $(ASM_OBJS)
+	@echo "(AR) $<"
+	@$(AR) $(ARFLAGS) $(LIB_NAME).a $(C_OBJS) $(ASM_OBJS) 2>/dev/null
 
 ######
 # assembly dependencies
 ######
 %.o : %.asm
-	$(AS) -f $(AS_FORMAT) -o $@ $?
+	@echo "(AS) $<"
+	@$(AS) -f $(AS_FORMAT) -o $@ $<
 
+######
+# c files
+######
+%.o : %.c
+	@echo "(CC) $<"
+	@$(CC) $(CFLAGS) -c -o $@ $<
 ######
 # generate dependencies
 ######
 %.d : %.c
+	@echo "(DEP) $<"
 	@set -e; rm -f $@; \
 		$(CC) -M $(CFLAGS) $< > $@.$$$$; \
 		sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
@@ -54,16 +63,22 @@ $(LIB_NAME).a: $(C_OBJS) $(ASM_OBJS)
 
 C_SRCS=$(subst .o,.c,$(C_OBJS))
 MAKEFILES_D=$(subst .c,.d,$(C_SRCS))
-include $(MAKEFILES_D)
+ifneq ($(KERNEL_TOP), "y")
+-include $(MAKEFILES_D)
+endif
 
 ######
 # clean up temporary files
 ######
+ifneq ($(KERNEL_TOP), "y")
 clean:
 	rm -f $(C_OBJS) $(ASM_OBJS) $(LIB_NAME).a 
+endif
 
 ######
 # clean up ALL temporary files
 ######
+ifneq ($(KERNEL_TOP), "y")
 depclean : clean
 	rm -f $(MAKEFILES_D)
+endif

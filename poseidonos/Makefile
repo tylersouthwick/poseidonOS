@@ -1,29 +1,29 @@
 
-default : all
+default : binaries
 
 BASE_URL=poseidonos.sourceforge.net
-IMG_NAME=poseidonos.img
+IMAGE_NAME=poseidonos.img
+MTOOL_CONFIG=.mtoolconfig
 
-all: 
-	cd kernel; make
-	cd system; make
+binaries : 
+	@make -s -C kernel
+	@make -s -C system
+	@echo "Now run make install to install the binaries into a floppy image"
 
-bochs : image
-	bochs -q
-
-image: poseidonos.img
-	mount floppy/
-	cp -f kernel/kernel.elf floppy/
-	cp -f system/shell/shell.app floppy
-	umount floppy/
+bochs : install
+	@bochs -q
 
 clean:
-	cd kernel; make clean
-	cd system; make clean
+	@make -s -C kernel clean
+	@make -s -C system clean
+	@scripts/install --clean -f ${IMAGE_NAME}
 
 depclean:
-	cd kernel; make depclean
+	@make -s -C kernel depclean 
 
-poseidonos.img:
-	wget ${BASE_URL}/${IMG_NAME}
+${IMAGE_NAME} : 
+	@cd scripts;GRUB=/sbin/grub MTOOL_CONFIG=$(MTOOL_CONFIG) ./install --build_floppy -f ../${IMAGE_NAME}
 
+install : ${IMAGE_NAME}
+	@echo "(MCOPY) kernel.sys"
+	@mcopy -n -o -i ${IMAGE_NAME} kernel/poseidon.sys ::poseidon.sys
