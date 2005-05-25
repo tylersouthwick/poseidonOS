@@ -1,0 +1,7 @@
+timeout 3
+default 0
+
+title PoseidonOS
+root (fd0)
+kernel /poseidon.sys
+
