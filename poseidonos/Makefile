@@ -10,8 +10,11 @@ binaries :
 	@make -s -C system
 	@echo "Now run make install to install the binaries into a floppy image"
 
-bochs : install
-	@bochs -q
+bochs : 
+	@echo "remember to run make install before make bochs"
+	@echo
+	@echo "(BOCHS) output can be found in .bochs_out"
+	@bochs -q &> .bochs_out &
 
 clean:
 	@make -s -C kernel clean
