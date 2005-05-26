@@ -53,7 +53,7 @@ documentation and/or software.
  */
 
 #ifndef PROTOTYPES
-#define PROTOTYPES 0
+#define PROTOTYPES 1
 #endif
 
 /* POINTER defines a generic pointer type */

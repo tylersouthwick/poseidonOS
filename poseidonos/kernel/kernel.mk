@@ -72,6 +72,7 @@ endif
 ######
 ifneq ($(KERNEL_TOP), "y")
 clean:
+	@echo "(RM) $(C_OBJS) $(ASM_OBJS) $(LIB_NAME).a"
 	rm -f $(C_OBJS) $(ASM_OBJS) $(LIB_NAME).a 
 endif
 
@@ -80,5 +81,6 @@ endif
 ######
 ifneq ($(KERNEL_TOP), "y")
 depclean : clean
+	@echo "(RM) $(MAKEFILES_D)"
 	rm -f $(MAKEFILES_D)
 endif

@@ -12,9 +12,9 @@ map_t *linked_list_map_create()
 	map->count = 0;
 
 	/*setup function pointers*/
-	map->add = &linked_list_map_add;
-	map->get = &linked_list_map_get;
-	map->size = &linked_list_map_size;
+	map->add = (void *)&linked_list_map_add;
+	map->get = (void *)&linked_list_map_get;
+	map->size = (void *)&linked_list_map_size;
 
 	return map;
 }
