@@ -30,3 +30,13 @@ ${IMAGE_NAME} :
 install : ${IMAGE_NAME}
 	@echo "(MCOPY) kernel.sys"
 	@mcopy -n -o -i ${IMAGE_NAME} kernel/poseidon.sys ::poseidon.sys
+	@echo "(MCOPY) shell.app"
+	@mcopy -n -o -i ${IMAGE_NAME} system/shell.app ::shell.app
+
+all : 
+	@echo "Building binaries...."
+	@make -s binaries
+	@echo "Making image..."
+	@echo "Copying files to image.."
+	@make -s install
+	@make -s bochs

@@ -13,7 +13,7 @@ void sbrk_init() {
 	page_offset = 0;
 
 	//set up a new page table entry as the first one for sbrk
-	current_vpage = (unsigned long*)mm_virtual_page_alloc();
+	current_vpage = (unsigned long*)mm_virtual_page_alloc(1);
 	/*
 	kprint("sbrk_init :: current_vpage -> ");
 	put_int(current_vpage, 0x10);
@@ -36,7 +36,7 @@ void *sbrk(unsigned int nBytes) {
 		  but, right now, it will just allocate a new page
 		  and start from there.  Very ineffiencent*/
 	//	kprint("get a new virtual page...");
-		current_vpage = (unsigned long*)mm_virtual_page_alloc();
+		current_vpage = (unsigned long*)mm_virtual_page_alloc(1);
 //		kprint("ok\n");
 		page_offset = (int)nBytes;
 		return (void *)(current_vpage);

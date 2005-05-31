@@ -63,6 +63,7 @@ $(LIB_NAME).a: $(C_OBJS) $(ASM_OBJS)
 
 C_SRCS=$(subst .o,.c,$(C_OBJS))
 MAKEFILES_D=$(subst .c,.d,$(C_SRCS))
+
 ifneq ($(KERNEL_TOP), "y")
 -include $(MAKEFILES_D)
 endif

@@ -14,20 +14,84 @@ mm_page_header_t *base_page;
  * Allocates a new virtual page - being mapped to a physical
  * page.
  * *******************************************************/
-void *mm_virtual_page_alloc() {
+void *mm_virtual_page_alloc(int count) {
 	unsigned long *current_pde, *temp_pte;
 	int pde_index, pte_index;
 
 	current_pde = (unsigned long*)((unsigned int)read_cr3() & 0xFFFFF000);
 
-	for(pde_index=0; pde_index<1024; pde_index++) {
-		if (current_pde[pde_index] & 1) {	//is it present?
-			temp_pte = (unsigned long*)((long)current_pde[pde_index] & 0xFFFFF000);
-			for(pte_index=0; pte_index<1024; pte_index++) {
-				if (!(temp_pte[pte_index] & 1)) {
-					temp_pte[pte_index] = (unsigned long)mm_physical_page_alloc(MM_TYPE_NORMAL);
-					temp_pte[pte_index] |= 3;
-					return (void *)((pde_index << 22) + (pte_index << 12));
+	/*simple case: count==1*/
+	if (count == 1)
+	{
+		for(pde_index=0; pde_index<1024; pde_index++) {
+			if (current_pde[pde_index] & 1) {	//is it present?
+				temp_pte = (unsigned long*)((long)current_pde[pde_index] & 0xFFFFF000);
+				for(pte_index=0; pte_index<1024; pte_index++) {
+					if (!(temp_pte[pte_index] & 1)) {
+						temp_pte[pte_index] = (unsigned long)mm_physical_page_alloc(MM_TYPE_NORMAL);
+						temp_pte[pte_index] |= 3;
+						return (void *)((pde_index << 22) + (pte_index << 12));
+					}
+				}
+			}
+		}
+	} else {
+		/*this is a little tricky:
+		 * we have to find count contigous pages.  Right now, the easiest 
+		 * way to do this (also a very very inefficient way) is to scan 
+		 * through the page tables looking for a free page, then see if 
+		 * there is a free page after that, and after that, until there
+		 * is a contigous chunk of virtual pages*/
+		unsigned int temp_count = count;
+		unsigned int start_index_pte = 0;
+		unsigned int start_index_pde = 0;
+		unsigned int end_index_pte = 0;
+		unsigned int end_index_pde = 0;
+		
+		for(pde_index=0; pde_index<1024; pde_index++) {
+			if (current_pde[pde_index] & 1) {	//is it present?
+				temp_pte = (unsigned long*)((long)current_pde[pde_index] & 0xFFFFF000);
+				for(pte_index=0; pte_index<1024; pte_index++) {
+					if (!(temp_pte[pte_index] & 1)) {
+
+						if (temp_count == count)
+						{
+							start_index_pde = end_index_pde = pde_index;
+							start_index_pte = end_index_pte = pte_index;
+							temp_count--;
+							continue;
+						}
+
+						if ((end_index_pde == pde_index && end_index_pte + 1 == pte_index) || (end_index_pde + 1 == pde_index && !pte_index))
+						{
+							end_index_pte = pte_index;
+							end_index_pde = pde_index;
+							temp_count--;
+
+							if (!temp_count)
+							{
+								kprint("build pages: (");
+								put_int(start_index_pde, 10);
+								kprint(", ");
+								put_int(start_index_pte, 10);
+								kprint(") -> (");
+								put_int(end_index_pde, 10);
+								kprint(", ");
+								put_int(end_index_pte, 10);
+								kprint(")\n");
+
+								if (start_index_pde == end_index_pdt)
+								{
+									
+								}
+
+								while(1);
+							}
+						} else {
+							temp_count = count;
+							start_index_pte = start_index_pde = end_index_pte = end_index_pde = 0;
+						}
+					}
 				}
 			}
 		}
@@ -40,42 +104,10 @@ void *mm_virtual_page_alloc() {
 }
 
 /*********************************************************
- * void *mm_virtual_page_alloc_multiple(int count)
+ * void *mm_virtual_page_free()
  *
- * Allocates a count virtual pages
+ * frees a mapped virtual page
  * *******************************************************/
-void *mm_virtual_page_alloc_multiple(int count) {
-				/*
-	unsigned long *current_pde, *temp_pte;
-	int pde_index, pte_index;
-
-	current_pde = (unsigned long*)((unsigned int)read_cr3() & 0xFFFFF000);
-
-	for(pde_index=0; pde_index<1024; pde_index++) {
-		if (current_pde[pde_index] & 1) {	//is it present?
-			temp_pte = (unsigned long*)((long)current_pde[pde_index] & 0xFFFFF000);
-			for(pte_index=0; pte_index<1024; pte_index++) {
-				if (!(temp_pte[pte_index] & 1)) {
-					temp_pte[pte_index] = (unsigned long)mm_physical_page_alloc(MM_TYPE_NORMAL);
-					temp_pte[pte_index] |= 3;
-					return (void *)((pde_index << 22) + (pte_index << 12));
-				}
-			}
-		}
-	}
-
-	kprint("ERROR: mm_virtual_page_alloc()");
-	asm volatile ("cli");
-	asm volatile ("hlt");
-	while(1);
-	*/
-	kprint("allocating ");
-	put_int(count, 10);
-	kprint(" pages...");
-
-	kprint("ok!\n");
-	return (void*)0;
-}
 
 void mm_virtual_page_free(void *v_addr) {
 	unsigned long *pde,*pte;

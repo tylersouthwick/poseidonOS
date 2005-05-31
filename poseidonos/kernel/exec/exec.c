@@ -23,12 +23,7 @@ int exec(char *exe)
 		return -1;
 
 	//get a virtual page for this process in userspace
-	program = mm_virtual_page_alloc();
-	/*
-	kprint("allocating userspace address: ");
-	put_int(program, 16);
-	kprint("\n");
-	*/
+	program = mm_virtual_page_alloc(1);
 
 	/*copy the buffer into a buffer*/
 	program = kmalloc(fgetsize(file));
@@ -39,7 +34,7 @@ int exec(char *exe)
 
 	/*execute the program*/
 	kprint("executing program\n");
-	//exec_asm(program);
+	exec_asm(program);
 	kprint("executing program finished\n");
 
 	return 0;
