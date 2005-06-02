@@ -3,6 +3,7 @@
 
 #include <vfs.h>
 #include <exec.h>
+#include <mm/virtual_mem.h>
 
 /*this is for the system as a whole so that the current IRQ mask can be tracked*/
 unsigned int irq_mask=0;
@@ -12,8 +13,9 @@ unsigned int irq_mask=0;
 extern process_t *current_process;
 
 void shutdown(void);
-void show_ascii(void);
+static inline void show_ascii(void);
 void k_main(unsigned long, multiboot_info_t *);
+void kernel_init(void);
 
 /********************************************************************************
 * void k_main(unsigned long magic, multiboot_info_t *mm_info)
@@ -72,8 +74,6 @@ void k_main(unsigned long magic, multiboot_info_t *mm_info) {
 	multitasking_init();
 }
 
-void show_ascii();
-
 /***************************************************************
  * void kernel_init()
  * 
@@ -130,9 +130,15 @@ void kernel_init() {
 		kprint("unable to find /shell.app\n");
 
 	{
-		void *test;
+		char *test;
+		int i;
 		kprint("testing multiple page alloc....");
 		test = mm_virtual_page_alloc(5);
+		kprint("allocated ");
+		put_int((int)test,0x10);
+		kprint("....");
+		for (i=0; i<(5*4096); i++)
+			test[i] = 0x8F;
 		kprint("ok\n");
 	}
 
@@ -140,7 +146,7 @@ void kernel_init() {
 	shutdown();
 }
 
-void show_ascii()
+static inline void show_ascii()
 {
 	kprint("PPPP  OOOO  SSSS  EEEE  IIIII  DDDD   OOOO  N     N  OOOO  SSSS\n");
 	kprint("P  P  O  O  S     E       I    D   D  O  O  N N   N  O  O  S\n");

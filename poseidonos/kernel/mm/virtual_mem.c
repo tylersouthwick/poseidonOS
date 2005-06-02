@@ -70,19 +70,18 @@ void *mm_virtual_page_alloc(int count) {
 
 							if (!temp_count)
 							{
-								kprint("build pages: (");
-								put_int(start_index_pde, 10);
-								kprint(", ");
-								put_int(start_index_pte, 10);
-								kprint(") -> (");
-								put_int(end_index_pde, 10);
-								kprint(", ");
-								put_int(end_index_pte, 10);
-								kprint(")\n");
-
-								if (start_index_pde == end_index_pdt)
+								if (start_index_pde == end_index_pde)
 								{
-									
+									int i;
+									unsigned long *temp_pte = (unsigned long *)((long)current_pde[start_index_pde] & 0xFFFFF000);
+									for(i=start_index_pte; i <= end_index_pte; i++)
+									{
+										unsigned long addr = (unsigned long)mm_physical_page_alloc(MM_TYPE_NORMAL);
+
+										temp_pte[i] = addr;
+										temp_pte[i] |= 3;
+									}
+									return (void *)((start_index_pde << 22) + (start_index_pte << 12));
 								}
 
 								while(1);

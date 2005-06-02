@@ -21,7 +21,7 @@ KERNEL_INCLUDE=${KERNEL_ROOT}/include
 KERNEL_INCLUDE_DIR=-I${KERNEL_INCLUDE}
 DRIVER_INCLUDE_DIR=-I${DRIVERS_ROOT}/include
 
-KERNEL_CFLAGS = -ffreestanding -nostdlib -fno-builtins -Wall -Winline -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions
+KERNEL_CFLAGS = -ffreestanding -nostdlib -fno-builtins -Wall -Winline -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions -Os
 
 CFLAGS = ${KERNEL_CFLAGS} ${KERNEL_INCLUDE_DIR} ${DRIVER_INCLUDE_DIR}
 

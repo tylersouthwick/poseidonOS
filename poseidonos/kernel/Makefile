@@ -57,7 +57,8 @@ clean:
 	@$(MAKE) -C vfs clean
 	@$(MAKE) -C util clean
 	@$(MAKE) -C exec clean
-	@rm -f ${C_OBJS} ${KERNEL_FILE} 
+	@echo "(RM) ${KERNEL_OBJS} ${KERNEL_FILE}"
+	@rm -f ${KERNEL_OBJS} ${KERNEL_FILE} 
 
 depclean:
 	@$(MAKE) -C interrupts depclean
@@ -70,4 +71,5 @@ depclean:
 	@$(MAKE) -C vfs depclean
 	@$(MAKE) -C util depclean
 	@$(MAKE) -C exec depclean
-	@rm -f ${C_OBJS} ${KERNEL_FILE} 
+	@echo "(RM) ${KERNEL_OBJS} ${KERNEL_FILE}"
+	@rm -f ${KERNEL_OBJS} ${KERNEL_FILE} 
