@@ -9,12 +9,17 @@
 mm_page_header_t *base_page;
 
 /*********************************************************
- * void *mm_virtual_page_alloc()
+ * void *mm_virtual_page_alloc(page_t *page)
  *
  * Allocates a new virtual page - being mapped to a physical
- * page.
+ * page.  page->count must be specified (>0) and tells how
+ * many contigous pages to allocate.  If it is less than zero,
+ * then it is assumed to be one and changed accordingly.
+ *
+ * Returns: positive integer (address) on success
+ * 					zero (0) on failure
  * *******************************************************/
-void mm_virtual_page_alloc(page_t* page) {
+unsigned long *mm_virtual_page_alloc(page_t* page) {
 	unsigned long *current_pde, *temp_pte;
 	int pde_index, pte_index;
 	int count = page->count;
@@ -33,7 +38,7 @@ void mm_virtual_page_alloc(page_t* page) {
 						temp_pte[pte_index] |= 3;
 						
 						page->address = mm_convert_virtual_address(pde_index, pte_index);
-						return;
+						return page->address;
 					}
 				}
 			}
@@ -85,7 +90,7 @@ void mm_virtual_page_alloc(page_t* page) {
 										temp_pte[i] |= 3;
 									}
 									page->address = mm_convert_virtual_address(start_index_pde, start_index_pte);
-									return;
+									return page->address;
 								}
 
 								while(1);
@@ -100,10 +105,7 @@ void mm_virtual_page_alloc(page_t* page) {
 		}
 	}
 
-	kprint("ERROR: mm_virtual_page_alloc() :: reached end of function");
-	asm volatile ("cli");
-	asm volatile ("hlt");
-	while(1);
+	return (unsigned long*)0;
 }
 
 /*********************************************************
@@ -111,18 +113,8 @@ void mm_virtual_page_alloc(page_t* page) {
  *
  * frees a mapped virtual page
  * *******************************************************/
-
-void mm_virtual_page_free(page_t *page) {
-				/*
-	unsigned long *pde,*pte;
-
-	pde = (unsigned long *)read_cr3();
-
-	pte = (unsigned long *)pde[0];
-	pte = (unsigned long *)((unsigned int)pte & 0xFFFFF000);
-	pte[((int)page->address)/4096] &= 0xFFFFFFFC;
-	*/
+int mm_virtual_page_free(page_t *page) {
 	kprint("WARNING :: mm_virtual_page_free is not implemented\n");
-	return;	
+	return -1;
 }
 

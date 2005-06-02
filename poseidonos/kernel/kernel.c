@@ -13,7 +13,6 @@ unsigned int irq_mask=0;
 extern process_t *current_process;
 
 void shutdown(void);
-static inline void show_ascii(void);
 void k_main(unsigned long, multiboot_info_t *);
 void kernel_init(void);
 
@@ -40,8 +39,6 @@ void kernel_init(void);
 **********************************************************************************/
 void k_main(unsigned long magic, multiboot_info_t *mm_info) {
 	screen_clear();
-	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
-	show_ascii();
 	screen_set_color(SCREEN_FG_YELLOW | SCREEN_BG_BLACK);
 	kprint("PoseidonOS v0.1 testing\n\n");
 	screen_set_color(SCREEN_DEFAULT);
@@ -131,15 +128,6 @@ void kernel_init() {
 
 	/*shutdown the system when everything is done*/
 	shutdown();
-}
-
-static inline void show_ascii()
-{
-	kprint("PPPP  OOOO  SSSS  EEEE  IIIII  DDDD   OOOO  N     N  OOOO  SSSS\n");
-	kprint("P  P  O  O  S     E       I    D   D  O  O  N N   N  O  O  S\n");
-	kprint("PPPP  O  O  SSSS  EEE     I    D   D  O  O  N  N  N  O  O  SSSS\n");
-	kprint("P     O  O     S  E       I    D   D  O  O  N   N N  O  O     S\n");
-	kprint("P     OOOO  SSSS  EEEE  IIIII  DDDD   OOOO  N     N  OOOO  SSSS\n");
 }
 
 void shutdown()

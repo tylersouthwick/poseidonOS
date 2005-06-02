@@ -6,8 +6,8 @@ typedef struct page_t {
 	int count;
 } page_t;
 
-void mm_virtual_page_alloc(page_t*);
-void mm_virtual_page_free(page_t*);
+unsigned long *mm_virtual_page_alloc(page_t*);
+int mm_virtual_page_free(page_t*);
 
 static inline unsigned long *mm_convert_virtual_address(int pde, int pte)
 {
