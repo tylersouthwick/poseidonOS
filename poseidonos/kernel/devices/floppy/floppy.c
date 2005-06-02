@@ -47,7 +47,6 @@ bool floppy_log_disk(drive_geometry *);
  * This is where the floppy driver is initilized and where the floppy device(s)
  * are registered with the system.
  * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	November 27, 2004
  * *****************************************************************************/
 void floppy_init()
@@ -125,7 +124,6 @@ void floppy_sendbyte(int byte)
  * Return Value:
  * 	This returns the byte that is read from the FDC
  * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	December 31, 2004
  * *****************************************************************************/
 int floppy_getbyte()
@@ -245,7 +243,6 @@ bool floppy_wait(bool sensei)
  * 
  * This resets the floppy (duh!) into a known condition.
  * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	December 31, 2004
  * *****************************************************************************/
 void floppy_reset()
@@ -263,15 +260,8 @@ void floppy_reset()
 	
 	/*the reset triggered an interrupt, wait for it to be handled*/
 	floppy_done = true;
-#ifdef DEBUG_FLOPPY
-	kprint("\nwaiting for floppy...");
-#endif
 
 	floppy_wait(true);
-
-#ifdef DEBUG_FLOPPY
-	kprint("done\n");
-#endif
 	
 	/*specify driv timings*/
 	floppy_sendbyte(CMD_SPECIFY);
@@ -279,26 +269,8 @@ void floppy_reset()
 	floppy_sendbyte(0x02);
 	
 	/*clear the "disk change" status */
-#ifdef DEBUG_FLOPPY
-	kprint("floppy is seeking...");
-#endif
-
 	floppy_seek(1);
-
-#ifdef DEBUG_FLOPPY
-	kprint("done\n");
-#endif
-	
-#ifdef DEBUG_FLOPPY
-	kprint("floppy is being calibrated...");
-#endif
-
 	floppy_recalibrate();
-
-#ifdef DEBUG_FLOPPY
-	kprint("done\n");
-#endif
-	
 	floppy_dchange = false;
 }
 
@@ -310,7 +282,6 @@ void floppy_reset()
  * Return value:
  * 	This returns whether or not the flooppy disk has changed.
  * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	December 31, 2004
  * *****************************************************************************/
 bool floppy_diskchange()
@@ -342,7 +313,6 @@ void floppy_motor_start()
  * 
  * This stop the motor.
  * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	December 31, 2004
  * *****************************************************************************/
 void floppy_motor_stop()
@@ -356,7 +326,6 @@ void floppy_motor_stop()
  * 
  * This recalibrates the FDC.
  * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	December 31, 2004
  * *****************************************************************************/
 void floppy_recalibrate()
@@ -385,7 +354,6 @@ void floppy_recalibrate()
  * 	1) int track
  * 		This is the track that we want to seek to.
  * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	December 31, 2004
  * *****************************************************************************/
 bool floppy_seek(int track)
@@ -418,7 +386,6 @@ bool floppy_seek(int track)
  * 
  * This checks the drive geometry.  This should be called after every disk change
  * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	December 31, 2004
  * *****************************************************************************/
 bool floppy_log_disk(drive_geometry *g)
@@ -477,7 +444,6 @@ bool floppy_log_disk(drive_geometry *g)
  * 	2) int *track
  * 	3) int *sector
  * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	December 31, 2004
  * *****************************************************************************/
 void floppy_block2hts(int block, int *head, int *track, int *sector)
@@ -487,16 +453,11 @@ void floppy_block2hts(int block, int *head, int *track, int *sector)
 	*sector = block % floppy_geometry.spt + 1;
 }
 
-/*bool floppy_format_track(unsigned char track, drive_geometry *g)
-{
-	
-}*/
-
 /*******************************************************************************
  * bool floppy_rw(int block, unsigned char *blockbuff, 
  * 					unsigned char read, unsigned long nosectors)
  * 
- * Since the read and write to a floppy disk is not that much different.  Most of
+ * Since the read and write to a floppy disk is not that much different, most of
  * the code is the same.  The only difference is dependent on what the 'read' 
  * variable is set as.
  * 
@@ -515,7 +476,6 @@ void floppy_block2hts(int block, int *head, int *track, int *sector)
  * Return value:
  * 	This returns where or not the read/write was successfull.
  * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	December 31, 2004
  * *****************************************************************************/
 bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned long nosectors)
@@ -535,15 +495,9 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
 	floppy_motor_start();
 	
 	if (!read && blockbuff)
-	{
 		///copy data from the data buffer into the track buffer
 		for (copycount=0; copycount<(nosectors*512); copycount++)
-		{
-			*p_track_buffer = *p_block_buffer;
-			p_block_buffer++;
-			p_track_buffer++;
-		}
-	}
+			*(p_track_buffer++) = *(p_block_buffer++);
 	
 	for (tries = 0; tries < 3; tries++)
 	{
@@ -641,7 +595,6 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
  * 	3) unsigned long nosectors
  * 		How many sectors do we want to read in?
  * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	December 31, 2004
  * *****************************************************************************/
 bool floppy_block_read(int block, unsigned char *blockbuff, unsigned long nosectors)
@@ -662,6 +615,7 @@ bool floppy_block_read(int block, unsigned char *blockbuff, unsigned long nosect
 			result = floppy_rw(block+loop, blockbuff+(loop*512), true, 1);
 		return result;
 	}
+
 	return floppy_rw(block, blockbuff, true, nosectors);
 }
 /*******************************************************************************
@@ -677,8 +631,6 @@ bool floppy_block_read(int block, unsigned char *blockbuff, unsigned long nosect
  * 	2) unsigned char *blockbuff
  * 		The buffer to read from when writing
  * 
- * 
- * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	December 31, 2004
  * *****************************************************************************/
 bool floppy_block_write(int block, unsigned char *blockbuff, unsigned long nosectors)
