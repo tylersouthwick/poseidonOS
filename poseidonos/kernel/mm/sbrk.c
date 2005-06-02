@@ -7,22 +7,14 @@
 #include <mm/sbrk.h>
 
 int page_offset;	//number of bytes offset in the page that the next block can start from
-unsigned static long *current_vpage;
+static page_t current_vpage;
 
 void sbrk_init() {
 	page_offset = 0;
 
 	//set up a new page table entry as the first one for sbrk
-	current_vpage = (unsigned long*)mm_virtual_page_alloc(1);
-	/*
-	kprint("sbrk_init :: current_vpage -> ");
-	put_int(current_vpage, 0x10);
-	kprint("\n");
-	kprint("testing....");
-	page_offset = current_vpage[0];
-	kprint("ok\n");
-	page_offset = 0;
-	*/
+	current_vpage.count = 1; 
+	mm_virtual_page_alloc(&current_vpage);
 }
 
 void *sbrk(unsigned int nBytes) {
@@ -35,24 +27,16 @@ void *sbrk(unsigned int nBytes) {
 		/*eventually this will create a continuous block
 		  but, right now, it will just allocate a new page
 		  and start from there.  Very ineffiencent*/
-	//	kprint("get a new virtual page...");
-		current_vpage = (unsigned long*)mm_virtual_page_alloc(1);
-//		kprint("ok\n");
+		mm_virtual_page_alloc(&current_vpage);
 		page_offset = (int)nBytes;
-		return (void *)(current_vpage);
+		return (void *)(current_vpage.address);
 	} else {
 		void *addr;
 
 		//just increase the offset counter
 		offset_buffer = page_offset;
 		page_offset += (int)nBytes;
-		addr = (void *)((int)current_vpage + offset_buffer);
-
-		/*
-		kprint("addr: ");
-		put_int(addr, 0x10);
-		kprint("\n");
-		*/
+		addr = (void *)((unsigned long)(current_vpage.address) + offset_buffer);
 
 		return addr;
 	}

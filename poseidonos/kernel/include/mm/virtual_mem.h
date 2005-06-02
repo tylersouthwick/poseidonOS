@@ -1,8 +1,13 @@
 #ifndef VIRTUAL_MEM_H
 #define VIRTUAL_MEM_H
 
-void *mm_virtual_page_alloc(int);
-void mm_virtual_page_free(void *);
+typedef struct page_t {
+	unsigned long *address;
+	int count;
+} page_t;
+
+void mm_virtual_page_alloc(page_t*);
+void mm_virtual_page_free(page_t*);
 
 static inline unsigned long *mm_convert_virtual_address(int pde, int pte)
 {

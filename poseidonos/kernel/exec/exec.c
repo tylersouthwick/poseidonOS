@@ -16,6 +16,7 @@ int exec(char *exe)
 	char ch;
 	char *program;
 	int i = 0;
+	page_t page;
 
 	file = fopen(exe, "r");
 
@@ -23,10 +24,11 @@ int exec(char *exe)
 		return -1;
 
 	//get a virtual page for this process in userspace
-	program = mm_virtual_page_alloc(1);
+	page.count = 1;
+	mm_virtual_page_alloc(&page);
+	program = (char *)page.address;
 
 	/*copy the buffer into a buffer*/
-	program = kmalloc(fgetsize(file));
 	while ((ch  = getchar(file)) != EOF)
 		program[i++] = ch;
 
@@ -36,6 +38,8 @@ int exec(char *exe)
 	kprint("executing program\n");
 	exec_asm(program);
 	kprint("executing program finished\n");
+
+	mm_virtual_page_free(&page);
 
 	return 0;
 }

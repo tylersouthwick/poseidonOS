@@ -14,9 +14,10 @@ mm_page_header_t *base_page;
  * Allocates a new virtual page - being mapped to a physical
  * page.
  * *******************************************************/
-void *mm_virtual_page_alloc(int count) {
+void mm_virtual_page_alloc(page_t* page) {
 	unsigned long *current_pde, *temp_pte;
 	int pde_index, pte_index;
+	int count = page->count;
 
 	current_pde = (unsigned long*)((unsigned int)read_cr3() & 0xFFFFF000);
 
@@ -30,7 +31,9 @@ void *mm_virtual_page_alloc(int count) {
 					if (!(temp_pte[pte_index] & 1)) {
 						temp_pte[pte_index] = (unsigned long)mm_physical_page_alloc(MM_TYPE_NORMAL);
 						temp_pte[pte_index] |= 3;
-						return (void *)((pde_index << 22) + (pte_index << 12));
+						
+						page->address = mm_convert_virtual_address(pde_index, pte_index);
+						return;
 					}
 				}
 			}
@@ -81,7 +84,8 @@ void *mm_virtual_page_alloc(int count) {
 										temp_pte[i] = addr;
 										temp_pte[i] |= 3;
 									}
-									return (void *)((start_index_pde << 22) + (start_index_pte << 12));
+									page->address = mm_convert_virtual_address(start_index_pde, start_index_pte);
+									return;
 								}
 
 								while(1);
@@ -96,7 +100,7 @@ void *mm_virtual_page_alloc(int count) {
 		}
 	}
 
-	kprint("ERROR: mm_virtual_page_alloc()");
+	kprint("ERROR: mm_virtual_page_alloc() :: reached end of function");
 	asm volatile ("cli");
 	asm volatile ("hlt");
 	while(1);
@@ -108,14 +112,17 @@ void *mm_virtual_page_alloc(int count) {
  * frees a mapped virtual page
  * *******************************************************/
 
-void mm_virtual_page_free(void *v_addr) {
+void mm_virtual_page_free(page_t *page) {
+				/*
 	unsigned long *pde,*pte;
 
 	pde = (unsigned long *)read_cr3();
 
 	pte = (unsigned long *)pde[0];
 	pte = (unsigned long *)((unsigned int)pte & 0xFFFFF000);
-	pte[((int)v_addr)/4096] &= 0xFFFFFFFC;
+	pte[((int)page->address)/4096] &= 0xFFFFFFFC;
+	*/
+	kprint("WARNING :: mm_virtual_page_free is not implemented\n");
 	return;	
 }
 

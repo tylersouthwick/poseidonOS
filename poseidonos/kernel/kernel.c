@@ -129,19 +129,6 @@ void kernel_init() {
 	if (status == -1)
 		kprint("unable to find /shell.app\n");
 
-	{
-		char *test;
-		int i;
-		kprint("testing multiple page alloc....");
-		test = mm_virtual_page_alloc(5);
-		kprint("allocated ");
-		put_int((int)test,0x10);
-		kprint("....");
-		for (i=0; i<(5*4096); i++)
-			test[i] = 0x8F;
-		kprint("ok\n");
-	}
-
 	/*shutdown the system when everything is done*/
 	shutdown();
 }
