@@ -26,8 +26,7 @@ compile:
 	@$(MAKE) -C screen
 	@$(MAKE) -C string
 	@$(MAKE) -C devices
-	@$(MAKE) -C fat
-	@$(MAKE) -C vfs
+	@$(MAKE) -C fs
 	@$(MAKE) -C util
 	@$(MAKE) -C exec
 	@$(MAKE) ${KERNEL_FILE}
@@ -53,8 +52,7 @@ clean:
 	@$(MAKE) -C screen clean
 	@$(MAKE) -C string clean
 	@$(MAKE) -C devices clean
-	@$(MAKE) -C fat clean
-	@$(MAKE) -C vfs clean
+	@$(MAKE) -C fs clean
 	@$(MAKE) -C util clean
 	@$(MAKE) -C exec clean
 	@echo "(RM) ${KERNEL_OBJS} ${KERNEL_FILE}"
@@ -67,8 +65,7 @@ depclean:
 	@$(MAKE) -C screen depclean
 	@$(MAKE) -C string depclean
 	@$(MAKE) -C devices depclean
-	@$(MAKE) -C fat depclean
-	@$(MAKE) -C vfs depclean
+	@$(MAKE) -C fs depclean
 	@$(MAKE) -C util depclean
 	@$(MAKE) -C exec depclean
 	@echo "(RM) ${KERNEL_OBJS} ${KERNEL_FILE}"

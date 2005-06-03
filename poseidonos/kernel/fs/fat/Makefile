@@ -7,4 +7,4 @@ C_OBJS = \
 
 ASM_OBJS = 
 
-include ../kernel.mk
+include ../../kernel.mk
