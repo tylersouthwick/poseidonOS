@@ -79,9 +79,10 @@ typedef struct fat_entry {
 		unsigned short month:4;
 		unsigned short:7;
 	};
-#endif
+#else
 	unsigned short CrtTime;
 	unsigned short CrtDate;
+#endif
 	unsigned short LstAccDate;
 	unsigned short FstClusHI;
 	unsigned short WrtTime;

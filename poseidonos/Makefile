@@ -32,6 +32,8 @@ install : ${IMAGE_NAME}
 	@mcopy -n -o -i ${IMAGE_NAME} kernel/poseidon.sys ::poseidon.sys
 	@echo "(MCOPY) shell.app"
 	@mcopy -n -o -i ${IMAGE_NAME} system/shell.app ::shell.app
+	@echo "(MCOPY) test.txt"
+	@mcopy -n -o -i ${IMAGE_NAME} test.txt ::test.txt
 
 all : 
 	@echo "Building binaries...."

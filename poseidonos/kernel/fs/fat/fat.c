@@ -6,10 +6,10 @@
 
 #include <fat.h>
 
-fat_info *fat_data;
-int FATSz;
-int fat_root_sector_start;
-int fat_root_sector_count;
+static fat_info *fat_data;
+static int FATSz;
+static int fat_root_sector_start;
+static int fat_root_sector_count;
 
 unsigned static inline int fat_cluster_to_sector(unsigned int cluster_num)
 {

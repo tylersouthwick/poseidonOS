@@ -26,9 +26,6 @@ FILE *fat_fopen(char *fname, char *mode)
 	file->size = entry->size;
 	kfree(entry);
 
-	if (file->size > 512)
-		file->size = 512;
-
 	file->data = kmalloc(file->size);
 	file->offset = 0;
 
@@ -36,10 +33,8 @@ FILE *fat_fopen(char *fname, char *mode)
 	{
 		char *read_buffer;
 
-		read_buffer = kmalloc(512);
+		read_buffer = file->data;
 		floppy_block_read(sector_start, read_buffer, 1);
-
-		memcpy(file->data, read_buffer, file->size);
 
 		return file;
 	} 
