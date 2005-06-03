@@ -8,8 +8,8 @@ KERNEL_STATIC_LIBS= \
 		interrupts/interrupts.a \
 		multitasking/multitasking.a \
 		exec/exec.a \
-		vfs/vfs.a \
-		fat/fat.a \
+		fs/vfs/vfs.a \
+		fs/fat/fat.a \
 		util/util.a \
 		string/string.a
 
