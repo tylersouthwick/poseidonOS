@@ -550,7 +550,7 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
 		///wait for commmand completion
 		if (!floppy_wait(true))
 		{
-			kprint("Timed out, trying operation again after rest\n");
+			kprint("Timed out, trying operation again after reset\n");
 			floppy_reset();
 			return floppy_rw(block, blockbuff, read, nosectors);
 		}
@@ -599,25 +599,9 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
  * *****************************************************************************/
 bool floppy_block_read(int block, unsigned char *blockbuff, unsigned long nosectors)
 {
-	int track=0;
-	int sector=0;
-	int head=0;
-	int track2=0;
-	int result=0;
-	int loop=0;
-	
-	floppy_block2hts(block, &head, &track, &sector);
-	floppy_block2hts(block+nosectors, &head, &track2, &sector);
-	
-	if (track != track2)
-	{
-		for (loop=0; loop<nosectors; loop++)
-			result = floppy_rw(block+loop, blockbuff+(loop*512), true, 1);
-		return result;
-	}
-
 	return floppy_rw(block, blockbuff, true, nosectors);
 }
+
 /*******************************************************************************
  * bool floppy_block_write(int block, unsigned char *blockbuff, 
  * 							unsigned long nosectors)

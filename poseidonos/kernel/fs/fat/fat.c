@@ -10,14 +10,16 @@ static fat_info *fat_data;
 static int FATSz;
 static int fat_root_sector_start;
 static int fat_root_sector_count;
+static FAT fat;
 
 unsigned static inline int fat_cluster_to_sector(unsigned int cluster_num)
 {
-	unsigned int sector;
-	sector = cluster_num - 2;
-	sector += 33;
+	return cluster_num + 31;
+}
 
-	return sector;
+unsigned static inline int fat_sector_to_cluster(unsigned int sector)
+{
+	return sector - 31;
 }
 
 void fat_get_sector(char *origPath, int *sector_start, int *sector_count, int *directory)
@@ -124,11 +126,6 @@ vfs_entry *fat_ls(char *path, int *item_count)
 	int isDirectory;
 		
 	fat_get_sector(path, &sector_start, &sector_count, &isDirectory);
-#ifdef DEBUG_FAT
-	kprint("sector_start: ");
-	put_int(sector_start,10);
-	kprint("\n");
-#endif
 
 	if (sector_start < 0)
 	{
@@ -266,10 +263,61 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 
 		fat_counter++;
 	}
+
 	///clean up memory
 	kfree(fat_entries);
 
 	return vfs_entries;
+}
+
+int fat_get_next_cluster(int cluster)
+{
+	int fat_sector_number;
+	int fat_offset;
+	u16 fat12_cluster_entry_value;
+	u8 *fat_buffer;
+
+	cluster = fat_sector_to_cluster(cluster);
+	fat_offset = cluster + (cluster / 2);
+
+	fat_sector_number = fat_data->RsvdSecCnt + (fat_offset / fat_data->BytsPerSec);
+	fat_offset %= fat_data->BytsPerSec;
+
+	kprint("fat_sector_number: ");
+	put_int(fat_sector_number, 10);
+	kprint("\tfat_offset: ");
+	put_int(fat_offset, 10);
+	kprint("\n");
+
+	/*we elliminate the need to do a boundary case check
+	 * by reading in the 2 consecutive sectors*/
+	fat_buffer = kmalloc(1024);
+	floppy_block_read(fat_sector_number, fat_buffer, 2);
+	
+	fat12_cluster_entry_value = *((u16 *) fat_buffer[fat_offset]);
+
+	if (cluster & 1)
+		fat12_cluster_entry_value >>= 4;
+	else
+		fat12_cluster_entry_value &= 0x0FFF;
+
+	kprint("fat12_cluster_entry_value: ");
+	put_int(fat12_cluster_entry_value, 0x10);
+
+	kfree(fat_buffer);
+
+	fat_buffer = kmalloc(512);
+	//floppy_block_read(fat12_cluster_entry_value, fat_buffer, 1);
+
+	/*
+	{
+		int i;
+		for (i=0; i<512; i++)
+			put_char(fat_buffer[i]);
+	}
+	*/
+
+	return -1;
 }
 
 int fat_mount()
@@ -290,7 +338,7 @@ int fat_mount()
 	if (fat_data->FATSz16 != 0)
 		FATSz = fat_data->FATSz16;
 	else
-		FATSz = 0;//fat_data->FATSz32;
+		FATSz = 0;
 		
 	fat_root_sector_count = ((fat_data->RootEntCnt * 32) + (fat_data->BytsPerSec - 1)) / (fat_data->BytsPerSec);
 	fat_root_sector_start = fat_data->RsvdSecCnt + (fat_data->NumFATs * FATSz);
@@ -305,4 +353,6 @@ int fat_mount()
 void fat_umount()
 {
 	kfree(fat_data);	
+	if (fat.table != 0)
+		kfree(fat.table);
 }

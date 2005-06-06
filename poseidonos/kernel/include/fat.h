@@ -91,12 +91,18 @@ typedef struct fat_entry {
 	unsigned int FileSize;
 } __attribute__ ((packed)) fat_entry;
 
+typedef struct FAT {
+	unsigned short int *table;
+	unsigned int index;
+} FAT;
+
 int fat_mount(void);
 void fat_umount(void);
 vfs_entry *fat_ls(char *, int *);
 vfs_entry *fat_do_ls(int, int, int *);
 void fat_get_sector(char *, int *, int *, int *);
 
+int fat_get_next_cluster(int);
 FILE *fat_fopen(char *, char *);
 void fat_fclose(FILE *);
 FILE *fat_file_create(char *);

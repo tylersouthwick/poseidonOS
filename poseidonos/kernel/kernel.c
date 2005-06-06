@@ -126,6 +126,8 @@ void kernel_init() {
 //	if (status == -1)
 //		kprint("unable to find /shell.app\n");
 
+#define TEST_FILE
+#ifdef TEST_FILE
 	{
 		FILE *file;
 		char ch;
@@ -134,12 +136,13 @@ void kernel_init() {
 
 		if (file != NULL)
 		{
-			while ((ch = getchar(file)) != EOF)
-				put_char(ch);
+			//while ((ch = getchar(file)) != EOF)
+		//		put_char(ch);
 
 			fclose(file);
 		}
 	}
+#endif
 
 	/*shutdown the system when everything is done*/
 	shutdown();

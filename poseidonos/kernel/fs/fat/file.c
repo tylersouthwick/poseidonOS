@@ -34,7 +34,12 @@ FILE *fat_fopen(char *fname, char *mode)
 		char *read_buffer;
 
 		read_buffer = file->data;
-		floppy_block_read(sector_start, read_buffer, 1);
+
+		do
+		{
+			floppy_block_read(sector_start, read_buffer, 1);
+			read_buffer += 512;
+		} while ((sector_start = fat_get_next_cluster(sector_start)) != -1);
 
 		return file;
 	} 

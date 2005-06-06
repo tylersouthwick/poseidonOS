@@ -33,6 +33,11 @@ typedef struct vfs_entry
 	unsigned int data;
 } vfs_entry;
 
+typedef struct vfs_inode
+{
+	u64 inode_number;
+} vfs_inode;
+
 typedef struct FILE
 {
 	unsigned int offset;
