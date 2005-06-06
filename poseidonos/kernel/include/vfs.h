@@ -3,13 +3,13 @@
 
 #define VFS_NAME_MAXLEN 256
 
-#define VFS_ATTR_NONE		0 /* no attribute bits */
-#define VFS_ATTR_READ_ONLY	1  /* read-only */
-#define VFS_ATTR_HIDDEN		2  /* hidden */
-#define VFS_ATTR_SYSTEM		4  /* system */
-#define VFS_ATTR_VOLUME_ID	8  /* volume label */
-#define VFS_ATTR_DIRECTORY	16 /* directory */
-#define VFS_ATTR_ARCHIVE	32 /* archived */
+#define VFS_ATTR_NONE		0	/* no attribute bits */
+#define VFS_ATTR_READ_ONLY	1	/* read-only */
+#define VFS_ATTR_HIDDEN		2	/* hidden */
+#define VFS_ATTR_SYSTEM		4	/* system */
+#define VFS_ATTR_VOLUME_ID	8	/* volume label */
+#define VFS_ATTR_DIRECTORY	16	/* directory */
+#define VFS_ATTR_ARCHIVE	32	/* archived */
 #define VFS_ATTR_LONG_NAME	(VFS_ATTR_READ_ONLY | VFS_ATTR_HIDDEN | VFS_ATTR_SYSTEM | VFS_ATTR_VOLUME_ID)
 
 #define VFS_IS_READ_ONLY(a) (a & VFS_ATTR_READ_ONLY)
@@ -19,6 +19,23 @@
 #define VFS_IS_DIRECTORY(a)	(a & VFS_ATTR_DIRECTORY)
 #define VFS_IS_ARCHIVE(a)	(a & VFS_ATTR_ARCHIVE)
 #define VFS_IS_LONG_NAME(a)	(a & VFS_ATTR_LONG_NAME)
+
+typedef struct FILE
+{
+	unsigned int offset;
+	unsigned int size;
+	unsigned char *data;
+	struct vfs_inode *inode;
+} FILE;
+
+typedef struct vfs_inode
+{
+	u64 inode_number;
+
+	/*operations*/
+	FILE *(*read)(struct vfs_inode*);
+	void (*write)(struct vfs_inode*, char *, int);
+} vfs_inode;
 
 typedef struct vfs_entry
 {
@@ -31,19 +48,19 @@ typedef struct vfs_entry
 	unsigned short modified_time;
 	unsigned int size;
 	unsigned int data;
+
+	/*operations*/
+	void (*get_inode)(struct vfs_inode *);
 } vfs_entry;
 
-typedef struct vfs_inode
+typedef struct vfs_mount
 {
-	u64 inode_number;
-} vfs_inode;
+	device_t *device;
 
-typedef struct FILE
-{
-	unsigned int offset;
-	unsigned int size;
-	unsigned char *data;
-} FILE;
+	/*operations*/
+	void (*get_root_inode)(struct vfs_mount *);
+	void (*get_inode)(struct vfs_mount *, char *);
+} vfs_mount;
 
 /*mount prototypes*/
 int mount(char *, char *);

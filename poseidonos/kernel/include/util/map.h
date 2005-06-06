@@ -9,17 +9,13 @@ typedef struct
 	void *next;
 } map_node_t;
 
-typedef void map_add(void *, char *, void *, int);
-typedef char *map_get(void *, char *);
-typedef int map_size(void *);
-
 typedef struct map_t
 {
 	int count;
 	map_node_t *first_node;
-	map_add *add;
-	map_get *get;
-	map_size *size;
+	void (*add)(struct map_t *, char *, void *, int);
+	char *(*get)(struct map_t *, char *);
+	int (*size)(struct map_t *);
 } map_t;
 /**********************************************************************/
 
