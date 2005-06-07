@@ -1,7 +1,8 @@
 LIB_NAME = exec
 
 C_OBJS = \
-				exec.o
+				exec.o \
+				elf.o
 
 ASM_OBJS = \
 				exec_wrapper.o
