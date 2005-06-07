@@ -12,17 +12,28 @@ static int fat_root_sector_start;
 static int fat_root_sector_count;
 static FAT fat;
 
-unsigned static inline int fat_cluster_to_sector(unsigned int cluster_num)
+unsigned inline static int fat_cluster_to_sector(unsigned int cluster_num)
 {
-	return cluster_num + 31;
+	int root_dir_sectors = ((fat_data->BytsPerSec - 1) + (fat_data->RootEntCnt * 32)) / (fat_data->BytsPerSec);
+	int fat_sectors = fat_data->NumFATs * fat_data->FATSz16;
+	int data_start = fat_data->RsvdSecCnt + fat_sectors+ root_dir_sectors;
+	int sector = data_start + ((cluster_num - 2) * fat_data->SecPerClus);
+
+	return sector;
 }
 
-unsigned static inline int fat_sector_to_cluster(unsigned int sector)
+unsigned inline static int sector_to_fat_cluster(unsigned int sector)
 {
-	return sector - 31;
+	int root_dir_sectors = ((fat_data->BytsPerSec - 1) + (fat_data->RootEntCnt * 32)) / (fat_data->BytsPerSec);
+	int fat_sectors = fat_data->NumFATs * fat_data->FATSz16;
+	int data_start = fat_data->RsvdSecCnt + fat_sectors+ root_dir_sectors;
+
+	int cluster = ((sector - data_start) / (fat_data->SecPerClus)) + 2;
+
+	return cluster;
 }
 
-void fat_get_sector(char *origPath, int *sector_start, int *sector_count, int *directory)
+void fat_get_first_sector(char *origPath, int *sector_start, int *sector_count, int *directory)
 {		
 	int token_count=0;
 	int i;
@@ -86,13 +97,13 @@ void fat_get_sector(char *origPath, int *sector_start, int *sector_count, int *d
 					*directory = 0;
 
 				found = 1;
-				*sector_start = entries[i].data;
+				*sector_start = fat_cluster_to_sector(entries[i].inode->inode_number);
 				break;
 			}
 		}
 
 		if (found)
-			continue;
+			return;
 		else
 		{
 			*sector_start = -1;
@@ -125,7 +136,7 @@ vfs_entry *fat_ls(char *path, int *item_count)
 	vfs_entry *entries;
 	int isDirectory;
 		
-	fat_get_sector(path, &sector_start, &sector_count, &isDirectory);
+	fat_get_first_sector(path, &sector_start, &sector_count, &isDirectory);
 
 	if (sector_start < 0)
 	{
@@ -163,7 +174,7 @@ vfs_entry *fat_ls(char *path, int *item_count)
 			}
 		}
 
-		fat_get_sector(dir, &sector_start, &sector_count, &isDirectory);
+		fat_get_first_sector(dir, &sector_start, &sector_count, &isDirectory);
 		entries = fat_do_ls(sector_start, sector_count, item_count);
 
 		for (i=0; i< *item_count; i++)
@@ -243,9 +254,10 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 		vfs_entries[i].modified_time = fat_entries[fat_counter].WrtTime;
 		vfs_entries[i].size = fat_entries[fat_counter].FileSize;
 
-		///setup the data field of the vfs entry
-		///this will be the cluster
-		vfs_entries[i].data = fat_cluster_to_sector(fat_entries[fat_counter].FstClusLO);
+		///setup the inode associated with the vfs entry
+		///the inode number will be the fat cluster
+		vfs_entries[i].inode = kmalloc(sizeof(struct vfs_inode));
+		vfs_entries[i].inode->inode_number = (u64)fat_entries[fat_counter].FstClusLO;
 
 		///clean up extension
 		strip_whitespace(fat_entries[fat_counter].ext, FAT_EXT_MAXLEN);
@@ -270,53 +282,42 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 	return vfs_entries;
 }
 
-int fat_get_next_cluster(int cluster)
+int fat_get_next_sector(int sector)
 {
-	int fat_sector_number;
-	int fat_offset;
-	u16 fat12_cluster_entry_value;
+	unsigned int fat_sector_number;
+	unsigned int fat_offset;
+	u16 next_cluster;
 	u8 *fat_buffer;
+	unsigned int cluster;
+	unsigned int next_sector;
 
-	cluster = fat_sector_to_cluster(cluster);
+	cluster = sector_to_fat_cluster(sector);
 	fat_offset = cluster + (cluster / 2);
 
 	fat_sector_number = fat_data->RsvdSecCnt + (fat_offset / fat_data->BytsPerSec);
 	fat_offset %= fat_data->BytsPerSec;
-
-	kprint("fat_sector_number: ");
-	put_int(fat_sector_number, 10);
-	kprint("\tfat_offset: ");
-	put_int(fat_offset, 10);
-	kprint("\n");
 
 	/*we elliminate the need to do a boundary case check
 	 * by reading in the 2 consecutive sectors*/
 	fat_buffer = kmalloc(1024);
 	floppy_block_read(fat_sector_number, fat_buffer, 2);
 	
-	fat12_cluster_entry_value = *((u16 *) fat_buffer[fat_offset]);
+	next_cluster = *((u16 *) &fat_buffer[fat_offset]);
 
 	if (cluster & 1)
-		fat12_cluster_entry_value >>= 4;
+		next_cluster >>= 4;
 	else
-		fat12_cluster_entry_value &= 0x0FFF;
-
-	kprint("fat12_cluster_entry_value: ");
-	put_int(fat12_cluster_entry_value, 0x10);
+		next_cluster &= 0x0FFF;
 
 	kfree(fat_buffer);
 
-	fat_buffer = kmalloc(512);
-	//floppy_block_read(fat12_cluster_entry_value, fat_buffer, 1);
+	if (next_cluster > 0xFF8)
+		return -1;
 
-	/*
-	{
-		int i;
-		for (i=0; i<512; i++)
-			put_char(fat_buffer[i]);
-	}
-	*/
+	if (next_cluster >=0x002 && next_cluster <= 0xFEF)
+		return fat_cluster_to_sector(next_cluster);
 
+	kprint("fat_get_next_sector :: error!\n");
 	return -1;
 }
 

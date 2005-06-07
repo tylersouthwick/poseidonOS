@@ -17,7 +17,7 @@ FILE *fat_fopen(char *fname, char *mode)
 	vfs_entry *entry;
 	FILE *file;
 
-	fat_get_sector(fname, &sector_start, &sector_count, &isDirectory);
+	fat_get_first_sector(fname, &sector_start, &sector_count, &isDirectory);
 
 	file = (FILE *)kmalloc(sizeof(FILE));
 
@@ -39,7 +39,7 @@ FILE *fat_fopen(char *fname, char *mode)
 		{
 			floppy_block_read(sector_start, read_buffer, 1);
 			read_buffer += 512;
-		} while ((sector_start = fat_get_next_cluster(sector_start)) != -1);
+		} while ((sector_start = fat_get_next_sector(sector_start)) != -1);
 
 		return file;
 	} 

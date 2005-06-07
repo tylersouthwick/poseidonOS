@@ -28,15 +28,6 @@ typedef struct FILE
 	struct vfs_inode *inode;
 } FILE;
 
-typedef struct vfs_inode
-{
-	u64 inode_number;
-
-	/*operations*/
-	FILE *(*read)(struct vfs_inode*);
-	void (*write)(struct vfs_inode*, char *, int);
-} vfs_inode;
-
 typedef struct vfs_entry
 {
 	unsigned char name[VFS_NAME_MAXLEN+1];
@@ -48,10 +39,21 @@ typedef struct vfs_entry
 	unsigned short modified_time;
 	unsigned int size;
 	unsigned int data;
+	struct vfs_inode * inode;
+} vfs_entry;
+
+typedef struct vfs_inode
+{
+	u64 inode_number;
 
 	/*operations*/
-	void (*get_inode)(struct vfs_inode *);
-} vfs_entry;
+	void (*create)(struct vfs_inode *, struct vfs_inode *, struct vfs_entry *);
+	int (*mkdir)(struct vfs_inode *, struct vfs_entry *, int);
+	int (*rmdir)(struct vfs_inode *, struct vfs_entry *);
+	int (*rename)(struct vfs_inode *, struct vfs_entry *, struct vfs_entry *);
+	FILE *(*read)(struct vfs_inode *);
+	void (*write)(struct vfs_inode *, char *, int);
+} vfs_inode;
 
 typedef struct vfs_mount
 {

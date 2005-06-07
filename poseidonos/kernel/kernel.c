@@ -120,29 +120,11 @@ void kernel_init() {
 	kprint(" driver(s)\n");
 	screen_set_color(SCREEN_DEFAULT);
 
-//	kprint("\nStarting shell.app...\n");
+	kprint("\nStarting shell.app...\n");
 
-//	status = exec("/shell.app");
-//	if (status == -1)
-//		kprint("unable to find /shell.app\n");
-
-#define TEST_FILE
-#ifdef TEST_FILE
-	{
-		FILE *file;
-		char ch;
-
-		file = fopen("/test.txt", "r");
-
-		if (file != NULL)
-		{
-			//while ((ch = getchar(file)) != EOF)
-		//		put_char(ch);
-
-			fclose(file);
-		}
-	}
-#endif
+	status = exec("/shell.app");
+	if (status == -1)
+		kprint("unable to find /shell.app\n");
 
 	/*shutdown the system when everything is done*/
 	shutdown();

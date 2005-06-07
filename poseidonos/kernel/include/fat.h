@@ -100,9 +100,10 @@ int fat_mount(void);
 void fat_umount(void);
 vfs_entry *fat_ls(char *, int *);
 vfs_entry *fat_do_ls(int, int, int *);
-void fat_get_sector(char *, int *, int *, int *);
 
-int fat_get_next_cluster(int);
+void fat_get_first_sector(char *, int *, int *, int *);
+int fat_get_next_sector(int);
+
 FILE *fat_fopen(char *, char *);
 void fat_fclose(FILE *);
 FILE *fat_file_create(char *);
