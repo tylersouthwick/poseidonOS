@@ -2,9 +2,9 @@ LIB_NAME = exec
 
 C_OBJS = \
 				exec.o \
-				elf.o
+				elf.o \
+				coff.o
 
-ASM_OBJS = \
-				exec_wrapper.o
+ASM_OBJS = 
 
 include ../kernel.mk

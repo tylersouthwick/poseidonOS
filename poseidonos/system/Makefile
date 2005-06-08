@@ -11,4 +11,3 @@ shell.app :
 
 clean :
 	@$(MAKE) -C shell clean
-	@rm -f shell.app

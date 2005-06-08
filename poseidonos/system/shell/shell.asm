@@ -1,103 +1,103 @@
 start:
-	mov ebx, 10
+	mov eax, 10
 	int 45h
-	mov ebx, 10
+	mov eax, 10
 	int 45h
-	mov ebx, 'W'
+	mov eax, 'W'
 	int 45h
-	mov ebx, 'e'
+	mov eax, 'e'
 	int 45h
-	mov ebx, 'l'
+	mov eax, 'l'
 	int 45h
-	mov ebx, 'c'
+	mov eax, 'c'
 	int 45h
-	mov ebx, 'o'
+	mov eax, 'o'
 	int 45h
-	mov ebx, 'm'
+	mov eax, 'm'
 	int 45h
-	mov ebx, 'e'
+	mov eax, 'e'
 	int 45h
-	mov ebx, ' '
+	mov eax, ' '
 	int 45h
-	mov ebx, 't'
+	mov eax, 't'
 	int 45h
-	mov ebx, 'o'
+	mov eax, 'o'
 	int 45h
-	mov ebx, ' '
+	mov eax, ' '
 	int 45h
-	mov ebx, 'P'
+	mov eax, 'P'
 	int 45h
-	mov ebx, 'o'
+	mov eax, 'o'
 	int 45h
-	mov ebx, 's'
+	mov eax, 's'
 	int 45h
-	mov ebx, 'e'
+	mov eax, 'e'
 	int 45h
-	mov ebx, 'i'
+	mov eax, 'i'
 	int 45h
-	mov ebx, 'd'
+	mov eax, 'd'
 	int 45h
-	mov ebx, 'o'
+	mov eax, 'o'
 	int 45h
-	mov ebx, 'n'
+	mov eax, 'n'
 	int 45h
-	mov ebx, 'O'
+	mov eax, 'O'
 	int 45h
-	mov ebx, 'S'
+	mov eax, 'S'
 	int 45h
-	mov ebx, 10
+	mov eax, 10
 	int 45h
-	mov ebx, 's'
+	mov eax, 's'
 	int 45h
-	mov ebx, 'h'
+	mov eax, 'h'
 	int 45h
-	mov ebx, 'e'
+	mov eax, 'e'
 	int 45h
-	mov ebx, 'l'
+	mov eax, 'l'
 	int 45h
-	mov ebx, 'l'
+	mov eax, 'l'
 	int 45h
-	mov ebx, '.'
+	mov eax, '.'
 	int 45h
-	mov ebx, 'a'
+	mov eax, 'a'
 	int 45h
-	mov ebx, 'p'
+	mov eax, 'p'
 	int 45h
-	mov ebx, 'p'
+	mov eax, 'p'
 	int 45h
-	mov ebx, ' '
+	mov eax, ' '
 	int 45h
-	mov ebx, '$'
+	mov eax, '$'
 	int 45h
-	mov ebx, 10
+	mov eax, 10
 	int 45h
-	mov ebx, 'e'
+	mov eax, 'e'
 	int 45h
-	mov ebx, 'x'
+	mov eax, 'x'
 	int 45h
-	mov ebx, 'i'
+	mov eax, 'i'
 	int 45h
-	mov ebx, 't'
+	mov eax, 't'
 	int 45h
-	mov ebx, 'i'
+	mov eax, 'i'
 	int 45h
-	mov ebx, 'n'
+	mov eax, 'n'
 	int 45h
-	mov ebx, 'g'
+	mov eax, 'g'
 	int 45h
-	mov ebx, ' '
+	mov eax, ' '
 	int 45h
-	mov ebx, 's'
+	mov eax, 's'
 	int 45h
-	mov ebx, 'h'
+	mov eax, 'h'
 	int 45h
-	mov ebx, 'e'
+	mov eax, 'e'
 	int 45h
-	mov ebx, 'l'
+	mov eax, 'l'
 	int 45h
-	mov ebx, 'l'
+	mov eax, 'l'
 	int 45h
-	mov ebx, 10
+	mov eax, 10
 	int 45h
 	ret
 

@@ -11,11 +11,42 @@
 
 #define PAGING_IS_PRESENT(addr) (((int)(addr)) & 1)
 
-extern int read_cr0(void);
-extern void write_cr0(int);
-extern int read_cr2(void);
-extern int read_cr3(void);
-extern void write_cr3(void *);
+static inline int read_cr0(void)
+{
+	int cr0;
+	asm volatile ("movl %%cr0, %0" : "=r"(cr0) : );
+	return cr0;
+}
+
+static inline void write_cr0(int cr0)
+{
+	asm volatile ("movl %0, %%cr0" : : "r"(cr0) );
+}
+
+static inline int read_cr2(void)
+{
+	int cr2;
+	asm volatile ("movl %%cr2, %0" : "=r"(cr2) : );
+	return cr2;
+}
+
+static inline int read_cr3(void)
+{
+	int cr3;
+	asm volatile ("movl %%cr3, %0" : "=r"(cr3) : );
+	return cr3;
+}
+
+static inline void write_cr3(void *cr3)
+{
+	asm volatile ("movl %0, %%cr3" : : "r"(cr3) );
+}
+
+static inline void paging_flush_cache(void)
+{
+	int cr0 = read_cr0();
+	write_cr0(cr0);
+}
 
 void *mm_paging_pde_new(void);
 

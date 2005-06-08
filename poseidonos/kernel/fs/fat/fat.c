@@ -289,7 +289,6 @@ int fat_get_next_sector(int sector)
 	u16 next_cluster;
 	u8 *fat_buffer;
 	unsigned int cluster;
-	unsigned int next_sector;
 
 	cluster = sector_to_fat_cluster(sector);
 	fat_offset = cluster + (cluster / 2);

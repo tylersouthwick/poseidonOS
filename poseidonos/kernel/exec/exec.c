@@ -17,6 +17,7 @@ int exec(char *exe)
 	char *program;
 	int i = 0;
 	page_t page;
+	void (*exe_image)(void);
 
 	file = fopen(exe, "r");
 
@@ -35,9 +36,8 @@ int exec(char *exe)
 	fclose(file);
 
 	/*execute the program*/
-	kprint("executing program\n");
-	exec_asm(program);
-	kprint("executing program finished\n");
+	exe_image = (void *)program;
+	exe_image();
 
 	mm_virtual_page_free(&page);
 

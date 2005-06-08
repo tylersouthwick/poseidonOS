@@ -8,7 +8,6 @@ C_OBJS = \
 				virtual_mem.o \
 				kmalloc.o
 
-ASM_OBJS = \
-				paging_wrapper.o
+ASM_OBJS = 
 
 include ../kernel.mk
