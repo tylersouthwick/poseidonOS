@@ -28,10 +28,6 @@ int mount(char *dev, char *path, char *type)
 	if (status < 0)
 		return -1;
 
-	kprint("adding mount path ");
-	kprint(path);
-	kprint("\n");
-
 	mounts->add(mounts, path, vmount);
 
 	return status;
