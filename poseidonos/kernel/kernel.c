@@ -95,8 +95,10 @@ void kernel_init() {
 	devicemanager_init_devices();
 	kprint("\n");
 
+	vfs_init();
+
 	kprint("mounting root filesystem (read-only) at / ...");
-	status = mount("fd0", "/");
+	status = mount("fd0", "/", "fat");
 	if (status == -1)
 	{
 		screen_set_color(SCREEN_FG_RED | SCREEN_BG_BLACK);

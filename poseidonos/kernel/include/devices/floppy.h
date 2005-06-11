@@ -72,8 +72,8 @@ bool flooppy_log_disk(drive_geometry *);
 void floppy_block2hts(int, int *, int *, int *);
 bool floppy_format_track(unsigned char, drive_geometry *);
 bool floppy_rw(int, unsigned char *, unsigned char, unsigned long);
-bool floppy_block_read(int, unsigned char *, unsigned long);
-bool floppy_block_write(int, unsigned char *, unsigned long);
+bool floppy_block_read(unsigned int block, void *blockbuff, unsigned int nosectors);
+bool floppy_block_write(unsigned int block, void *blockbuff, unsigned int nosectors);
 /***************************************end prototypes*****************************************/
 
 #endif

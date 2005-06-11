@@ -7,17 +7,24 @@
 
 FILE *fopen(char *path, char *mode)
 {
-	return fat_fopen(path, mode);
+	vfs_mount vmount;
+	char relative_path[strlen(path)];
+
+	vfs_mount_parse(path, relative_path, &vmount);
+
+	return fat_fopen(&vmount, path, mode);
 }
 
 void fclose(FILE *file)
 {
-	fat_fclose(file);
+	vfs_mount *vmount;
+	fat_fclose(vmount, file);
 }
 
 char getchar(FILE *file)
 {
-	return fat_getchar(file);
+	vfs_mount *vmount;
+	return fat_getchar(vmount, file);
 }
 
 int fgetsize(FILE *file)

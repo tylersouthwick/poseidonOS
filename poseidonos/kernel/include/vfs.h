@@ -64,8 +64,12 @@ typedef struct vfs_mount
 	void (*get_inode)(struct vfs_mount *, char *);
 } vfs_mount;
 
+void vfs_register_fs(char *, void *);
+void vfs_init(void);
+
 /*mount prototypes*/
-int mount(char *, char *);
+int mount(char *, char *, char *);
+void vfs_mount_parse(char *path, char *new_path, vfs_mount *vmount);
 int umount(char *);
 void umount_all(void);
 void mount_all(void);

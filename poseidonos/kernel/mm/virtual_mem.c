@@ -113,8 +113,23 @@ unsigned long *mm_virtual_page_alloc(page_t* page) {
  *
  * frees a mapped virtual page
  * *******************************************************/
-int mm_virtual_page_free(page_t *page) {
-	kprint("WARNING :: mm_virtual_page_free is not implemented\n");
-	return -1;
+void mm_virtual_page_free(page_t *page) {
+	int i;
+	unsigned long *page_directory = (unsigned long *)read_cr3();
+	unsigned int pde_index = mm_virtual_get_pde(page->address);
+	unsigned int pte_index = mm_virtual_get_pte(page->address);
+	unsigned long *current_pde = (unsigned long *)(page_directory[pde_index] & 0xFFFFF000);
+	kprint ("address first: ");
+	put_int((int)page->address, 0x10);
+	kprint("\n");
+
+	for (i=pte_index; i<(pte_index + page->count); i++)
+	{
+		unsigned long address = current_pde[i];
+		kprint("address: ");
+		put_int(address, 0x10);
+		kprint("\n");
+		current_pde[pte_index] = 0;
+	}
 }
 

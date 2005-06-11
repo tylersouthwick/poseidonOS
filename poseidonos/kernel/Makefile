@@ -1,17 +1,31 @@
 KERNEL_FILE=poseidon.sys
 KERNEL_STATIC_LIBS= \
-		screen/screen.a \
-		devices/manager/devicemanager.a \
-		devices/floppy/floppy.a \
-		devices/keyboard/keyboard.a \
-		mm/mm.a \
-		interrupts/interrupts.a \
-		multitasking/multitasking.a \
-		exec/exec.a \
-		fs/vfs/vfs.a \
-		fs/fat/fat.a \
-		util/util.a \
-		string/string.a
+		screen/libscreen.a \
+		devices/manager/libdevicemanager.a \
+		devices/floppy/libfloppy.a \
+		devices/keyboard/libkeyboard.a \
+		mm/libmm.a \
+		interrupts/libinterrupts.a \
+		multitasking/libmultitasking.a \
+		exec/libexec.a \
+		fs/vfs/libvfs.a \
+		fs/fat/libfat.a \
+		util/libutil.a \
+		string/libstring.a
+
+KERNEL_LINKER_LIBS= \
+		-lscreen.a \
+		-ldevices/manager/devicemanager.a \
+		-ldevices/floppy/floppy.a \
+		-ldevices/keyboard/keyboard.a \
+		-lmm/mm.a \
+		-linterrupts/interrupts.a \
+		-lmultitasking/multitasking.a \
+		-lexec/exec.a \
+		-lfs/vfs/vfs.a \
+		-lfs/fat/fat.a \
+		-lutil/util.a \
+		-lstring/string.a
 
 KERNEL_OBJS = \
 		kernel_wrapper.o \
@@ -38,7 +52,7 @@ include kernel.mk
 #link and build kernel.bin
 ${KERNEL_FILE}: ${KERNEL_OBJS} $(KERNEL_STATIC_LIBS)
 	@echo "(LD) ${KERNEL_FILE}"
-	@ld -Tkernel.ld -o ${KERNEL_FILE} $(KERNEL_OBJS) $(KERNEL_STATIC_LIBS) 
+	@ld -Tkernel.ld -o ${KERNEL_FILE} $(KERNEL_OBJS) --start-group $(KERNEL_STATIC_LIBS) --end-group
 	@echo
 	@echo "####################################"
 	@echo "The PoseidonOS kernel has now been built at ${KERNEL_FILE}"

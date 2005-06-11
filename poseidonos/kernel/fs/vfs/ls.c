@@ -24,10 +24,9 @@ vfs_entry *ls(char *path)
 	vfs_entry *entries;
 	int entries_count;
 	int i;
+	vfs_mount *vmount;
 	
-	kprint("getting listing...");
-	entries = fat_ls(path, &entries_count);
-	kprint("okay!\n");
+	entries = fat_ls(vmount, path, &entries_count);
 
 	if (entries > 0)
 	{

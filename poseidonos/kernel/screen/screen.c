@@ -88,7 +88,7 @@ void put_char(char c)
 	update_cursor();
 }
 
-void put_int(int number, int base)
+void put_int(unsigned int number, unsigned int base)
 {
 	int index = 0;
 	char buffer1[12];

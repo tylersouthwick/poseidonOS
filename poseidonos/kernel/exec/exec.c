@@ -17,7 +17,7 @@ int exec(char *exe)
 	char *program;
 	int i = 0;
 	page_t page;
-	void (*exe_image)(void);
+	void *(*exe_image)(void);
 
 	file = fopen(exe, "r");
 

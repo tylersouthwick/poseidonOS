@@ -10,7 +10,7 @@ CC = gcc
 AR = ar
 ARFLAGS = -rs
 
-KERNEL_CFLAGS = -ffreestanding -nostdlib -fno-builtins -Wall -Winline -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions -fpic 
+KERNEL_CFLAGS = -ffreestanding -nostdlib -fno-builtins -Wall -Winline -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions -fpic 
 
 #####################################
 ## DON't EDIT BELOW THIS LINE
@@ -33,10 +33,10 @@ CFLAGS = $(KERNEL_CFLAGS) -I$(KERNEL_INCLUDE)
 ######
 # build library
 ######
-compile : $(LIB_NAME).a
-$(LIB_NAME).a: $(C_OBJS) $(ASM_OBJS)
+compile : lib$(LIB_NAME).a
+lib$(LIB_NAME).a: $(C_OBJS) $(ASM_OBJS)
 	@echo "(AR) $<"
-	@$(AR) $(ARFLAGS) $(LIB_NAME).a $(C_OBJS) $(ASM_OBJS) 2>/dev/null
+	@$(AR) $(ARFLAGS) lib$(LIB_NAME).a $(C_OBJS) $(ASM_OBJS) 2>/dev/null
 
 ######
 # assembly dependencies
@@ -51,6 +51,7 @@ $(LIB_NAME).a: $(C_OBJS) $(ASM_OBJS)
 %.o : %.c
 	@echo "(CC) $<"
 	@$(CC) $(CFLAGS) -c -o $@ $<
+
 ######
 # generate dependencies
 ######
@@ -74,7 +75,7 @@ endif
 ifneq ($(KERNEL_TOP), "y")
 clean:
 	@echo "(RM) $(C_OBJS) $(ASM_OBJS) $(LIB_NAME).a"
-	rm -f $(C_OBJS) $(ASM_OBJS) $(LIB_NAME).a 
+	rm -f $(C_OBJS) $(ASM_OBJS) lib$(LIB_NAME).a 
 endif
 
 ######

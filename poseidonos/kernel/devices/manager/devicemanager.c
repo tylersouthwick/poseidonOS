@@ -42,24 +42,24 @@ void devicemanager_init_devices()
 }
 
 /*******************************************************************************
- * void device_register(unsigned int major, unsigned int minor, 
- * 			unsigned int read_handler, unsigned int write_handler)
+ * void device_register(char *dev_name, void (*read_handler)(), void (*write_handler)())
  * 
- * This is how a device is registered with the kernel.  It mimics the linux standard
- * of major and minor numbers (which are defined in devices.h).  When a request
+ * This is how a device is registered with the kernel.  When a request
  * comes to read or write to a device, it is looked up here, and the data is pushed
  * onto the stack and then either the read_handler or write_handler (respectably),
  * is called and performs the desired action.
  * *****************************************************************************/
-void device_register(char *dev_name, unsigned int major, unsigned int minor, 
-					unsigned int read_handler, unsigned int write_handler)
+void device_register(char *dev_name, unsigned int (*read_handler)(unsigned int, void *, unsigned int), unsigned int (*write_handler)(unsigned int, void *, unsigned int))
 {
 	device_t * new_device = kmalloc(sizeof(device_t));
-	new_device->major = major;
-	new_device->minor = minor;
-	new_device->read_handler = read_handler;
-	new_device->write_handler = write_handler;
+	new_device->read = read_handler;
+	new_device->write = write_handler;
 	
-	device_map->add(device_map, dev_name, new_device, sizeof(device_t));
+	device_map->add(device_map, dev_name, new_device);
 }
 
+device_t *device_get(char *device)
+{
+	unsigned long *temp;
+	return (device_t *)device_map->get(device_map, device, temp);
+}

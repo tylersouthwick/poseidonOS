@@ -66,13 +66,12 @@ void floppy_init()
 	if (a > 0)
 	{
 		floppy_count++;
-		device_register("fd0", DEV_FLOPPY, DEV_FLOPPY_0, 0,0 );
+		device_register("fd0", floppy_block_read, floppy_block_write );
 	}
 	
 	if (b > 0)
 	{
-		floppy_count++;
-		device_register("fd1", DEV_FLOPPY, DEV_FLOPPY_1, 0,0 );
+		kprint("only one floppy disk supported!\n");
 	}
 
 	floppy_dma_address = mm_physical_page_alloc(MM_TYPE_DMA);
@@ -581,8 +580,8 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
 }
 
 /*******************************************************************************
- * bool floppy_block_read(int block, unsigned char *blockbuff,
- * 							unsigned long nosectors)
+ * bool floppy_block_read(unsigned int block, void *blockbuff,
+ * 							unsigned int nosectors)
  * 
  * This reads data from a floppy disk starting at 'block' and reads 'nosectors'
  * number of blocks.
@@ -597,14 +596,14 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
  * 
  * Date:	December 31, 2004
  * *****************************************************************************/
-bool floppy_block_read(int block, unsigned char *blockbuff, unsigned long nosectors)
+bool floppy_block_read(unsigned int block, void *blockbuff, unsigned int nosectors)
 {
 	return floppy_rw(block, blockbuff, true, nosectors);
 }
 
 /*******************************************************************************
- * bool floppy_block_write(int block, unsigned char *blockbuff, 
- * 							unsigned long nosectors)
+ * bool floppy_block_write(unsigned int block, void *blockbuff, 
+ * 							unsigned int nosectors)
  * 
  * This writes the contents of 'blockbuff' onto a floppy disk, starting at 'block'
  * and going for 'nosectors'
@@ -617,7 +616,7 @@ bool floppy_block_read(int block, unsigned char *blockbuff, unsigned long nosect
  * 
  * Date:	December 31, 2004
  * *****************************************************************************/
-bool floppy_block_write(int block, unsigned char *blockbuff, unsigned long nosectors)
+bool floppy_block_write(unsigned int block, void *blockbuff, unsigned int nosectors)
 {
 	return floppy_rw(block, blockbuff, false, nosectors);
 }

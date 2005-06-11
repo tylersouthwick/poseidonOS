@@ -4,7 +4,8 @@ LIB_NAME = vfs
 C_OBJS = \
 	mount.o \
 	ls.o \
-	file.o
+	file.o \
+	vfs.o
 
 ASM_OBJS =
 

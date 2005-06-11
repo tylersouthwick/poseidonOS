@@ -96,21 +96,22 @@ typedef struct FAT {
 	unsigned int index;
 } FAT;
 
-int fat_mount(void);
-void fat_umount(void);
-vfs_entry *fat_ls(char *, int *);
-vfs_entry *fat_do_ls(int, int, int *);
+int fat_mount(vfs_mount *);
+void fat_umount(vfs_mount *);
+vfs_entry *fat_ls(vfs_mount *, char *, int *);
+vfs_entry *fat_do_ls(vfs_mount *, int, int, int *);
 
-void fat_get_first_sector(char *, int *, int *, int *);
-int fat_get_next_sector(int);
+void fat_get_first_sector(vfs_mount *, char *, int *, int *, int *);
+int fat_get_next_sector(vfs_mount *, int);
 
-FILE *fat_fopen(char *, char *);
-void fat_fclose(FILE *);
-FILE *fat_file_create(char *);
-int fat_file_remove(char *);
-int fat_file_write(char *, char *);
-int fat_file_read(char *, char *);
-char fat_getchar(FILE *);
+void fat_init(void);
+FILE *fat_fopen(vfs_mount *, char *, char *);
+void fat_fclose(vfs_mount *, FILE *);
+FILE *fat_file_create(vfs_mount *, char *);
+int fat_file_remove(vfs_mount *, char *);
+int fat_file_write(vfs_mount *, char *, char *);
+int fat_file_read(vfs_mount *, char *, char *);
+char fat_getchar(vfs_mount *, FILE *);
 
 #endif
 

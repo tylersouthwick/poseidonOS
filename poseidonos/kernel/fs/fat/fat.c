@@ -33,7 +33,12 @@ unsigned inline static int sector_to_fat_cluster(unsigned int sector)
 	return cluster;
 }
 
-void fat_get_first_sector(char *origPath, int *sector_start, int *sector_count, int *directory)
+void fat_init()
+{
+	vfs_register_fs("fat", &fat_mount);
+}
+
+void fat_get_first_sector(vfs_mount *vmount, char *origPath, int *sector_start, int *sector_count, int *directory)
 {		
 	int token_count=0;
 	int i;
@@ -85,7 +90,7 @@ void fat_get_first_sector(char *origPath, int *sector_start, int *sector_count, 
 
 		g++;
 		dir_name = &path[g];
-		entries = fat_do_ls(*sector_start, *sector_count, &item_count);
+		entries = fat_do_ls(vmount, *sector_start, *sector_count, &item_count);
 
 		for(i=0; i<item_count; i++)
 		{
@@ -129,14 +134,14 @@ void fat_get_first_sector(char *origPath, int *sector_start, int *sector_count, 
  * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	January 3, 2005
  * *****************************************************************************/
-vfs_entry *fat_ls(char *path, int *item_count)
+vfs_entry *fat_ls(vfs_mount *vmount, char *path, int *item_count)
 {
 	int sector_count;
 	int sector_start;
 	vfs_entry *entries;
 	int isDirectory;
 		
-	fat_get_first_sector(path, &sector_start, &sector_count, &isDirectory);
+	fat_get_first_sector(vmount, path, &sector_start, &sector_count, &isDirectory);
 
 	if (sector_start < 0)
 	{
@@ -147,7 +152,7 @@ vfs_entry *fat_ls(char *path, int *item_count)
 	if (isDirectory)
 	{
 		/*do normal ls*/
-		entries = fat_do_ls(sector_start, sector_count, item_count);
+		entries = fat_do_ls(vmount, sector_start, sector_count, item_count);
 		return entries;
 	} else {
 		/*if it is really a file, then ls the directory
@@ -174,8 +179,8 @@ vfs_entry *fat_ls(char *path, int *item_count)
 			}
 		}
 
-		fat_get_first_sector(dir, &sector_start, &sector_count, &isDirectory);
-		entries = fat_do_ls(sector_start, sector_count, item_count);
+		fat_get_first_sector(vmount, dir, &sector_start, &sector_count, &isDirectory);
+		entries = fat_do_ls(vmount, sector_start, sector_count, item_count);
 
 		for (i=0; i< *item_count; i++)
 		{
@@ -200,7 +205,7 @@ vfs_entry *fat_ls(char *path, int *item_count)
 	return (vfs_entry *)0;
 }
 
-vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
+vfs_entry *fat_do_ls(vfs_mount *vmount, int sector_start, int sector_count, int *item_count)
 {
 	fat_entry *fat_entries;
 	vfs_entry *vfs_entries;
@@ -282,7 +287,7 @@ vfs_entry *fat_do_ls(int sector_start, int sector_count, int *item_count)
 	return vfs_entries;
 }
 
-int fat_get_next_sector(int sector)
+int fat_get_next_sector(vfs_mount *vmount, int sector)
 {
 	unsigned int fat_sector_number;
 	unsigned int fat_offset;
@@ -320,14 +325,14 @@ int fat_get_next_sector(int sector)
 	return -1;
 }
 
-int fat_mount()
+int fat_mount(vfs_mount *vmount)
 {
 	unsigned char *read_buffer;
 	
 	read_buffer = (unsigned char *)kmalloc(512);
 	
 	///get the fat data
-	floppy_block_read(0, read_buffer, 1);
+	vmount->device->read(0, read_buffer, 1);
 
 	///allocate data for the fat_data structure
 	fat_data = kmalloc(sizeof(fat_info));
@@ -350,9 +355,11 @@ int fat_mount()
 	return 1;
 }
 
-void fat_umount()
+void fat_umount(vfs_mount * vmount)
 {
+				/*
 	kfree(fat_data);	
 	if (fat.table != 0)
 		kfree(fat.table);
+		*/
 }

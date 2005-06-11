@@ -7,7 +7,7 @@
 void kprint(char *str);
 void screen_clear(void);
 void put_char(char c);
-void put_int(int num, int base);
+void put_int(unsigned int num, unsigned int base);
 void screen_set_color(int color);
 
 #define converToPos(a,b) 2*(80*b+a)

@@ -9,7 +9,7 @@
 #define FILE_PUTCHAR
 
 /*this only supports reading right now*/
-FILE *fat_fopen(char *fname, char *mode)
+FILE *fat_fopen(vfs_mount *vmount, char *fname, char *mode)
 {
 	int sector_start;
 	int sector_count;
@@ -17,12 +17,12 @@ FILE *fat_fopen(char *fname, char *mode)
 	vfs_entry *entry;
 	FILE *file;
 
-	fat_get_first_sector(fname, &sector_start, &sector_count, &isDirectory);
+	fat_get_first_sector(vmount, fname, &sector_start, &sector_count, &isDirectory);
 
 	file = (FILE *)kmalloc(sizeof(FILE));
 
 	/* get size of file */
-	entry = fat_ls(fname, &(file->size));
+	entry = fat_ls(vmount, fname, &(file->size));
 	file->size = entry->size;
 	kfree(entry);
 
@@ -39,7 +39,7 @@ FILE *fat_fopen(char *fname, char *mode)
 		{
 			floppy_block_read(sector_start, read_buffer, 1);
 			read_buffer += 512;
-		} while ((sector_start = fat_get_next_sector(sector_start)) != -1);
+		} while ((sector_start = fat_get_next_sector(vmount, sector_start)) != -1);
 
 		return file;
 	} 
@@ -47,13 +47,13 @@ FILE *fat_fopen(char *fname, char *mode)
 	return (FILE *)NULL;
 }
 
-void fat_fclose(FILE *file)
+void fat_fclose(vfs_mount *vmount, FILE *file)
 {
 	kfree(file->data);
 	kfree(file);
 }
 
-FILE *fat_file_create(char *fname)
+FILE *fat_file_create(vfs_mount *vmount, char *fname)
 {
 	FILE *file;
 
@@ -62,25 +62,25 @@ FILE *fat_file_create(char *fname)
 	return file;
 }
 
-int fat_file_remove(char *fname)
+int fat_file_remove(vfs_mount *vmount, char *fname)
 {
 	/*remove file*/
 	return -1;
 }
 
-int fat_file_write(char *fname, char *data)
+int fat_file_write(vfs_mount *vmount, char *fname, char *data)
 {
 	/*write a file*/
 	return -1;
 }
 
-int fat_file_read(char *fname, char *data)
+int fat_file_read(vfs_mount *vmount, char *fname, char *data)
 {
 	/*read file*/
 	return -1;
 }
 
-char fat_getchar(FILE *file)
+char fat_getchar(vfs_mount *vmount, FILE *file)
 {
 	if (file->size - file->offset == 0)
 		return EOF;
