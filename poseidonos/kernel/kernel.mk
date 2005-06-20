@@ -69,13 +69,21 @@ ifneq ($(KERNEL_TOP), "y")
 -include $(MAKEFILES_D)
 endif
 
+ifneq ($(KERNEL_TOP), "y")
+tex : $(LIB_NAME).tex
+$(LIB_NAME).tex : 
+	@echo "(TEX) $(LIB_NAME).tex"
+	@java -cp $(POSEIDON_ROOT)/scripts/DocGenerator/DocGenerator.jar  org.northfuse.documentation.DocGenerator $(LIB_NAME).tex $(C_SRCS)
+endif
+
 ######
 # clean up temporary files
 ######
 ifneq ($(KERNEL_TOP), "y")
 clean:
-	@echo "(RM) $(C_OBJS) $(ASM_OBJS) $(LIB_NAME).a"
+	@echo "(RM) $(C_OBJS) $(ASM_OBJS) $(LIB_NAME).a $(LIB_NAME).tex"
 	rm -f $(C_OBJS) $(ASM_OBJS) lib$(LIB_NAME).a 
+	rm -f $(LIB_NAME).tex
 endif
 
 ######
@@ -86,3 +94,4 @@ depclean : clean
 	@echo "(RM) $(MAKEFILES_D)"
 	rm -f $(MAKEFILES_D)
 endif
+

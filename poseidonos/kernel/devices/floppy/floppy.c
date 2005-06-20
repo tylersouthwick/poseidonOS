@@ -10,6 +10,7 @@
 #include <devices/manager.h>
 
 /***********************************************************
+ * \file_description_start
  * floppy.c
  * 
  * Creates an abstraction to read blocks from a floppy disk
@@ -19,6 +20,7 @@
  * this will work at present.
  * 
  * License: GPL (see readme or the GPL website)
+ * \file_description_end
  * *********************************************************/
 
 #define FLOPPY_SLEEP_TIME 5
@@ -42,12 +44,15 @@ extern int timer_count;
 bool floppy_log_disk(drive_geometry *);
 
 /*******************************************************************************
- * void floppy_init()
+ * \do_latex
+ *
+ * \name floppy\\_init
+ * \proto void floppy\\_init()
  * 
- * This is where the floppy driver is initilized and where the floppy device(s)
- * are registered with the system.
+ * \desc This is where the floppy driver is initilized and where the floppy device(s)
+ * \desc are registered with the system.
  * 
- * Date:	November 27, 2004
+ * \date November 27, 2004
  * *****************************************************************************/
 void floppy_init()
 {

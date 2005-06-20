@@ -9,7 +9,7 @@
 #define FILE_PUTCHAR
 
 /*this only supports reading right now*/
-FILE *fat_fopen(vfs_mount *vmount, char *fname, char *mode)
+FILE *fat_fopen(struct vfs_mount *vmount, char *fname, char *mode)
 {
 	int sector_start;
 	int sector_count;

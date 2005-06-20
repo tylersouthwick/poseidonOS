@@ -5,11 +5,6 @@
 #ifndef KTYPES_H
 #define KTYPES_H
 
-#define uchar_t unsigned char
-#define ushort_t unsigned short
-#define uint_t unsigned int;
-#define ulong_t unsigned long;
-
 #define NULL 0
 
 struct ktime
@@ -36,5 +31,7 @@ typedef unsigned int u32;
 typedef signed int s32;
 typedef unsigned long long u64;
 typedef signed long long s64;
+
+typedef int size_t;
 
 #endif

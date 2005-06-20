@@ -12,23 +12,50 @@ FILE *fopen(char *path, char *mode)
 
 	vfs_mount_parse(path, relative_path, &vmount);
 
-	return fat_fopen(&vmount, path, mode);
+	return vmount.fopen(&vmount, path, mode);
 }
 
-void fclose(FILE *file)
+int fclose(FILE *file)
 {
 	vfs_mount *vmount;
 	fat_fclose(vmount, file);
+
+	return 1;
 }
 
-char getchar(FILE *file)
+int fgetc(FILE *file)
 {
 	vfs_mount *vmount;
 	return fat_getchar(vmount, file);
 }
 
-int fgetsize(FILE *file)
+long int ftell(FILE *file)
 {
-	return file->size;
+	return file->offset;
+}
+
+/***********************************************
+ * int fseet(FILE *file, long int offset, int start)
+ *
+ * This comes straight from the ANSI C documentation.
+ * *********************************************/
+int fseek(FILE *file, long int offset, int start)
+{
+	switch (start)
+	{
+		case SEEK_CUR:
+				break;
+		case SEEK_END:
+				file->offset = file->size;
+				break;
+		case SEEK_SET:
+				file->offset = 0;
+				break;
+		default:
+				return 1;
+	}
+
+	file->offset += offset;
+	return 0;
 }
 

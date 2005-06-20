@@ -45,6 +45,19 @@ compile:
 	@$(MAKE) -C exec
 	@$(MAKE) ${KERNEL_FILE}
 
+tex:
+	@$(MAKE) -C interrupts tex
+	@$(MAKE) -C mm tex
+	@$(MAKE) -C multitasking tex
+	@$(MAKE) -C screen tex
+	@$(MAKE) -C string tex
+	@$(MAKE) -C devices tex
+	@$(MAKE) -C fs tex
+	@$(MAKE) -C util tex
+	@$(MAKE) -C exec tex
+	@echo "(PDFLATEX) kernel.pdf"
+	@pdflatex kernel.tex &> /dev/null
+
 ####################################System################################3
 KERNEL_TOP="y"
 include kernel.mk
@@ -84,3 +97,4 @@ depclean:
 	@$(MAKE) -C exec depclean
 	@echo "(RM) ${KERNEL_OBJS} ${KERNEL_FILE}"
 	@rm -f ${KERNEL_OBJS} ${KERNEL_FILE} 
+	@rm -f kernel.aux kernel.log kernel.pdf

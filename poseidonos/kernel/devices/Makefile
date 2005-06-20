@@ -3,6 +3,11 @@ default :
 	@$(MAKE) -C keyboard
 	@$(MAKE) -C manager
 
+tex :
+	@$(MAKE) -C floppy tex
+	@$(MAKE) -C keyboard tex
+	@$(MAKE) -C manager tex
+
 depclean :
 	@$(MAKE) -C floppy depclean
 	@$(MAKE) -C keyboard depclean

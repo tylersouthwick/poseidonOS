@@ -30,7 +30,7 @@ int exec(char *exe)
 	program = (char *)page.address;
 
 	/*copy the buffer into a buffer*/
-	while ((ch  = getchar(file)) != EOF)
+	while ((ch  = (char)fgetc(file)) != EOF)
 		program[i++] = ch;
 
 	fclose(file);

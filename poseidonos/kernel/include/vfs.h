@@ -28,6 +28,8 @@ typedef struct FILE
 	struct vfs_inode *inode;
 } FILE;
 
+typedef int fpos_t;
+
 typedef struct vfs_entry
 {
 	unsigned char name[VFS_NAME_MAXLEN+1];
@@ -60,9 +62,13 @@ typedef struct vfs_mount
 	device_t *device;
 
 	/*operations*/
-	void (*get_root_inode)(struct vfs_mount *);
-	void (*get_inode)(struct vfs_mount *, char *);
+	FILE *(*fopen)(struct vfs_mount *, char *, char *);
 } vfs_mount;
+
+typedef struct file_handles_t
+{
+	char *data;
+} file_handles_t;
 
 void vfs_register_fs(char *, void *);
 void vfs_init(void);
@@ -80,10 +86,28 @@ vfs_entry *ls(char *);
 /*file prototypes*/
 #define EOF -1
 
+
+/*this is the default number of file handles available by the system
+ * no more than this many files can be opened*/
+#define VFS_FILE_HANDLES 255
+
+#define SEEK_CUR 0
+#define SEEK_END 1
+#define SEEK_SET 2
+
+int fclose(FILE *);
+int feof(FILE *);
+int ferror(FILE *);
+int fflush(FILE *);
+int fgetc(FILE *);
+int fgetpos(FILE *, fpos_t *);
+char *gets(char *, int, FILE *);
 FILE *fopen(char *, char *);
-void fclose(FILE *);
-int fgetsize(FILE *);
-char getchar(FILE *);
+int fputc(int, FILE *);
+int fputs(const char *, FILE *);
+size_t fread(void *, size_t, size_t, FILE *);
+int fseek(FILE *, long int, int);
+long int ftell(FILE *);
 
 #endif
 

@@ -334,6 +334,8 @@ int fat_mount(vfs_mount *vmount)
 	///get the fat data
 	vmount->device->read(0, read_buffer, 1);
 
+	vmount->fopen = fat_fopen;
+
 	///allocate data for the fat_data structure
 	fat_data = kmalloc(sizeof(fat_info));
 	memcpy(fat_data, read_buffer, sizeof(fat_info));
