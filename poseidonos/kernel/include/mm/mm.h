@@ -14,8 +14,11 @@ void mm_init(multiboot_info_t *);
 //virtual mm
 void mm_paging_init(void);
 
-#define kernel_start 0x100000
-#define kernel_end   0x140000
+/*these are linker script symbols*/
+extern int _kernel_start;
+extern int _kernel_end;
+#define KERNEL_START ((unsigned int)&_kernel_start)
+#define KERNEL_END   ((unsigned int)&_kernel_end)
 
 #define USER_SPACE_START	512
 

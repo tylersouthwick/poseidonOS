@@ -11,7 +11,7 @@ void *mm_physical_page_alloc_normal(void);
 
 void mm_physical_pages_init(multiboot_info_t *mm_info) {
 	int page_count;
-	int end_of_kernel;
+	int end_of_kernel = KERNEL_END;
 
 	page_count = (mm_info->mem_upper)/4;
 
@@ -25,14 +25,14 @@ void mm_physical_pages_init(multiboot_info_t *mm_info) {
 
 	/*append the dma bitmap onto the end of the kernel
 	 * and the normal bitmap after the dma bitmap*/
-	memory_zones.dma_bitmap = (unsigned char*)kernel_end;
+	memory_zones.dma_bitmap = (unsigned char*)end_of_kernel;
 	memory_zones.normal_bitmap = (unsigned char*)((int)memory_zones.dma_bitmap + (memory_zones.dma_page_count >> 3));
 
-	end_of_kernel = ((int)kernel_end+(((int)page_count/8)));
+	/*adjust end of kernel counter
+	 * pages are added to the end of the kernel image */
+	end_of_kernel += (unsigned int)(page_count/8);
 	end_of_kernel &= 0xFFFFF000;
-
-	if (end_of_kernel < (int)kernel_end+page_count/8)
-		end_of_kernel += 4096;
+	end_of_kernel++;
 
 	/*initilize physical bitmaps*/
 	memset(memory_zones.dma_bitmap, 0, page_count/8);

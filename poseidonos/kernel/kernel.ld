@@ -2,7 +2,7 @@ OUTPUT_FORMAT("elf32-i386")
 ENTRY(start)
 SECTIONS
 {
-	. = 0x100000;
+	. = 0x300000;
 	_kernel_start = .;
 
 	.text :
@@ -28,6 +28,6 @@ SECTIONS
 		_ebss = .;
 	}
 
-	_kernel_end = .;
+	_kernel_end = .;/*0x00000030;*/
 }
 

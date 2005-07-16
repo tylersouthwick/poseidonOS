@@ -50,7 +50,7 @@ KERNEL_TOP="y"
 include kernel.mk
 
 #link and build kernel.bin
-${KERNEL_FILE}: ${KERNEL_OBJS} $(KERNEL_STATIC_LIBS)
+${KERNEL_FILE}: kernel.ld ${KERNEL_OBJS} $(KERNEL_STATIC_LIBS)
 	@echo "(LD) ${KERNEL_FILE}"
 	@ld -Tkernel.ld -o ${KERNEL_FILE} $(KERNEL_OBJS) --start-group $(KERNEL_STATIC_LIBS) --end-group
 	@echo

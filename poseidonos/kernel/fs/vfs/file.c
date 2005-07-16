@@ -35,7 +35,7 @@ long int ftell(FILE *file)
 }
 
 /***********************************************
- * int fseet(FILE *file, long int offset, int start)
+ * int fseek(FILE *file, long int offset, int start)
  *
  * This comes straight from the ANSI C documentation.
  * *********************************************/
