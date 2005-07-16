@@ -5,9 +5,6 @@ BASE_URL=poseidonos.sourceforge.net
 IMAGE_NAME=poseidonos.img
 MTOOL_CONFIG=.mtoolconfig
 
-tex :
-	@make -s -C kernel tex
-
 binaries : 
 	@make -s -C kernel
 	@make -s -C system
@@ -41,8 +38,6 @@ install : ${IMAGE_NAME}
 all : 
 	@echo "Building binaries...."
 	@make -s binaries
-	@echo "Building documentation..."
-	@make -s tex
 	@echo "Making image..."
 	@echo "Copying files to image.."
 	@make -s install

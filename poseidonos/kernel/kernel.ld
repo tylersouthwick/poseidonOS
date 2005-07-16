@@ -8,7 +8,6 @@ SECTIONS
 	.text :
 	{
 		*(.text)
-		*(.rodata)
 	}
 
 	.data ALIGN (0x1000) :
