@@ -1,8 +1,8 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
 #include <devices/floppy.h>
+#include <kmalloc.h>
 
 #include <fat.h>
 

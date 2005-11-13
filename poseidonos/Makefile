@@ -13,13 +13,13 @@ binaries :
 bochs : 
 	@echo "remember to run make install before make bochs"
 	@echo
-	@echo "(BOCHS) output can be found in .bochs_out"
-	@bochs -q &> .bochs_out &
+	@bochs -q 
 
 clean:
 	@make -s -C kernel clean
 	@make -s -C system clean
 	@scripts/install --clean -f ${IMAGE_NAME}
+	@rm -f .bochs_out
 
 depclean:
 	@make -s -C kernel depclean 

@@ -3,11 +3,12 @@
  	(c) 2004 Tyler Southwick
 	Liscensed under the GPL (checkout README or http://www.gnu.org/licenses/gpl.txt)*/
 
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
 #include <scheduler.h>
+#include <mm/paging.h>
+#include <multitasking.h>
 
 extern struct process_queue_item *processes;		/*the pointer to the currently running queue item*/
 extern process_t *current_process;
@@ -29,25 +30,33 @@ int get_current_process()
 	}
 	
 	///check to see if the process is finished with its timeslice
-	if (current_process->process_timetorun-- <= 0)
+	if (current_process->timetorun-- <= 0)
 	{
 		///reset the current process' time to run count
-		current_process->process_timetorun = (current_process->process_priority)*PRIORITY_TO_TIMETORUN;
+		current_process->timetorun = (current_process->priority)*PRIORITY_TO_TIMETORUN;
 		
 		///look through the process queue until a non-sleeping thread is found
 		processes = processes->next;
-		while (processes->pid->process_sleep > 0)
+		while (processes->pid->sleep > 0)
 		{
-			processes->pid->process_sleep--;
+			processes->pid->sleep--;
 			processes = processes->next;
 		}
 		///when found, point current_process to the
 		///non-sleeping thread
 		current_process = processes->pid;	
+//		kprint("new process: ");
+//		kprint(current_process->name);
+//		kprint("\n");
+
+		//change cr3
+#ifdef CHANGE_CR3
+		write_cr3(current_process->cr3);
+#endif
 	}
 	
 	///the new esp must be passed back to the scheduler isr!
-	return current_process->process_esp;
+	return current_process->esp;
 }
 
 /***************Timer stuff********************/

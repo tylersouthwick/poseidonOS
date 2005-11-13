@@ -1,13 +1,15 @@
 /* File: mm.c
    Description: implement the system memory manager*/
 
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
+#include <mm/mm.h>
 #include <mm/paging.h>
 #include <mm/multiboot.h>
 #include <mm/sbrk.h>
+#include <mm/physical_mem.h>
+#include <mm/virtual_mem.h>
 
 unsigned long floppy_dma_address;
 

@@ -1,4 +1,3 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
@@ -23,7 +22,7 @@ void mm_paging_init() {
 	address = 0;
 	for(i=0; i<1024; i++)
 	{
-		page_table[i] = address | 3;
+		page_table[i] = address | 3 | 4;
 		address += 4096;
 	}
 
@@ -31,24 +30,24 @@ void mm_paging_init() {
 	page_directory[0] = ((int)page_table) | 3;
 
 	for (i=1; i < 1024; i++)
-		page_directory[i] = 0 | 2;
+		page_directory[i] = 0 | 2 | 4;
 
 	/*map in page_table and page_directory*/
 	for(i=0; i<1024; i++)
-		page_directory_table[i] = 0 | 2;
+		page_directory_table[i] = 0 | 2 | 4;
 
 	/*add pages to the page table*/
 	page_directory_table[PAGING_GET_TABLE(page_directory)] = (long)page_directory;
-	page_directory_table[PAGING_GET_TABLE(page_directory)] |= 3;
+	page_directory_table[PAGING_GET_TABLE(page_directory)] |= 3 | 4;
 
 	page_directory_table[PAGING_GET_TABLE(page_directory_table)] = (long)page_directory_table;
-	page_directory_table[PAGING_GET_TABLE(page_directory_table)] |= 3;
+	page_directory_table[PAGING_GET_TABLE(page_directory_table)] |= 3 | 4;
 
 	page_directory_table[PAGING_GET_TABLE(page_table)] = (long)page_table;
-	page_directory_table[PAGING_GET_TABLE(page_table)] |= 3;
+	page_directory_table[PAGING_GET_TABLE(page_table)] |= 3 | 4;
 
 	page_directory[PAGING_GET_DIRECTORY(page_directory)] = (long)page_directory_table;
-	page_directory[PAGING_GET_DIRECTORY(page_directory)] |= 3;
+	page_directory[PAGING_GET_DIRECTORY(page_directory)] |= 3 | 4;
 
 	write_cr3(page_directory);
 	write_cr0(read_cr0() | 0x80000000);

@@ -1,6 +1,9 @@
 #ifndef H_VFS
 #define H_VFS
 
+#include <ktypes.h>
+#include <devices/manager.h>
+
 #define VFS_NAME_MAXLEN 256
 
 #define VFS_ATTR_NONE		0	/* no attribute bits */

@@ -7,6 +7,7 @@ C_OBJS = \
 				pit.o
 
 ASM_OBJS = \
-				scheduler_wrapper.o
+				scheduler_wrapper.o \
+				tss.o
 
 include ../kernel.mk

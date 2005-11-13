@@ -10,6 +10,13 @@
 
 #define PAGING_IS_PRESENT(addr) (((int)(addr)) & 1)
 
+static inline long read_esp(void)
+{
+	long esp;
+	asm volatile ("movl %%esp, %0" : "=r"(esp) : );
+	return esp;
+}
+
 static inline long read_cr0(void)
 {
 	long cr0;
@@ -29,9 +36,9 @@ static inline long read_cr2(void)
 	return cr2;
 }
 
-static inline long read_cr3(void)
+static inline unsigned long *read_cr3(void)
 {
-	long cr3;
+	unsigned long *cr3;
 	asm volatile ("movl %%cr3, %0" : "=r"(cr3) : );
 	return cr3;
 }

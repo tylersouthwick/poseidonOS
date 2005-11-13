@@ -1,6 +1,8 @@
 #ifndef UTIL_MAP_H
 #define UTIL_MAP_H
 
+#include <ktypes.h>
+
 /************************Structures************************************/
 typedef struct
 {

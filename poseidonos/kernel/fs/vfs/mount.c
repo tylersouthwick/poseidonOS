@@ -1,9 +1,11 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kutil.h>
 #include <kdebug.h>
 
 #include <fat.h>
+#include <kmalloc.h>
+#include <string.h>
+#include <screen.h>
 
 extern map_t *filesystems;
 map_t *mounts;

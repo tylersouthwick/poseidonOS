@@ -5,7 +5,6 @@
 * Liscensed under the GPL (checkout README or http://www.gnu.org/licenses/gpl.txt)
 *******************************************************************************/
 
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
@@ -13,9 +12,17 @@
 #include <tasks.h>								/*includes prototypes for two dummy tasks*/
 #include <irq.h>
 #include <multitasking.h>
+#include <mm/virtual_mem.h>
+#include <screen.h>
+#include <string.h>
+#include <idt.h>
+#include <mm/paging.h>
 
 struct process_queue_item *processes;		/*the pointer to the currently running queue item*/
 process_t *current_process;
+
+/*the global system_tss*/
+tss_t system_tss;
 
 extern void kernel_init(void);
 void idle_loop(void);
@@ -62,10 +69,18 @@ void multitasking_init() {
 	kprint("ok\n");
 #endif
 	
+#ifdef DEBUG_MULTITASKING
+	kprint("get tss descriptor: ");
+	put_int(gdt_get_selector(gdt_tss), 10);
+	kprint("\n");
+#endif
 	//setup system tss
+	system_tss.esp0 = read_esp();
+	system_tss.cr3 = read_cr3();
+	setup_tss(gdt_tss);
 	
 	///create system idle task
-	idle_task = multitasking_process_new(idle_loop, "idle task", PRIORITY_LOW);
+	idle_task = multitasking_process_new(idle_loop, "idle task", PRIORITY_LOW, DPL_RING0);
 	
 	///add the two test processes to the process queue
 	///the first process has to be added manually
@@ -80,7 +95,7 @@ void multitasking_init() {
 	memset(current_process, sizeof(process_t), 0);
 	
 	///create the kernel task
-	kernel_task = multitasking_process_new(kernel_init, "kernel_init", PRIORITY_LOW);
+	kernel_task = multitasking_process_new(kernel_init, "kernel_init", PRIORITY_LOW, DPL_RING0);
 	multitasking_process_add(kernel_task);
 	
 	///load the scheduler ISR into the IDT
@@ -108,9 +123,22 @@ void multitasking_init() {
  * 	returns a pointer to a process structure, but doubles as a pid (process identification
  * 	descriptor).  This pointer is used to add the process to the system queue.
  * ******************************************************************************/
-process_t *multitasking_process_new(void *handler, char *pname, int priority) {
+process_t *multitasking_process_new(void *handler, char *pname, int priority, int dpl) {
 	process_t *temp_process;
 	unsigned int *temp_stack;
+	int data_selector, code_selector;
+
+	//only while testing!
+//	dpl = 0;
+
+	if (dpl == PROCESS_USER)
+	{
+		code_selector = gdt_user_code | dpl;
+		data_selector = gdt_user_data | dpl;
+	} else {
+		code_selector = gdt_kernel_code | dpl;
+		data_selector = gdt_kernel_data | dpl;
+	}
 	
 	//create a new process
 	temp_process = (process_t *)kmalloc(sizeof(process_t));
@@ -120,7 +148,7 @@ process_t *multitasking_process_new(void *handler, char *pname, int priority) {
 	*temp_stack--;
 	*temp_stack--=(unsigned int)task_cleanup;
 	*temp_stack--=0x0202;								//EFlags
-	*temp_stack--=0x8;									//CS
+	*temp_stack--=code_selector;									//CS
 	*temp_stack--=(unsigned int)handler;				//EIP
 	*temp_stack--=0xEA;									//eax
 	*temp_stack--=0xEC;									//ecx
@@ -130,17 +158,20 @@ process_t *multitasking_process_new(void *handler, char *pname, int priority) {
 	*temp_stack--=0xEB2;									//ebp
 	*temp_stack--=0xE2;									//esi
 	*temp_stack--=0xED2;									//edi
-	*temp_stack--=0x10;									//ds
-	*temp_stack--=0x10;									//es
-	*temp_stack--=0x10;									//fs
-	*temp_stack=0x10;									//gs
+	*temp_stack--=data_selector;									//ds
+	*temp_stack--=data_selector;									//es
+	*temp_stack--=data_selector;									//fs
+	*temp_stack=data_selector;									//gs
 	
-	temp_process->process_esp=(unsigned int)temp_stack;
-	temp_process->process_ss=0x10;
-	temp_process->process_priority=priority;
-	temp_process->process_timetorun=priority*PRIORITY_TO_TIMETORUN;
+	temp_process->esp=(unsigned int)temp_stack;
+	temp_process->ss=data_selector;
+	temp_process->priority=priority;
+	temp_process->timetorun=priority*PRIORITY_TO_TIMETORUN;
+
+	/*create the new address_space for the process*/
+	//temp_process->cr3 = mm_virtual_mem_new_address_space();;
 	
-	strcpy(temp_process->process_name, pname);
+	strcpy(temp_process->name, pname);
 	
 	return temp_process;
 }
@@ -164,7 +195,7 @@ void multitasking_process_kill(process_t *pid) {
 	
 	//kill process
 	asm volatile("cli");		//disable interrupts so that no task switch occurs
-	kfree((unsigned int*)(pid->process_esp));
+	kfree((unsigned int*)(pid->esp));
 	kfree(pid);
 	
 	/*remove from system queue*/

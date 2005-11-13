@@ -1,7 +1,8 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 #include <kutil.h>
+#include <kmalloc.h>
+#include <string.h>
 
 map_t *linked_list_map_create()
 {

@@ -11,7 +11,8 @@ KERNEL_STATIC_LIBS= \
 		fs/vfs/libvfs.a \
 		fs/fat/libfat.a \
 		util/libutil.a \
-		string/libstring.a
+		string/libstring.a \
+		gdt/libgdt.a
 
 KERNEL_LINKER_LIBS= \
 		-lscreen.a \
@@ -25,7 +26,8 @@ KERNEL_LINKER_LIBS= \
 		-lfs/vfs/vfs.a \
 		-lfs/fat/fat.a \
 		-lutil/util.a \
-		-lstring/string.a
+		-lstring/string.a \
+		-lgdt/gdt.a
 
 KERNEL_OBJS = \
 		kernel_wrapper.o \
@@ -43,6 +45,7 @@ compile:
 	@$(MAKE) -C fs
 	@$(MAKE) -C util
 	@$(MAKE) -C exec
+	@$(MAKE) -C gdt
 	@$(MAKE) ${KERNEL_FILE}
 
 ####################################System################################3
@@ -52,7 +55,7 @@ include kernel.mk
 #link and build kernel.bin
 ${KERNEL_FILE}: kernel.ld ${KERNEL_OBJS} $(KERNEL_STATIC_LIBS)
 	@echo "(LD) ${KERNEL_FILE}"
-	@ld -Tkernel.ld -o ${KERNEL_FILE} $(KERNEL_OBJS) --start-group $(KERNEL_STATIC_LIBS) --end-group
+	ld -Tkernel.ld -o ${KERNEL_FILE} $(KERNEL_OBJS) --start-group $(KERNEL_STATIC_LIBS) --end-group
 	@echo
 	@echo "####################################"
 	@echo "The PoseidonOS kernel has now been built at ${KERNEL_FILE}"

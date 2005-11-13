@@ -1,9 +1,9 @@
 /* File: interrupts.c
    Discription: Implements interrupt function calls*/
 
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
+#include <screen.h>
 
 #include <interrupt.h>
 #include <bios.h>
@@ -13,6 +13,7 @@
 
 #define MASTER 0x20
 #define EOI 0x20
+void kpanic(char *);
 
 void kpanic(char *error_message)
 {

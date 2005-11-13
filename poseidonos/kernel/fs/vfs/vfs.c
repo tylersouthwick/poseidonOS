@@ -3,13 +3,13 @@
  *
  * manages vfs stuff
  * *********************************/
-#include <kernel.h>
 #include <ktypes.h>
 
 #include <util/map.h>
 
 #include <vfs.h>
 #include <fat.h>
+#include <kmalloc.h>
 
 map_t *filesystems;
 extern map_t *mounts;

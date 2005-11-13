@@ -1,6 +1,9 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
+
+#include <screen.h>
+#include <kmalloc.h>
+#include <string.h>
 
 #include <devices/floppy.h>
 
@@ -10,7 +13,7 @@ static fat_info *fat_data;
 static int FATSz;
 static int fat_root_sector_start;
 static int fat_root_sector_count;
-static FAT fat;
+//static FAT fat;
 
 unsigned inline static int fat_cluster_to_sector(unsigned int cluster_num)
 {

@@ -8,6 +8,7 @@
 
 #include <ktypes.h>
 #include <kmalloc.h>
+#include <gdt.h>
 
 //constants
 #define MULTITASKING_UPROCESS_STACK_SIZE 2048
@@ -18,24 +19,35 @@
 #define PRIORITY_NORMAL			2
 #define PRIORITY_HIGH			3
 
+/*dpl levels*/
+#define DPL_RING0			0
+#define DPL_RING1			1
+#define DPL_RING2			2
+#define DPL_RING3			3
+
+#define PROCESS_DRIVER	DPL_RING0
+#define PROCESS_USER		DPL_RING3
+
+//#define
+
 #define PRIORITY_TO_TIMETORUN	4
 
 //define multitasking structures and types
 typedef struct {
-	unsigned int process_esp;			//position of process' esp
-	unsigned int process_ss;			//stack segment
-	unsigned int process_stack;		//top of process' stack
-	unsigned int process_cr3;
-	unsigned int process_number;
-	unsigned int process_parent;
-	unsigned int process_owner;
-	unsigned int process_group;
-	unsigned int process_timetorun;
-	unsigned int process_sleep;
-	unsigned int process_priority;
-	unsigned int process_filehandle;
+	unsigned int esp;			//position of process' esp
+	unsigned int ss;			//stack segment
+	unsigned int stack;		//top of process' stack
+	unsigned long *cr3;
+	unsigned int number;
+	unsigned int parent;
+	unsigned int owner;
+	unsigned int group;
+	unsigned int timetorun;
+	unsigned int sleep;
+	unsigned int priority;
+	unsigned int filehandle;
 	kmalloc_free *kmalloc_freelist;
-	unsigned char process_name[32];
+	unsigned char name[32];
 } process_t;
 
 typedef struct {
@@ -59,7 +71,7 @@ typedef struct {
 	unsigned short	gs, __gsh;
 	unsigned short	ldt, __ldth;
 	unsigned short	trace, bitmap;
-} tss_t;
+} __attribute__ ((packed)) tss_t;
 
 struct process_queue_item {
 	process_t *pid;
@@ -70,11 +82,12 @@ typedef struct process_queue_item_t process_queue_item;
 
 //define prototypes for multitasking functions
 void multitasking_init(void);
-process_t *multitasking_process_new(void *, char *, int);
+process_t *multitasking_process_new(void *, char *, int, int);
 void multitasking_process_kill(process_t *);
 void multitasking_process_add(process_t *);
 void task_cleanup(void);
 void sleep(int);
 void pit_setup(int);
+void setup_tss(int);
 
 #endif

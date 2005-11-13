@@ -1,8 +1,9 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
 #include <mm/physical_mem.h>
+#include <string.h>
+#include <screen.h>
 
 mm_physical_page_zones memory_zones;
 

@@ -2,12 +2,15 @@
  * keyboard.c
  * ********************************************/
 
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
 #include <bios.h>
 #include <irq.h>
+#include <screen.h>
+#include <idt.h>
+#include <string.h>
+#include <kmalloc.h>
 
 #include <devices/manager.h>
 #include <devices/keyboard.h>

@@ -1,10 +1,10 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
 #include <mm/paging.h>
 #include <mm/virtual_mem.h>
 #include <mm/physical_mem.h>
+#include <screen.h>
 
 mm_page_header_t *base_page;
 
@@ -119,17 +119,65 @@ void mm_virtual_page_free(page_t *page) {
 	unsigned int pde_index = mm_virtual_get_pde(page->address);
 	unsigned int pte_index = mm_virtual_get_pte(page->address);
 	unsigned long *current_pde = (unsigned long *)(page_directory[pde_index] & 0xFFFFF000);
-	kprint ("address first: ");
-	put_int((int)page->address, 0x10);
-	kprint("\n");
+	KLOG_DEBUG("address first: ");
+	KLOG_INT_DEBUG((int)page->address, 0x10);
+	KLOG_DEBUG("\n");
 
 	for (i=pte_index; i<(pte_index + page->count); i++)
 	{
 		unsigned long address = current_pde[i];
-		kprint("address: ");
-		put_int(address, 0x10);
-		kprint("\n");
+		KLOG_DEBUG("address: ");
+		KLOG_INT_DEBUG(address, 0x10);
+		KLOG_DEBUG("\n");
 		current_pde[pte_index] = 0;
 	}
 }
 
+/********************************************************
+ * unsigned long *virtual_mem_new_address_space()
+ * *****************************************************/
+unsigned long *mm_virtual_mem_new_address_space() {
+	unsigned long *new_cr3;
+	unsigned long *current_cr3;
+	unsigned int pde;
+	//unsigned int pte;
+	//unsigned long *current_pte;
+	page_t page;
+
+	KLOG_INFO("creating new address space\n");
+	asm("cli");
+
+
+	/*allocate space for the page directory*/
+	page.count = 1;
+	mm_virtual_page_alloc(&page);//mm_physical_page_alloc(MM_TYPE_NORMAL);
+	new_cr3 = page.address;
+	kprint("new_cr3: ");
+	put_int((int)new_cr3, 0x10);
+	kprint("\n");
+
+	current_cr3 = read_cr3();
+
+	for (pde = KERNELSPACE_PAGE_START; pde < KERNELSPACE_PAGE_END; pde++)
+	{
+		kprint("current_cr3[pde]: ");
+		put_int(current_cr3[pde], 0x10);
+		kprint("\n");
+		if (!(current_cr3[pde] & 1)) continue;
+
+		kprint("copying cr3 entry...");
+		new_cr3[pde] = current_cr3[pde];
+		kprint("\n");
+		/*
+		for (pte=0; pte < 1024; pte++)
+		{
+			if (MM_IS_PRESENT(current_pte[pte])) break;
+			current_
+		}
+		*/
+	}
+	kprint("created new address space!");
+
+	asm("sti");
+	return new_cr3;
+}

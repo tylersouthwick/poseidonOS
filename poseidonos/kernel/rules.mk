@@ -1,4 +1,4 @@
-POSEIDON_ROOT=/home/northfuse/workspace/poseidonos
+POSEIDON_ROOT=/home/northfuse/workspace/osdev/poseidonos
 SRC_ROOT=${POSEIDON_ROOT}
 BUILD_ROOT=${POSEIDON_ROOT}/build
 DOC_ROOT=${POSEIDON_ROOT}/doc

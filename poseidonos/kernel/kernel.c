@@ -1,9 +1,16 @@
-#include <kernel.h>		/*includes most kernel functions*/
 #include <kutil.h>
 
 #include <vfs.h>
 #include <exec.h>
 #include <mm/virtual_mem.h>
+#include <mm/mm.h>
+#include <kmalloc.h>
+#include <idt.h>
+#include <gdt.h>
+#include <screen.h>
+#include <drivers.h>
+#include <devices/manager.h>
+#include <multitasking.h>
 
 /*this is for the system as a whole so that the current IRQ mask can be tracked*/
 unsigned int irq_mask=0;
@@ -15,6 +22,7 @@ extern process_t *current_process;
 void shutdown(void);
 void k_main(unsigned long, multiboot_info_t *);
 void kernel_init(void);
+void init(void);
 
 /********************************************************************************
 * void k_main(unsigned long magic, multiboot_info_t *mm_info)
@@ -43,12 +51,6 @@ void k_main(unsigned long magic, multiboot_info_t *mm_info) {
 	kprint("PoseidonOS v0.1 testing\n\n");
 	screen_set_color(SCREEN_DEFAULT);
 
-	kprint("Initilizing new GDT...");
-	gdt_init();
-	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
-	kprint("ok\n");
-	screen_set_color(SCREEN_DEFAULT);
-
 	kprint("Setting up IDT...");
 	idt_setup();
 	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
@@ -57,6 +59,12 @@ void k_main(unsigned long magic, multiboot_info_t *mm_info) {
 
 	kprint("Initilizing MM...");
 	mm_init(mm_info);
+	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
+	kprint("ok\n");
+	screen_set_color(SCREEN_DEFAULT);
+
+	kprint("Initilizing new GDT...");
+	gdt_init();
 	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
 	kprint("ok\n");
 	screen_set_color(SCREEN_DEFAULT);
@@ -122,14 +130,50 @@ void kernel_init() {
 	kprint(" driver(s)\n");
 	screen_set_color(SCREEN_DEFAULT);
 
+	/*
 	kprint("\nStarting shell.app...\n");
-
 	status = exec("/shell.app");
 	if (status == -1)
 		kprint("unable to find /shell.app\n");
+		*/
+	kprint("gdt_kernel_code: ");
+	put_int(gdt_kernel_code, 0x10);
+	kprint("\n");
+	kprint("gdt_kernel_data: ");
+	put_int(gdt_kernel_data, 0x10);
+	kprint("\n");
+	kprint("gdt_user_code: ");
+	put_int(gdt_user_code, 0x10);
+	kprint("\n");
+	kprint("gdt_user_data: ");
+	put_int(gdt_user_data, 0x10);
+	kprint("\n");
+	kprint("gdt_tss: ");
+	put_int(gdt_tss, 0x10);
+	kprint("\n");
+
+	{
+		process_t *user_process;
+		kprint("start a user task!\n");
+		user_process = multitasking_process_new(init, "user process", PRIORITY_LOW, PROCESS_USER);
+		//multitasking_process_add(user_process);
+	}
 
 	/*shutdown the system when everything is done*/
-	shutdown();
+	//shutdown();
+	while(1);
+}
+
+void init()
+{
+				/*
+	while(1)
+	{
+		kprint("init!");
+		sleep(10);
+	}
+	*/
+				while(1);
 }
 
 void shutdown()

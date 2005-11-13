@@ -37,6 +37,14 @@ scheduler_isr:
 	; Store current esp into the current process thread structure
 	mov ecx, dword[current_process]
 	mov [ecx], esp
+	
+	;change to kernel code segment
+	jmp 0x8:switch_to_kernel
+
+switch_to_kernel:
+	;change data segment
+	mov eax, 0x10
+	mov ds, eax
 
 	;call the scheduler that will decide what thread to execute next it
 	call get_current_process
@@ -56,6 +64,12 @@ scheduler_isr:
 	pop ds
 	popad
 	
+	push eax
+
+	mov eax, fs
+	mov ss, eax
+	pop eax
+
 	;return from interrupts
 	iretd
 

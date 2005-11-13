@@ -2,6 +2,7 @@
 #define PHYSICAL_MEM_H
 
 #include <util/stack.h>
+#include <mm/mm.h>
 
 /**************************************
  * constants

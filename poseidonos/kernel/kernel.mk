@@ -2,7 +2,7 @@
 ## Variables
 ## change the POSEIDON_ROOT to match your setup
 ####################################
-POSEIDON_ROOT=/home/northfuse/workspace/poseidonos
+POSEIDON_ROOT=/home/northfuse/workspace/osdev/poseidonos
 
 AS = nasm
 AS_FORMAT=elf
@@ -55,7 +55,7 @@ lib$(LIB_NAME).a: $(C_OBJS) $(ASM_OBJS)
 ######
 # generate dependencies
 ######
-%.d : %.c
+%.dep : %.c
 	@echo "(DEP) $<"
 	@set -e; rm -f $@; \
 		$(CC) -M $(CFLAGS) $< > $@.$$$$; \
@@ -63,7 +63,7 @@ lib$(LIB_NAME).a: $(C_OBJS) $(ASM_OBJS)
 		rm -f $@.$$$$
 
 C_SRCS=$(subst .o,.c,$(C_OBJS))
-MAKEFILES_D=$(subst .c,.d,$(C_SRCS))
+MAKEFILES_D=$(subst .c,.dep,$(C_SRCS))
 
 ifneq ($(KERNEL_TOP), "y")
 -include $(MAKEFILES_D)
@@ -85,5 +85,6 @@ ifneq ($(KERNEL_TOP), "y")
 depclean : clean
 	@echo "(RM) $(MAKEFILES_D)"
 	rm -f $(MAKEFILES_D)
+	rm -f *.dep.*
 endif
 

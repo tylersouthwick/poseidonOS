@@ -1,4 +1,3 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 

@@ -17,42 +17,13 @@ align 4
 dd MULTIBOOT_HEADER_MAGIC
 dd MULTIBOOT_HEADER_FLAGS
 dd CHECKSUM
-[extern data]
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; this is the main 'start' point for the kernel
+;;;;;;;;;;;;;;;;;;;;;;
 start:
 	push ebx
 	push eax
-
 	call k_main
 	jmp $
-
-[global gdt_init]
-gdt_init:
-
-	ret
-
-.data
-GDTR:
-GDTsize	DW GDT_END-GDT-1
-GDTbase	dd GDT
-
-[global GDT]
-GDT:
-NULL_SEL	EQU $-GDT
-	dd 0x0
-	dd 0x0
-CODESEL		EQU $-GDT
-	dw 0xFFFF
-	dw 0x0
-	db 0x0
-	db 0x9A
-	db 0xCF
-	db 0x0
-DATASEL	EQU $-GDT
-	dw 0xFFFF
-	dw 0x0
-	db 0x0
-	db 0x92
-	db 0xCF
-	db 0x0
-GDT_END:
 

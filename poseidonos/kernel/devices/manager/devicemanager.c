@@ -1,10 +1,11 @@
-#include <kernel.h>
 #include <kutil.h>					/*for all map related functions*/
 #include <kdebug.h>					/*for all map related functions*/
 
 #include <devices/manager.h>
 #include <devices/floppy.h>
 #include <devices/keyboard.h>
+#include <screen.h>
+#include <kmalloc.h>
 
 #include <util/map.h>
 

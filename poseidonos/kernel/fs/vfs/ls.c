@@ -1,8 +1,10 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
 #include <fat.h>
+#include <screen.h>
+#include <string.h>
+#include <kmalloc.h>
 
 char *months[] = {
 		"Jan",

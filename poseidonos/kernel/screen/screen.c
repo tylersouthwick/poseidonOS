@@ -1,12 +1,12 @@
 /* File: screen.c
    Description: Implements rudimentary access to the console screen*/
 
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
 #include <bios.h>
 #include <string.h>
+#include <screen.h>
 
 /****************************** Internal Functions and Variables **************************/
 static unsigned char *video_mem = (unsigned char *)0xB8000;

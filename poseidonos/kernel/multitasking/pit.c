@@ -1,8 +1,8 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
 #include <bios.h>
+#include <multitasking.h>
 
 void pit_setup(int freq)
 {

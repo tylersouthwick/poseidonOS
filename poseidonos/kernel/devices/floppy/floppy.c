@@ -1,10 +1,14 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
 
 #include <irq.h>
 #include <dma.h>
 #include <bios.h>
+#include <multitasking.h>
+#include <screen.h>
+#include <mm/mm.h>
+#include <mm/virtual_mem.h>
+#include <idt.h>
 
 #include <devices/floppy.h>
 #include <devices/manager.h>
@@ -83,7 +87,7 @@ void floppy_init()
 	
 	idt_interrupt_add(0x26, floppy_isr, 0);
 	irq_umask(IRQ_6);
-	floppy_timer_process = multitasking_process_new(floppy_timer, "floppy timer", PRIORITY_LOW);
+	floppy_timer_process = multitasking_process_new(floppy_timer, "floppy timer", PRIORITY_LOW, PROCESS_DRIVER);
 	multitasking_process_add(floppy_timer_process);
 
 	floppy_reset();

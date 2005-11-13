@@ -1,7 +1,7 @@
-#include <kernel.h>
 #include <ktypes.h>
 #include <kdebug.h>
-
+#include <screen.h>
+#include <idt.h>
 #include <interrupt.h>
 
 void idt_user_setup()
