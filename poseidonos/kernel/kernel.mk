@@ -2,7 +2,7 @@
 ## Variables
 ## change the POSEIDON_ROOT to match your setup
 ####################################
-POSEIDON_ROOT=/home/northfuse/workspace/osdev/poseidonos
+POSEIDON_ROOT=/home/northfuse/projects/osdev/poseidonos
 
 AS = nasm
 AS_FORMAT=elf
