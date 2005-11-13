@@ -74,10 +74,14 @@ void multitasking_init() {
 	put_int(gdt_get_selector(gdt_tss), 10);
 	kprint("\n");
 #endif
+
 	//setup system tss
+	//FIXME: switch from software taskswitching to hardware
+	/*
 	system_tss.esp0 = read_esp();
 	system_tss.cr3 = read_cr3();
 	setup_tss(gdt_tss);
+	*/
 	
 	///create system idle task
 	idle_task = multitasking_process_new(idle_loop, "idle task", PRIORITY_LOW, DPL_RING0);

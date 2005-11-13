@@ -7,6 +7,7 @@ extern void gdt_asm_init();
 extern tss_t * system_tss;
 
 void gdt_init() {
+#ifdef USE_DYNAMIC_GDT
 	struct gdt_descriptor *gdt = kmalloc(sizeof(struct gdt_descriptor) * 7);
 	tss_t *tss = system_tss;
 	int i = 0;
@@ -29,9 +30,6 @@ void gdt_init() {
 	i++;
 
 	/*kernel code segment*/
-	kprint("i: ");
-	put_int(i,10);
-	kprint("\n");
 	gdt[i].limit = sizeof(tss_t);
 	gdt[i].base015 =(int)&tss;
 	gdt[i].base1623=(int)&tss >>16;
@@ -39,5 +37,6 @@ void gdt_init() {
 	gdt[i].granularity=0;
 	gdt[i].base2431=(int)&tss>>24;
 	
+#endif
 	gdt_asm_init();
 }
