@@ -19,7 +19,9 @@ unsigned int irq_mask=0;
  * treated much like the 'this' pointer in Java or C++.*/
 extern process_t *current_process;
 
-void shutdown(void);
+static bool shutdown = false;
+
+void do_shutdown(void);
 void k_main(unsigned long, multiboot_info_t *);
 void kernel_init(void);
 void init(void);
@@ -107,12 +109,11 @@ void kernel_init() {
 
 	kprint("mounting root filesystem (read-only) at / ...");
 	status = mount("fd0", "/", "fat");
-	if (status == -1)
-	{
+	if (status == -1) {
 		screen_set_color(SCREEN_FG_RED | SCREEN_BG_BLACK);
 		kprint("unable to mount root fs\n");
 		screen_set_color(SCREEN_DEFAULT);
-		shutdown();
+		do_shutdown();
 	}
 	kprint("\n");
 
@@ -136,36 +137,14 @@ void kernel_init() {
 	if (status == -1)
 		kprint("unable to find /shell.app\n");
 		*/
-	kprint("gdt_kernel_code: ");
-	put_int(gdt_kernel_code, 0x10);
-	kprint("\n");
-	kprint("gdt_kernel_data: ");
-	put_int(gdt_kernel_data, 0x10);
-	kprint("\n");
-	kprint("gdt_user_code: ");
-	put_int(gdt_user_code, 0x10);
-	kprint("\n");
-	kprint("gdt_user_data: ");
-	put_int(gdt_user_data, 0x10);
-	kprint("\n");
-	kprint("gdt_tss: ");
-	put_int(gdt_tss, 0x10);
-	kprint("\n");
 
-	{
-		process_t *user_process;
-		kprint("start a user task!\n");
-		user_process = multitasking_process_new(init, "user process", PRIORITY_LOW, PROCESS_USER);
-		//multitasking_process_add(user_process);
-	}
+	while (!shutdown);
 
-	/*shutdown the system when everything is done*/
-	//shutdown();
+	do_shutdown();
 	while(1);
 }
 
-void init()
-{
+void init() {
 				/*
 	while(1)
 	{
@@ -176,8 +155,7 @@ void init()
 				while(1);
 }
 
-void shutdown()
-{
+void do_shutdown() {
 	screen_set_color(SCREEN_FG_MAGENTA | SCREEN_BG_BLACK);
 	kprint("\n\nSystem Shutting Down!\n");
 	screen_set_color(SCREEN_DEFAULT);
