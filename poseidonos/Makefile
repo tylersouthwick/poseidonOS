@@ -50,3 +50,5 @@ force_apidocs :
 apidocs : 
 	@make  -s force_apidocs
 
+deploy : apidocs
+	tar -jcf poseidonos-apidocs.tar.bz2 apidocs
