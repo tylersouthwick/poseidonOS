@@ -15,8 +15,7 @@ static int fat_root_sector_start;
 static int fat_root_sector_count;
 //static FAT fat;
 
-unsigned inline static int fat_cluster_to_sector(unsigned int cluster_num)
-{
+unsigned inline static int fat_cluster_to_sector(unsigned int cluster_num) {
 	int root_dir_sectors = ((fat_data->BytsPerSec - 1) + (fat_data->RootEntCnt * 32)) / (fat_data->BytsPerSec);
 	int fat_sectors = fat_data->NumFATs * fat_data->FATSz16;
 	int data_start = fat_data->RsvdSecCnt + fat_sectors+ root_dir_sectors;
@@ -25,8 +24,7 @@ unsigned inline static int fat_cluster_to_sector(unsigned int cluster_num)
 	return sector;
 }
 
-unsigned inline static int sector_to_fat_cluster(unsigned int sector)
-{
+unsigned inline static int sector_to_fat_cluster(unsigned int sector) {
 	int root_dir_sectors = ((fat_data->BytsPerSec - 1) + (fat_data->RootEntCnt * 32)) / (fat_data->BytsPerSec);
 	int fat_sectors = fat_data->NumFATs * fat_data->FATSz16;
 	int data_start = fat_data->RsvdSecCnt + fat_sectors+ root_dir_sectors;
@@ -36,13 +34,11 @@ unsigned inline static int sector_to_fat_cluster(unsigned int sector)
 	return cluster;
 }
 
-void fat_init()
-{
+void fat_init() {
 	vfs_register_fs("fat", &fat_mount);
 }
 
-void fat_get_first_sector(vfs_mount *vmount, char *origPath, int *sector_start, int *sector_count, int *directory)
-{		
+void fat_get_first_sector(vfs_mount *vmount, char *origPath, int *sector_start, int *sector_count, int *directory) {
 	int token_count=0;
 	int i;
 	int h;
@@ -60,8 +56,9 @@ void fat_get_first_sector(vfs_mount *vmount, char *origPath, int *sector_start, 
 	*sector_start = fat_root_sector_start;
 
 	///if we're only looking for root, then we don't need to do any more
-	if (strcmp(path, "/"))
+	if (strcmp(path, "/")) {
 		return;
+	}
 	
 	///clean off the trailing '/' if there is one
 	//if (path[strlen(path)] == '/')
@@ -70,12 +67,12 @@ void fat_get_first_sector(vfs_mount *vmount, char *origPath, int *sector_start, 
 	///if it isn't the root, then let's follow the fat tree
 	//find the first directory
 	len = strlen(path);
-	for (i=0; i < len; i++)
-		if (path[i] == '/')
-		{
+	for (i=0; i < len; i++) {
+		if (path[i] == '/') {
 			path[i] = 0;
 			token_count++;
 		}
+	}
 
 	//temp_path = kmalloc(sizeof(char) * strlen(path));
 	//strcpy(temp_path, path);
@@ -83,26 +80,25 @@ void fat_get_first_sector(vfs_mount *vmount, char *origPath, int *sector_start, 
 	buffer = path;
 
 	g=0;
-	for (h=token_count; h > 0; h--)
-	{
+	for (h=token_count; h > 0; h--) {
 		char *dir_name;
 		int found = 0;
 
-		while(path[g] != 0)	
+		while(path[g] != 0)	{
 			g++;
+		}
 
 		g++;
 		dir_name = &path[g];
 		entries = fat_do_ls(vmount, *sector_start, *sector_count, &item_count);
 
-		for(i=0; i<item_count; i++)
-		{
-			if (strcmp(entries[i].name, dir_name))
-			{
-				if (FAT_IS_DIRECTORY(entries[i].attributes))
+		for(i=0; i<item_count; i++) {
+			if (strcmp(entries[i].name, dir_name)) {
+				if (FAT_IS_DIRECTORY(entries[i].attributes)) {
 					*directory = 1;
-				else
+				} else {
 					*directory = 0;
+				}
 
 				found = 1;
 				*sector_start = fat_cluster_to_sector(entries[i].inode->inode_number);
@@ -110,10 +106,9 @@ void fat_get_first_sector(vfs_mount *vmount, char *origPath, int *sector_start, 
 			}
 		}
 
-		if (found)
+		if (found) {
 			return;
-		else
-		{
+		} else {
 			*sector_start = -1;
 			return;
 		}
@@ -137,8 +132,7 @@ void fat_get_first_sector(vfs_mount *vmount, char *origPath, int *sector_start, 
  * Author:	Tyler Southwick (northfuse@gmail.com)
  * Date:	January 3, 2005
  * *****************************************************************************/
-vfs_entry *fat_ls(vfs_mount *vmount, char *path, int *item_count)
-{
+vfs_entry *fat_ls(vfs_mount *vmount, char *path, int *item_count) {
 	int sector_count;
 	int sector_start;
 	vfs_entry *entries;
@@ -146,14 +140,12 @@ vfs_entry *fat_ls(vfs_mount *vmount, char *path, int *item_count)
 		
 	fat_get_first_sector(vmount, path, &sector_start, &sector_count, &isDirectory);
 
-	if (sector_start < 0)
-	{
+	if (sector_start < 0) {
 		*item_count = 0;
 		return (vfs_entry *)0;
 	}
 
-	if (isDirectory)
-	{
+	if (isDirectory) {
 		/*do normal ls*/
 		entries = fat_do_ls(vmount, sector_start, sector_count, item_count);
 		return entries;
@@ -171,10 +163,8 @@ vfs_entry *fat_ls(vfs_mount *vmount, char *path, int *item_count)
 		dir = kmalloc(strlen(path)+1);
 		strcpy(dir, path);
 
-		for (i=strlen(dir)-1; i>=0; i--)
-		{
-			if (dir[i] == '/')
-			{
+		for (i=strlen(dir)-1; i>=0; i--) {
+			if (dir[i] == '/') {
 				fname = kmalloc(strlen(dir) - i + 2);
 				strcpy(fname, (char *)((int)&dir[i] + 1));
 				dir[i+1] = 0;
@@ -185,10 +175,8 @@ vfs_entry *fat_ls(vfs_mount *vmount, char *path, int *item_count)
 		fat_get_first_sector(vmount, dir, &sector_start, &sector_count, &isDirectory);
 		entries = fat_do_ls(vmount, sector_start, sector_count, item_count);
 
-		for (i=0; i< *item_count; i++)
-		{
-			if (strcmp(entries[i].name, fname))
-			{
+		for (i=0; i< *item_count; i++) {
+			if (strcmp(entries[i].name, fname)) {
 				single_entry = kmalloc(sizeof(vfs_entry));
 				memcpy(single_entry, (void *)((int)entries + i*sizeof(vfs_entry)), sizeof(vfs_entry));
 				kfree(entries);
@@ -198,6 +186,7 @@ vfs_entry *fat_ls(vfs_mount *vmount, char *path, int *item_count)
 				return single_entry;
 			}
 		}
+
 		kfree(dir);
 		kfree(fname);
 	}
@@ -208,8 +197,7 @@ vfs_entry *fat_ls(vfs_mount *vmount, char *path, int *item_count)
 	return (vfs_entry *)0;
 }
 
-vfs_entry *fat_do_ls(vfs_mount *vmount, int sector_start, int sector_count, int *item_count)
-{
+vfs_entry *fat_do_ls(vfs_mount *vmount, int sector_start, int sector_count, int *item_count) {
 	fat_entry *fat_entries;
 	vfs_entry *vfs_entries;
 	int i=0;
@@ -224,17 +212,16 @@ vfs_entry *fat_do_ls(vfs_mount *vmount, int sector_start, int sector_count, int 
 	*item_count = 0;
 	i = 0;
 
-	while (fat_entries[i].name[0] != FAT_FLAG_EMPTY)
-	{
-		if (fat_entries[i].name[0] == FAT_FLAG_DELETED)
-		{
+	while (fat_entries[i].name[0] != FAT_FLAG_EMPTY) {
+		if (fat_entries[i].name[0] == FAT_FLAG_DELETED) {
 			i++;
 			continue;
 		}
 
 		/// we don't want volume id files or files that have been deleted
-		if (!FAT_IS_LONG_NAME(fat_entries[i].attr))
+		if (!FAT_IS_LONG_NAME(fat_entries[i].attr)) {
 			(*item_count)++;
+		}
 		i++;
 	}
 
@@ -242,11 +229,11 @@ vfs_entry *fat_do_ls(vfs_mount *vmount, int sector_start, int sector_count, int 
 
 	///add the fat entries to a vfs structure (array)
 	fat_counter = 0;
-	for (i=0; i < *item_count; i++)
-	{
+	for (i=0; i < *item_count; i++) {
 		//is fat_counter a valid index?
-		while ((FAT_IS_LONG_NAME(fat_entries[fat_counter].attr)) || fat_entries[fat_counter].name[0] == FAT_FLAG_DELETED)
+		while ((FAT_IS_LONG_NAME(fat_entries[fat_counter].attr)) || fat_entries[fat_counter].name[0] == FAT_FLAG_DELETED) {
 			fat_counter++;
+		}
 
 		///build name
 		memset(vfs_entries[i].name, 0, VFS_NAME_MAXLEN + 1);
@@ -271,8 +258,7 @@ vfs_entry *fat_do_ls(vfs_mount *vmount, int sector_start, int sector_count, int 
 		strip_whitespace(fat_entries[fat_counter].ext, FAT_EXT_MAXLEN);
 		
 		///add extension to valid files
-		if ((!FAT_IS_DIRECTORY(vfs_entries[i].attributes)) && (fat_entries[fat_counter].ext[0] != 0))
-		{
+		if ((!FAT_IS_DIRECTORY(vfs_entries[i].attributes)) && (fat_entries[fat_counter].ext[0] != 0)) {
 			char *temp_name;
 			temp_name = vfs_entries[i].name;
 			tolower(fat_entries[fat_counter].ext);
@@ -290,8 +276,7 @@ vfs_entry *fat_do_ls(vfs_mount *vmount, int sector_start, int sector_count, int 
 	return vfs_entries;
 }
 
-int fat_get_next_sector(vfs_mount *vmount, int sector)
-{
+int fat_get_next_sector(vfs_mount *vmount, int sector) {
 	unsigned int fat_sector_number;
 	unsigned int fat_offset;
 	u16 next_cluster;
@@ -311,25 +296,27 @@ int fat_get_next_sector(vfs_mount *vmount, int sector)
 	
 	next_cluster = *((u16 *) &fat_buffer[fat_offset]);
 
-	if (cluster & 1)
+	if (cluster & 1) {
 		next_cluster >>= 4;
-	else
+	} else {
 		next_cluster &= 0x0FFF;
+	}
 
 	kfree(fat_buffer);
 
-	if (next_cluster > 0xFF8)
+	if (next_cluster > 0xFF8) {
 		return -1;
+	}
 
-	if (next_cluster >=0x002 && next_cluster <= 0xFEF)
+	if (next_cluster >=0x002 && next_cluster <= 0xFEF) {
 		return fat_cluster_to_sector(next_cluster);
+	}
 
 	kprint("fat_get_next_sector :: error!\n");
 	return -1;
 }
 
-int fat_mount(vfs_mount *vmount)
-{
+int fat_mount(vfs_mount *vmount) {
 	unsigned char *read_buffer;
 	
 	read_buffer = (unsigned char *)kmalloc(512);
@@ -345,23 +332,31 @@ int fat_mount(vfs_mount *vmount)
 	kfree(read_buffer);
 	
 	///determine FATSz
-	if (fat_data->FATSz16 != 0)
+	if (fat_data->FATSz16 != 0) {
 		FATSz = fat_data->FATSz16;
-	else
+	} else {
 		FATSz = 0;
+	}
 		
 	fat_root_sector_count = ((fat_data->RootEntCnt * 32) + (fat_data->BytsPerSec - 1)) / (fat_data->BytsPerSec);
 	fat_root_sector_start = fat_data->RsvdSecCnt + (fat_data->NumFATs * FATSz);
 
 	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
-	kprint("fd0: mounted as fat");
+	kprint("fd0: mounted as fat\n");
 	screen_set_color(SCREEN_DEFAULT);
+
+	kprint("vmount: ");
+	put_int((int)(&vmount), 0x10);
+	kprint("\n");
+
+	kprint("vmount.fopen: ");
+	put_int((int)(&(vmount->fopen)), 0x10);
+	kprint("\n");
 
 	return 1;
 }
 
-void fat_umount(vfs_mount * vmount)
-{
+void fat_umount(vfs_mount * vmount) {
 				/*
 	kfree(fat_data);	
 	if (fat.table != 0)

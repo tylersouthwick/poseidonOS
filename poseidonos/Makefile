@@ -10,7 +10,7 @@ binaries :
 	@make -s -C system
 	@echo "Now run make install to install the binaries into a floppy image"
 
-bochs : 
+bochs : install
 	@echo "remember to run make install before make bochs"
 	@echo
 	@bochs -q 
@@ -20,8 +20,10 @@ clean:
 	@make -s -C system clean
 	@scripts/install --clean -f ${IMAGE_NAME}
 	@rm -f .bochs_out
+	@echo "removing apidocs"
+	@rm -fR apidocs
 
-depclean:
+depclean: clean
 	@make -s -C kernel depclean 
 
 ${IMAGE_NAME} : 
@@ -39,5 +41,12 @@ all :
 	@echo "Making image..."
 	@echo "Copying files to image.."
 	@make -s install
-	@make -s bochs
+	@make -s apidocs
+
+force_apidocs : 
+	rm -fRv apidocs
+	doxygen doxygen.config
+
+apidocs : 
+	@make  -s force_apidocs
 

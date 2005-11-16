@@ -131,12 +131,11 @@ void kernel_init() {
 	kprint(" driver(s)\n");
 	screen_set_color(SCREEN_DEFAULT);
 
-	/*
 	kprint("\nStarting shell.app...\n");
 	status = exec("/shell.app");
-	if (status == -1)
+	if (status == -1) {
 		kprint("unable to find /shell.app\n");
-		*/
+	}
 
 	while (!shutdown);
 

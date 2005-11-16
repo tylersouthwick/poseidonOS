@@ -9,14 +9,14 @@
 #define FILE_PUTCHAR
 
 /*this only supports reading right now*/
-FILE *fat_fopen(struct vfs_mount *vmount, char *fname, char *mode)
-{
+FILE *fat_fopen(struct vfs_mount *vmount, char *fname, char *mode) {
 	int sector_start;
 	int sector_count;
 	int isDirectory;
 	vfs_entry *entry;
 	FILE *file;
 
+	kprint("fat_fopen...\n");
 	fat_get_first_sector(vmount, fname, &sector_start, &sector_count, &isDirectory);
 
 	file = (FILE *)kmalloc(sizeof(FILE));
