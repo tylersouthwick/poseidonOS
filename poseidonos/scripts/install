@@ -4,8 +4,7 @@
 #
 
 my $mtools_config_file=$ENV{MTOOL_CONFIG};
-if (!defined $mtools_config_file)
-{
+if (!defined $mtools_config_file) {
 	$mtools_config_file = ".mtoolsrc";
 }
 
@@ -18,79 +17,62 @@ my $clean = 0;
 my $floppy_image_name;
 
 #parse the command line options
-    my $usage = 1;
-    while (@ARGV > 0)
-    {
-        my $arg = shift @ARGV;
-        if ($arg eq "--build_floppy")
-				{
-					$build_floppy = 1;
-					$usage = 0;
-				}
-        elsif ($arg eq "--clean")
-        {
-					$clean = 1;
-					$usage = 0;
-        }
-				elsif ($arg eq "-about")
-				{
-					&about;
-					exit 0;
-				}
-				elsif ($arg eq "-f")
-				{
-					$floppy_image_name = shift @ARGV;
-					if (!(defined $floppy_image_name))
-					{
-						print STDERR "-f must be followed by the name of the image file\n";
-						$usage = 1;
-					}
-				}
-        else
-        {
-            print STDERR "unknown option $arg\n";
-            $usage = 1;
-        }
-    }
-
-		if (!$clean && !$build_floppy) 
-		{
+my $usage = 1;
+while (@ARGV > 0) {
+	my $arg = shift @ARGV;
+	if ($arg eq "--build_floppy") {
+		$build_floppy = 1;
+		$usage = 0;
+	} elsif ($arg eq "--clean") {
+		$clean = 1;
+		$usage = 0;
+	} elsif ($arg eq "-about") {
+		&about;
+		exit 0;
+	} elsif ($arg eq "-f") {
+		$floppy_image_name = shift @ARGV;
+		if (!(defined $floppy_image_name)) {
+			print STDERR "-f must be followed by the name of the image file\n";
 			$usage = 1;
 		}
+	} else {
+		print STDERR "unknown option $arg\n";
+		$usage = 1;
+	}
+}
 
-		if (!(defined $floppy_image_name) && (!$clean))
-		{
-			$usage = 1;
-		}
+if (!$clean && !$build_floppy) {
+	$usage = 1;
+}
 
-    if ($usage)
-    {
-			&about;
-      print STDERR "Usage: install.sh [options] -f <image name>\n";
-			print STDERR "Options:\n";
-			print STDERR "\t--build_floppy: Generates a fat12 floppy image\n";
-			print STDERR "\t--clean: delete image mtool config files\n";
-      exit $usage;
-    }
+if (!(defined $floppy_image_name) && (!$clean)) {
+	$usage = 1;
+}
+
+if ($usage) {
+	&about;
+	print STDERR "Usage: install.sh [options] -f <image name>\n";
+	print STDERR "Options:\n";
+	print STDERR "\t--build_floppy: Generates a fat12 floppy image\n";
+	print STDERR "\t--clean: delete image mtool config files\n";
+	exit $usage;
+}
 
 ###
 # validate command line arguments
-if ($clean && $build_floppy)
-{
+if ($clean && $build_floppy) {
 	print "--clean can not be used in conjunction with any other option\n";
-		print "--clean can not be used in conjunction with any other option\n";
+	print "--clean can not be used in conjunction with any other option\n";
 	exit -1;
 }
 
 #####
 # process commands
-if ($clean)
-{
+if ($clean) {
 	&clean_files;
 }
 
-if ($build_floppy)
-{
+if ($build_floppy) {
 	&generate_mtools_config;
 	&build_floppy_image;
 	&install_grub;
