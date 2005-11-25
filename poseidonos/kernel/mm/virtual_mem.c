@@ -119,17 +119,17 @@ void mm_virtual_page_free(page_t *page) {
 	unsigned int pde_index = mm_virtual_get_pde(page->address);
 	unsigned int pte_index = mm_virtual_get_pte(page->address);
 	unsigned long *current_pde = (unsigned long *)(page_directory[pde_index] & 0xFFFFF000);
+
 	KLOG_DEBUG("address first: ");
 	KLOG_INT_DEBUG((int)page->address, 0x10);
 	KLOG_DEBUG("\n");
 
-	for (i=pte_index; i<(pte_index + page->count); i++)
-	{
+	for (i=pte_index; i<(pte_index + page->count); i++) {
 		unsigned long address = current_pde[i];
 		KLOG_DEBUG("address: ");
 		KLOG_INT_DEBUG(address, 0x10);
 		KLOG_DEBUG("\n");
-		current_pde[pte_index] = 0;
+		current_pde[i] = 0;
 	}
 }
 
@@ -152,22 +152,21 @@ unsigned long *mm_virtual_mem_new_address_space() {
 	page.count = 1;
 	mm_virtual_page_alloc(&page);//mm_physical_page_alloc(MM_TYPE_NORMAL);
 	new_cr3 = page.address;
-	kprint("new_cr3: ");
-	put_int((int)new_cr3, 0x10);
-	kprint("\n");
+	KLOG_DEBUG("new_cr3: ");
+	KLOG_INT_DEBUG((int)new_cr3, 0x10);
+	KLOG_DEBUG("\n");
 
 	current_cr3 = read_cr3();
 
-	for (pde = KERNELSPACE_PAGE_START; pde < KERNELSPACE_PAGE_END; pde++)
-	{
-		kprint("current_cr3[pde]: ");
-		put_int(current_cr3[pde], 0x10);
-		kprint("\n");
+	for (pde = KERNELSPACE_PAGE_START; pde < KERNELSPACE_PAGE_END; pde++) {
+		KLOG_DEBUG("current_cr3[pde]: ");
+		KLOG_INT_DEBUG(current_cr3[pde], 0x10);
+		KLOG_DEBUG("\n");
 		if (!(current_cr3[pde] & 1)) continue;
 
-		kprint("copying cr3 entry...");
+		KLOG_DEBUG("copying cr3 entry...");
 		new_cr3[pde] = current_cr3[pde];
-		kprint("\n");
+		KLOG_DEBUG("\n");
 		/*
 		for (pte=0; pte < 1024; pte++)
 		{
@@ -176,7 +175,7 @@ unsigned long *mm_virtual_mem_new_address_space() {
 		}
 		*/
 	}
-	kprint("created new address space!");
+	KLOG_DEBUG("created new address space!");
 
 	asm("sti");
 	return new_cr3;

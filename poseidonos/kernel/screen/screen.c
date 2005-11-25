@@ -37,22 +37,18 @@ static void update_cursor() {
 	outportb(crtc_io_adr+1, temp);
 }
 
-void put_char(char c)
-{
-	switch (c)
-	{
-		case '\n':
-		{
+void put_char(char c) {
+	switch (c) {
+		case '\n': {
 			scr_y++;
 			scr_x = 0;
 			break;
 		}
-		case '\b':
-		{
-			if (scr_x - 1 < 0)
-			{
-				if (scr_y > 0)
+		case '\b': {
+			if (scr_x - 1 < 0) {
+				if (scr_y > 0) {
 					scr_y--;
+				}
 				scr_x = 79;
 			} else {
 				scr_x--;
@@ -61,8 +57,7 @@ void put_char(char c)
 			video_mem[screen_get_position()+1] = screen_attributes;
 			break;
 		}
-		case '\t':
-		{
+		case '\t': {
 			scr_x++;
 			video_mem[screen_get_position()] = 0;
 			video_mem[screen_get_position()+1] = screen_attributes;
@@ -71,8 +66,7 @@ void put_char(char c)
 			video_mem[screen_get_position()+1] = screen_attributes;
 			break;
 		}
-		default:
-		{
+		default: {
 			video_mem[screen_get_position()] = c;
 			video_mem[screen_get_position()+1] = screen_attributes;
 			scr_x++;
@@ -85,29 +79,26 @@ void put_char(char c)
 		memcpy(video_mem,(void *)((int)video_mem + 160), 4000);
 		scr_y--;
 	}
+
 	update_cursor();
 }
 
-void put_int(unsigned int number, unsigned int base)
-{
+void put_int(unsigned int number, unsigned int base) {
 	int index = 0;
 	char buffer1[12];
 	char buffer2[12];
 
-	if (number < 0)
-	{
+	if (number < 0) {
 		put_char('-');
 		number *= -1;
 	}
 
-	if (base == 0x10)
-	{
+	if (base == 0x10) {
 		put_char('0');
 		put_char('x');
 	}
 
-	if (!number)
-	{
+	if (!number) {
 		put_char('0');
 		return;
 	}
@@ -162,8 +153,7 @@ static void kprint_str(char *str) {
 
 void screen_clear() {
 	unsigned int i=0;
-	while (i< (80*25*2))
-	{
+	while (i< (80*25*2)) {
 		video_mem[i] = ' ';
 		i++;
 		video_mem[i] = screen_attributes;
@@ -173,7 +163,6 @@ void screen_clear() {
 	update_cursor();
 }
 
-void screen_set_color(int color)
-{
+void screen_set_color(int color) {
 	screen_attributes = color;
 }

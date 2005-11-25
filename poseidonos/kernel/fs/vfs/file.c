@@ -12,13 +12,7 @@ FILE *fopen(char *path, char *mode) {
 	vfs_mount vmount;
 	char relative_path[strlen(path)];
 
-	kprint("finding mount path...");
 	vfs_mount_parse(path, relative_path, &vmount);
-	kprint("found!\n");
-
-	kprint("vmount.fopen: ");
-	put_int((int)(&(vmount.fopen)), 0x10);
-	kprint("\n");
 
 	return vmount.fopen(&vmount, path, mode);
 }

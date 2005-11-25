@@ -45,9 +45,9 @@ int get_current_process()
 		///when found, point current_process to the
 		///non-sleeping thread
 		current_process = processes->pid;	
-//		kprint("new process: ");
-//		kprint(current_process->name);
-//		kprint("\n");
+//		KLOG_DEBUG("new process: ");
+//		KLOG_DEBUG(current_process->name);
+//		KLOG_DEBUG("\n");
 
 		//change cr3
 #ifdef CHANGE_CR3

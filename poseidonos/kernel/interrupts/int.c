@@ -18,39 +18,39 @@ void kpanic(char *);
 void kpanic(char *error_message)
 {
 	asm volatile ("cli");
-	kprint("error message: ");
-	kprint(error_message);
+	KLOG_DEBUG("error message: ");
+	KLOG_DEBUG(error_message);
 /*
 	screen_set_color(SCREEN_BG_BLUE | SCREEN_FG_BRIGHT_WHITE);
 	screen_clear();
 
-	kprint("PoseidonOS v");
+	KLOG_DEBUG("PoseidonOS v");
 	put_int(POSEIDONOS_VERSION_MAJOR, 10);
-	kprint(".");
+	KLOG_DEBUG(".");
 	put_int(POSEIDONOS_VERSION_MINOR, 10);
-	kprint(POSEIDONOS_VERSION_TYPE);
-	kprint(" Kernel Panic:\n");
+	KLOG_DEBUG(POSEIDONOS_VERSION_TYPE);
+	KLOG_DEBUG(" Kernel Panic:\n");
 
-	kprint("\nWhat does this mean?\n");
-	kprint("\tThere has been a fatal crash in the core of the system (called the kernel).  If you feel so inclined, then you can take note of the stack and register dump and attempt to fix the problem yourself.  Or else, please go to http://poseidonos.sf.net and report the bug.  Thanks!\n");
+	KLOG_DEBUG("\nWhat does this mean?\n");
+	KLOG_DEBUG("\tThere has been a fatal crash in the core of the system (called the kernel).  If you feel so inclined, then you can take note of the stack and register dump and attempt to fix the problem yourself.  Or else, please go to http://poseidonos.sf.net and report the bug.  Thanks!\n");
 
-	kprint("\nError Message: ");
-	kprint(error_message);
+	KLOG_DEBUG("\nError Message: ");
+	KLOG_DEBUG(error_message);
 
-	kprint("\n\nStack dump: \n");
+	KLOG_DEBUG("\n\nStack dump: \n");
 
-	kprint("\nRegister dump:\n");
-	kprint("\teax: ");
+	KLOG_DEBUG("\nRegister dump:\n");
+	KLOG_DEBUG("\teax: ");
 	put_int(stack_poke(0x10), 0x10);
-	kprint("\tebx: ");
-	kprint("\tecx: ");
-	kprint("\tedx: ");
-	kprint("\nControl Registers:\n");
-	kprint("\tCR0: ");
+	KLOG_DEBUG("\tebx: ");
+	KLOG_DEBUG("\tecx: ");
+	KLOG_DEBUG("\tedx: ");
+	KLOG_DEBUG("\nControl Registers:\n");
+	KLOG_DEBUG("\tCR0: ");
 	put_int(read_cr0(), 0x10);
-	kprint("\tCR2: ");
+	KLOG_DEBUG("\tCR2: ");
 	put_int(read_cr2(), 0x10);
-	kprint("\tCR3: ");
+	KLOG_DEBUG("\tCR3: ");
 	put_int(read_cr3(), 0x10);
 	*/
 	/*
@@ -58,9 +58,9 @@ void kpanic(char *error_message)
 		int i;
 		for (i=0; i<20; i++)
 		{
-			kprint("\t");
+			KLOG_DEBUG("\t");
 			put_int(i, 10);
-			kprint(": ");
+			KLOG_DEBUG(": ");
 			put_int(stack_poke(-i), 0x10);
 		}
 	}
@@ -74,15 +74,15 @@ void int_00() {
 	kpanic("Divide by Zero Error (#00)");
 }
 void int_01() {
-	kprint("ERROR: Debug Exception (#DB)");
+	KLOG_DEBUG("ERROR: Debug Exception (#DB)");
 	outportb(MASTER,EOI);
 }
 void int_02() {
-	kprint("ERROR: NMI Exception");
+	KLOG_DEBUG("ERROR: NMI Exception");
 	outportb(MASTER,EOI);
 }
 void int_03() {
-	kprint("ERROR: Breakpoint (#BP)");
+	KLOG_DEBUG("ERROR: Breakpoint (#BP)");
 	outportb(MASTER,EOI);
 }
 void int_04() {
@@ -121,9 +121,9 @@ void int_14() {
 	//..
 
 	//print error if not successful return
-	kprint("page fault at ");
+	KLOG_DEBUG("page fault at ");
 	put_int(read_cr2(), 0x10);
-	kprint("\n");
+	KLOG_DEBUG("\n");
 
 	kpanic("Page Fault (#PF)");
 }

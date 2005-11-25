@@ -101,7 +101,7 @@ void *mm_paging_pde_insert() {
 		}
 	}
 	
-	kprint("ERROR: Unable to insert a page table into the current page directory");
+	KLOG_DEBUG("ERROR: Unable to insert a page table into the current page directory");
 	while(1);
 }
 */

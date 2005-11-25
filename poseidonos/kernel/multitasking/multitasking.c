@@ -17,6 +17,7 @@
 #include <string.h>
 #include <idt.h>
 #include <mm/paging.h>
+#include <gdt.h>
 
 struct process_queue_item *processes;		/*the pointer to the currently running queue item*/
 process_t *current_process;
@@ -27,8 +28,7 @@ tss_t system_tss;
 extern void kernel_init(void);
 void idle_loop(void);
 
-void idle_loop(void)
-{
+void idle_loop(void) {
 	while(1);
 }
 
@@ -59,21 +59,13 @@ void multitasking_init() {
 	process_t *kernel_task;
 
 	//reprogram pit
-#ifdef DEBUG_MULTITASKING
-	kprint("\nReprogramming pit...");
-#endif
-	
+	KLOG_DEBUG("\nReprogramming pit...");
 	pit_setup(100);
-
-#ifdef DEBUG_MULTITASKING
-	kprint("ok\n");
-#endif
+	KLOG_DEBUG("ok\n");
 	
-#ifdef DEBUG_MULTITASKING
-	kprint("get tss descriptor: ");
-	put_int(gdt_get_selector(gdt_tss), 10);
-	kprint("\n");
-#endif
+	KLOG_DEBUG("get tss descriptor: ");
+	KLOG_INT_DEBUG(gdt_get_selector(gdt_tss), 10);
+	KLOG_DEBUG("\n");
 
 	//setup system tss
 	//FIXME: switch from software taskswitching to hardware

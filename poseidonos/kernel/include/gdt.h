@@ -4,10 +4,7 @@
 #ifndef GDT_H
 #define GDT_H
 
-#define DEBUG_GDT
-
 #include <screen.h>
-#include <string.h>
 
 #define GDT_TYPE_DATA_RO 0
 #define GDT_TYPE_DATA_RO_ACCESSED 1
@@ -37,8 +34,7 @@ extern int gdt_tss;
 
 extern struct gdt_descriptor GDT;
 
-struct gdt_descriptor
-{
+struct gdt_descriptor {
 	unsigned short limit;
 	unsigned short base015;
 	unsigned char base1623;
@@ -48,29 +44,30 @@ struct gdt_descriptor
 }__attribute__((packed));
 
 static inline void gdt_add_descriptor(struct gdt_descriptor* gdt_entry, int base, int limit, char granularity, int sys_available, int present, int dpl, int system, int type) {
+#ifdef DEBUG_GDT
 	int operation_size = 1;
-		#ifdef DEBUG_GDT
-				kprint("adding gdt_descriptor:\n\tbase: ");
-				put_int(base, 0x10);
-				kprint("\n\tlimit: ");
-				put_int(limit, 0x10);
-				kprint("\n\tgranularity: ");
-				put_int(granularity, 10);
-				kprint("\n\toperation_size: ");
-				put_int(operation_size, 10);
-				kprint("\n\tsys_available: ");
-				put_int(sys_available, 10);
-				kprint("\n\tpresent: ");
-				put_int(present, 10);
-				kprint("\n\tdpl: ");
-				put_int(dpl, 10);
-				kprint("\n\tsystem: ");
-				put_int(system, 10);
-				kprint("\n\ttype: ");
-				put_int(type, 10);
-				kprint("\n");
+	KLOG_DEBUG("adding gdt_descriptor:\n\tbase: ");
+	KLOG_INT_DEBUG(base, 0x10);
+	KLOG_DEBUG("\n\tlimit: ");
+	KLOG_INT_DEBUG(limit, 0x10);
+	KLOG_DEBUG("\n\tgranularity: ");
+	KLOG_INT_DEBUG(granularity, 10);
+	KLOG_DEBUG("\n\toperation_size: ");
+	KLOG_INT_DEBUG(operation_size, 10);
+	KLOG_DEBUG("\n\tsys_available: ");
+	KLOG_INT_DEBUG(sys_available, 10);
+	KLOG_DEBUG("\n\tpresent: ");
+	KLOG_INT_DEBUG(present, 10);
+	KLOG_DEBUG("\n\tdpl: ");
+	KLOG_INT_DEBUG(dpl, 10);
+	KLOG_DEBUG("\n\tsystem: ");
+	KLOG_INT_DEBUG(system, 10);
+	KLOG_DEBUG("\n\ttype: ");
+	KLOG_INT_DEBUG(type, 10);
+	KLOG_DEBUG("\n");
 #endif
-
 }
+
+int gdt_get_selector(int selector);
 
 #endif

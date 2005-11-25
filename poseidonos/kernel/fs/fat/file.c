@@ -16,7 +16,6 @@ FILE *fat_fopen(struct vfs_mount *vmount, char *fname, char *mode) {
 	vfs_entry *entry;
 	FILE *file;
 
-	kprint("fat_fopen...\n");
 	fat_get_first_sector(vmount, fname, &sector_start, &sector_count, &isDirectory);
 
 	file = (FILE *)kmalloc(sizeof(FILE));

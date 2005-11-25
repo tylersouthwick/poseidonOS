@@ -6,22 +6,21 @@
 #include <ktypes.h>
 
 #include <util/map.h>
+#include <util/linked_list.h>
 
 #include <vfs.h>
 #include <fat.h>
 #include <kmalloc.h>
 
 map_t *filesystems;
-extern map_t *mounts;
+map_t *mounts;
 file_handles_t *file_handles;
 
-void vfs_register_fs(char *filesystem, void *mount_fs)
-{
-	filesystems->add(filesystems, filesystem, mount_fs);
+void vfs_register_fs(char *filesystem, void *mount_fs) {
+	filesystems->add(filesystems, filesystem, (unsigned long)mount_fs);
 }
 
-void vfs_init()
-{
+void vfs_init() {
 	filesystems = linked_list_map_create();
 	mounts = linked_list_map_create();
 

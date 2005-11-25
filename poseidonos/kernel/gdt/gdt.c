@@ -2,6 +2,7 @@
 #include <screen.h>
 #include <gdt.h>
 #include <multitasking.h>
+#include <kdebug.h>
 
 extern void gdt_asm_init();
 extern tss_t * system_tss;
@@ -39,4 +40,8 @@ void gdt_init() {
 	
 #endif
 	gdt_asm_init();
+}
+
+int gdt_get_selector(int selector) {
+	return 0;
 }

@@ -29,7 +29,7 @@ depclean: clean
 ${IMAGE_NAME} : 
 	@cd scripts;GRUB=/sbin/grub MTOOL_CONFIG=$(MTOOL_CONFIG) ./install --build_floppy -f ../${IMAGE_NAME}
 
-install : ${IMAGE_NAME}
+install : binaries ${IMAGE_NAME}
 	@echo "(MCOPY) kernel.sys"
 	@mcopy -n -o -i ${IMAGE_NAME} kernel/poseidon.sys ::poseidon.sys
 	@echo "(MCOPY) shell.app"

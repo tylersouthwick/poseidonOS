@@ -58,8 +58,8 @@ vfs_entry *ls(char *path)
 
 			attributes[4] = 0;
 			
-			kprint (attributes);
-			kprint("  ");
+			KLOG_DEBUG (attributes);
+			KLOG_DEBUG("  ");
 			if (entries[i].size < 10)
 				put_char(' ');
 			if (entries[i].size < 100)
@@ -70,7 +70,7 @@ vfs_entry *ls(char *path)
 				put_char(' ');
 
 			put_int(entries[i].size, 10);
-			kprint("  ");
+			KLOG_DEBUG("  ");
 			{
 				struct kdate date;
 				memcpy(&date, &entries[i].modified_date, sizeof(struct kdate));
@@ -79,16 +79,16 @@ vfs_entry *ls(char *path)
 
 				put_int(date.day, 10);
 				put_char(' ');
-				kprint(months[date.month]);
+				KLOG_DEBUG(months[date.month]);
 				put_char(' ');
 				put_int(date.year, 10);
 			}
-			kprint("  ");
-			kprint(entries[i].name);
-			kprint("\n");
+			KLOG_DEBUG("  ");
+			KLOG_DEBUG(entries[i].name);
+			KLOG_DEBUG("\n");
 		}
 	} else 
-		kprint("invalid path!\n");
+		KLOG_ERROR("invalid path!\n");
 
 	return entries;
 }

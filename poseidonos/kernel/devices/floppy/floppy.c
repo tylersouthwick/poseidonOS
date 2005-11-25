@@ -78,9 +78,8 @@ void floppy_init()
 		device_register("fd0", floppy_block_read, floppy_block_write );
 	}
 	
-	if (b > 0)
-	{
-		kprint("only one floppy disk supported!\n");
+	if (b > 0) {
+		KLOG_ERROR("only one floppy disk supported!\n");
 	}
 
 	floppy_dma_address = mm_physical_page_alloc(MM_TYPE_DMA);
@@ -516,7 +515,7 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
 			floppy_seek(1);
 			floppy_recalibrate();
 			floppy_motor_stop();
-			kprint("FDC: Disk change detected. Trying again.\n");
+			KLOG_ERROR("FDC: Disk change detected. Trying again.\n");
 			return floppy_rw(block, blockbuff, read, nosectors);
 		}
 		
@@ -524,7 +523,7 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
 		if (!floppy_seek(track))
 		{
 			floppy_motor_stop();
-			kprint("FDC: Seek error\n");
+			KLOG_ERROR("FDC: Seek error\n");
 			return false;
 		}
 		
@@ -556,9 +555,8 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
 		floppy_sendbyte(0xff);
 		
 		///wait for commmand completion
-		if (!floppy_wait(true))
-		{
-			kprint("Timed out, trying operation again after reset\n");
+		if (!floppy_wait(true)) {
+			KLOG_ERROR("Timed out, trying operation again after reset\n");
 			floppy_reset();
 			return floppy_rw(block, blockbuff, read, nosectors);
 		}

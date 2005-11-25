@@ -56,7 +56,7 @@ void *mm_physical_page_alloc(int type) {
 	}
 mm_physical_page_alloc_error:
 	asm volatile ("cli");
-	kprint("error allocating page!");
+	KLOG_DEBUG("error allocating page!");
 	while(1);
 }
 
@@ -104,7 +104,8 @@ void *mm_physical_page_alloc_dma()
 void mm_physical_page_free(void *p_addr) {
 	int superpage_index, subpage_index;
 
-	kprint("mm_physical_page_free :: warning -> page not free'd!\n");
+	KLOG_DEBUG("mm_physical_page_free :: warning -> page not free'd!\n");
+
 	//get indexes
 	superpage_index = MM_PHYSICAL_BITMAP_SP((int)p_addr);
 	subpage_index   = MM_PHYSICAL_BITMAP_SB((int)p_addr);

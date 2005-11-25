@@ -25,9 +25,7 @@ int exec(char *exe) {
 	void *(*exe_image)(void);
 	int ret;
 
-	kprint("opening file....");
 	file = fopen(exe, "r");
-	kprint("ok\n");
 
 	if (file == NULL) {
 		return -1;
@@ -35,19 +33,13 @@ int exec(char *exe) {
 
 	//get a virtual page for this process in userspace
 	page.count = 1;
-	kprint("allocating page...");
 	mm_virtual_page_alloc(&page);
-	kprint("ok\n");
 	program = (char *)page.address;
 
 	/*copy the buffer into a buffer*/
 	while ((ch  = (char)fgetc(file)) != EOF) {
 		program[i++] = ch;
 	}
-
-	kprint("the program is ");
-	put_int(i, 10);
-	kprint(" bytes long\n");
 
 	fclose(file);
 
