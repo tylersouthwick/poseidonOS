@@ -3,8 +3,7 @@ LIB_NAME = util
 C_OBJS = \
 				map.o \
 				stack.o \
-				md5.o \
-				linked_list.o
+				md5.o 
 
 ASM_OBJS = 
 

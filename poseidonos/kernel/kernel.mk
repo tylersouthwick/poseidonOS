@@ -1,19 +1,17 @@
 #####################################
 ## Variables
-## change the POSEIDON_ROOT to match your setup
 ####################################
-POSEIDON_ROOT=/home/northfuse/projects/osdev/poseidonos
 
-AS = nasm
+AS=nasm
 AS_FORMAT=elf
-CC = gcc
-AR = ar
-ARFLAGS = -rs
+CC=gcc
+AR=ar
+ARFLAGS=-rs
 
-KERNEL_CFLAGS = -ffreestanding -nostdlib -fno-builtins -Wall -Winline -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions -fpic 
+KERNEL_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions -fpic 
 
 #####################################
-## DON't EDIT BELOW THIS LINE
+## DON'T EDIT BELOW THIS LINE
 ## unless you know what you're doing
 #####################################
 

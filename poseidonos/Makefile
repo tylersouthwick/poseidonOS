@@ -6,7 +6,7 @@ IMAGE_NAME=poseidonos.img
 MTOOL_CONFIG=.mtoolconfig
 
 binaries : 
-	@make -s -C kernel
+	@POSEIDON_ROOT=${PWD} make -s -C kernel
 	@make -s -C system
 	@echo "Now run make install to install the binaries into a floppy image"
 
@@ -15,16 +15,20 @@ bochs : install
 	@echo
 	@bochs -q 
 
-clean:
-	@make -s -C kernel clean
+generic_clean :
 	@make -s -C system clean
 	@scripts/install --clean -f ${IMAGE_NAME}
 	@rm -f .bochs_out
 	@echo "removing apidocs"
 	@rm -fR apidocs
 
-depclean: clean
-	@make -s -C kernel depclean 
+clean:
+	@POSEIDON_ROOT=${PWD} make -s -C kernel clean
+	@make -s generic_clean
+
+depclean: 
+	@POSEIDON_ROOT=${PWD} make -s -C kernel depclean 
+	@make -s generic_clean
 
 ${IMAGE_NAME} : 
 	@cd scripts;GRUB=/sbin/grub MTOOL_CONFIG=$(MTOOL_CONFIG) ./install --build_floppy -f ../${IMAGE_NAME}

@@ -6,7 +6,6 @@
 #include <ktypes.h>
 
 #include <util/map.h>
-#include <util/linked_list.h>
 
 #include <vfs.h>
 #include <fat.h>
