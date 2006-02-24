@@ -99,5 +99,6 @@ start:
 	int 45h
 	mov eax, 10
 	int 45h
+	int 46h
 	ret
 

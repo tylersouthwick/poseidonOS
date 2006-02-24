@@ -418,6 +418,28 @@ user_interrupt_hook_asm:
 	popa
 	iret
 
+[extern user_interrupt_hook2]
+[global user_interrupt_hook_asm2]
+user_interrupt_hook_asm2:
+	pusha
+	push ds
+	push es
+	push fs
+	push gs
+	mov ecx, 0x10
+	mov ds, ecx
+	mov es, ecx
+	cld
+	push eax
+	call user_interrupt_hook2
+	pop eax
+	pop gs
+	pop fs
+	pop es
+	pop ds
+	popa
+	iret
+
 [global stack_poke]
 stack_poke:
 	push ebp

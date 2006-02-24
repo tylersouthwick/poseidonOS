@@ -47,4 +47,7 @@ void isr19(void);
 void user_interrupt_hook_asm(void);
 void user_interrupt_hook(char);
 
+void user_interrupt_hook_asm2(void);
+void user_interrupt_hook2(void);
+
 #endif

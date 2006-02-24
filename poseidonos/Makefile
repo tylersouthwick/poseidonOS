@@ -7,7 +7,7 @@ MTOOL_CONFIG=.mtoolconfig
 
 binaries : 
 	@POSEIDON_ROOT=${PWD} make -s -C kernel
-	@make -s -C system
+	@POSEIDON_ROOT=$(PWD) make -s -C system
 	@echo "Now run make install to install the binaries into a floppy image"
 
 bochs : install
@@ -16,7 +16,7 @@ bochs : install
 	@bochs -q 
 
 generic_clean :
-	@make -s -C system clean
+	@POSEIDON_ROOT=$(PWD) make -s -C system clean
 	@scripts/install --clean -f ${IMAGE_NAME}
 	@rm -f .bochs_out
 	@echo "removing apidocs"
@@ -24,11 +24,11 @@ generic_clean :
 
 clean:
 	@POSEIDON_ROOT=${PWD} make -s -C kernel clean
-	@make -s generic_clean
+	@POSEIDON_ROOT=$(PWD) make -s generic_clean
 
 depclean: 
 	@POSEIDON_ROOT=${PWD} make -s -C kernel depclean 
-	@make -s generic_clean
+	@POSEIDON_ROOT=$(PWD) make -s generic_clean
 
 ${IMAGE_NAME} : 
 	@cd scripts;GRUB=/sbin/grub MTOOL_CONFIG=$(MTOOL_CONFIG) ./install --build_floppy -f ../${IMAGE_NAME}
@@ -41,11 +41,11 @@ install : binaries ${IMAGE_NAME}
 
 all : 
 	@echo "Building binaries...."
-	@make -s binaries
+	@POSEIDON_ROOT=$(PWD) make -s binaries
 	@echo "Making image..."
 	@echo "Copying files to image.."
-	@make -s install
-	@make -s apidocs
+	@POSEIDON_ROOT=$(PWD) make -s install
+	@POSEIDON_ROOT=$(PWD) make -s apidocs
 
 force_apidocs : 
 	rm -fRv apidocs
