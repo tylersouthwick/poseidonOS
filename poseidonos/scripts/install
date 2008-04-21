@@ -3,6 +3,8 @@
 # This comes somewhat from minirighi-distrib.  I really liked his idea.
 #
 
+mkfloppy
+
 my $mtools_config_file=$ENV{MTOOL_CONFIG};
 if (!defined $mtools_config_file) {
 	$mtools_config_file = ".mtoolsrc";
