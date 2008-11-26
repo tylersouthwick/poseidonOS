@@ -55,7 +55,6 @@ void k_main(unsigned long magic, multiboot_info_t *mm_info) {
 	kprint("PoseidonOS v0.1 testing\n\n");
 	screen_set_color(SCREEN_DEFAULT);
 
-  /*
 	kprint("Setting up IDT...");
 	idt_setup();
 	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
@@ -82,7 +81,6 @@ void k_main(unsigned long magic, multiboot_info_t *mm_info) {
 
 	kprint("Entering multitasking environment...\n");
 	multitasking_init();
-  */
 }
 
 /***************************************************************
@@ -98,7 +96,6 @@ void k_main(unsigned long magic, multiboot_info_t *mm_info) {
  * Date		: December 30, 2004
  * **************************************************************/
 void kernel_init() {
-  /*
 	int drivers_count;
 	int status;
 	
@@ -146,7 +143,6 @@ void kernel_init() {
 
 	do_shutdown();
 	while(1);
-  */
 }
 
 void init() {
@@ -165,7 +161,7 @@ void do_shutdown() {
 	kprint("\n\nSystem Shutting Down!\n");
 	screen_set_color(SCREEN_DEFAULT);
 	kprint("\tumounting all drives...");
-	//umount_all();
+	umount_all();
 
 	screen_set_color(SCREEN_FG_YELLOW | SCREEN_BG_BLACK);
 	kprint("\n\tSystem Halted");
