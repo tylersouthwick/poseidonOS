@@ -1,0 +1,66 @@
+#!/usr/bin/perl -W
+
+use strict;
+use warnings;
+
+#declare subroutines
+sub trim($);
+sub checkForFile($);
+sub findFile($);
+
+#find required files
+open (REQUIRED_FILES, "build-tools/required_files.txt");
+
+my $record;
+while ($record = <REQUIRED_FILES>) {
+  checkForFile(trim($record));
+}
+
+close(REQUIRED_FILES);
+
+exit;
+
+sub checkForFile($) { 
+  my $file = shift;
+  print "checking for $file....";
+  my $path = findFile($file);
+  print $path;
+  print "\n";
+}
+
+sub trim($) {
+  my $string = shift;
+  $string =~ s/^\s+//;
+  $string =~ s/\s+$//;
+  return $string;
+}
+
+sub findFile($) {
+  my $file = shift;
+  my $tmpFile = "/tmp/1234svasfzxcv23424";
+  system("which  $file 1> $tmpFile 2> /dev/null");
+
+  my $returnCode = $?;
+  if ($returnCode == -1) {
+    print "\n\nERROR: Failed to execute $!\n";
+    exit;
+  }
+
+  if ($returnCode & 127) {
+    printf "child died with signal %d, %s coredump\n", 
+    ($returnCode & 127), ($returnCode & 128) ? 'with' : 'without';
+    exit;
+  }
+
+  $returnCode = $returnCode >> 8;
+  if ($returnCode == 0) {
+    open (TMP_FILE, $tmpFile);
+    my $foundFile = <TMP_FILE>;
+    close(TMP_FILE);
+    return trim($foundFile);
+  } else { 
+    print ("NOT FOUND");
+    print "\n\nPlease install $file and rerun config\n\n";
+    exit;
+  }
+}

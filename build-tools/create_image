@@ -1,14 +1,10 @@
 #!/usr/bin/perl -W
-#
-# This comes somewhat from minirighi-distrib.  I really liked his idea.
-#
 
-mkfloppy
 
-my $mtools_config_file=$ENV{MTOOL_CONFIG};
-if (!defined $mtools_config_file) {
-	$mtools_config_file = ".mtoolsrc";
-}
+#####
+# subroutines
+#####
+sub trim($);
 
 #####
 # command line switches
@@ -18,11 +14,13 @@ my $clean = 0;
 
 my $floppy_image_name;
 
+my $mtools_config_file = "mtools.config";
+
 #parse the command line options
 my $usage = 1;
 while (@ARGV > 0) {
 	my $arg = shift @ARGV;
-	if ($arg eq "--build_floppy") {
+	if ($arg eq "--create") {
 		$build_floppy = 1;
 		$usage = 0;
 	} elsif ($arg eq "--clean") {
@@ -53,9 +51,9 @@ if (!(defined $floppy_image_name) && (!$clean)) {
 
 if ($usage) {
 	&about;
-	print STDERR "Usage: install.sh [options] -f <image name>\n";
+	print STDERR "Usage: create_image [options] -f <image name>\n";
 	print STDERR "Options:\n";
-	print STDERR "\t--build_floppy: Generates a fat12 floppy image\n";
+	print STDERR "\t--create: Generates a fat12 floppy image\n";
 	print STDERR "\t--clean: delete image mtool config files\n";
 	exit $usage;
 }
@@ -78,10 +76,11 @@ if ($build_floppy) {
 	&generate_mtools_config;
 	&build_floppy_image;
 	&install_grub;
+  &copy_files;
 }
 
 sub about {
-	print "install.sh -- PoseidonOS installer\n";
+	print "create_image -- creates PoseidonOS image\n";
 }
 
 sub generate_mtools_config {
@@ -151,6 +150,17 @@ sub install_grub {
 	}
 }
 
+sub copy_files {
+  open PACKAGE_LIST, "package_list.txt";
+  my $file;
+  while ($file = <PACKAGE_LIST>) {
+    $file = trim($file);
+    print("Copying $file to PoseidonOS image\n");
+	  system("MTOOLSRC=$mtools_config_file mcopy $file a:/");
+  }
+  close (PACKAGE_LIST);
+}
+
 sub clean_files {
 	print "removing mtools config";
 	my $files = "$mtools_config_file ";
@@ -162,4 +172,11 @@ sub clean_files {
 		print "\n";
 	}
 	`rm -f $files`;
+}
+
+sub trim($) {
+  my $string = shift;
+  $string =~ s/^\s+//;
+  $string =~ s/\s+$//;
+  return $string;
 }
