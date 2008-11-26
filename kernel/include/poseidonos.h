@@ -1,0 +1,9 @@
+#ifndef POSEIDONOS_H
+#define POSEIDONOS_H
+
+#define POSEIDONOS_VERSION_MAJOR	0
+#define POSEIDONOS_VERSION_MINOR	1
+#define POSEIDONOS_VERSION_TYPE		"pre-alpha"
+
+#endif
+
