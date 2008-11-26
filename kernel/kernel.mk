@@ -7,8 +7,9 @@ AS_FORMAT=elf
 CC=gcc
 AR=ar
 ARFLAGS=-rs
+ARCH=i586
 
-KERNEL_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions -fpic 
+KERNEL_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -march=${ARCH} -m32
 
 #####################################
 ## DON'T EDIT BELOW THIS LINE
@@ -18,8 +19,8 @@ KERNEL_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-pro
 ################
 ## build variables
 ################
-SRC_ROOT=$(POSEIDON_ROOT)
-KERNEL_ROOT=$(SRC_ROOT)/kernel
+SRC_ROOT=/home/tylers2/workspace/PoseidonOS/kernel
+KERNEL_ROOT=$(SRC_ROOT)
 KERNEL_INCLUDE=$(KERNEL_ROOT)/include
 
 CFLAGS = $(KERNEL_CFLAGS) -I$(KERNEL_INCLUDE)
