@@ -3,7 +3,10 @@ default: PoseidonOS.img
 kernel :
 	@make -C kernel
 
-PoseidonOS.img : kernel
+system :
+	@make -C system
+
+PoseidonOS.img : kernel system
 	@make -C kernel
 	@cd build-tools; ./create_image --create -f PoseidonOS.img
 	@mv build-tools/PoseidonOS.img .

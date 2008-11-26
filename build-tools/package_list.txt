@@ -1,1 +1,2 @@
 ../kernel/poseidon.sys
+../system/shell/shell.app
