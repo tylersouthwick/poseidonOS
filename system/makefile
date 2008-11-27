@@ -1,6 +1,8 @@
 
 default : 
-	cd shell; make
+	make -C init
+	make -C shell
 
 clean :
-	cd shell; make clean
+	make -C init clean
+	make -C shell clean

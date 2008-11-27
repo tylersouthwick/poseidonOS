@@ -36,7 +36,7 @@ int exec(char *exe) {
 	mm_virtual_page_alloc(&page);
 	program = (char *)page.address;
 
-	/*copy the buffer into a buffer*/
+	/*copy the file into a buffer*/
 	while ((ch  = (char)fgetc(file)) != EOF) {
 		program[i++] = ch;
 	}
