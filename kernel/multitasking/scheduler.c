@@ -5,6 +5,7 @@
 
 #include <ktypes.h>
 #include <kdebug.h>
+#define KDEBUG
 
 #include <scheduler.h>
 #include <mm/paging.h>
@@ -45,9 +46,9 @@ int get_current_process()
 		///when found, point current_process to the
 		///non-sleeping thread
 		current_process = processes->pid;	
-//		KLOG_DEBUG("new process: ");
-//		KLOG_DEBUG(current_process->name);
-//		KLOG_DEBUG("\n");
+		KDEBUG("new process: ");
+		KDEBUG(current_process->name);
+		KDEBUG("\n");
 
 		//change cr3
 #ifdef CHANGE_CR3

@@ -5,6 +5,7 @@
 #include <exec.h>
 
 #include <screen.h>
+#include <multitasking.h>
 
 #include <mm/virtual_mem.h>
 
@@ -13,6 +14,7 @@
  *
  * runs a program that is on the disk.  Returns the status code from the program
  * */
+static void test();
 int exec(char *exe) {
 	FILE *file;
 	char ch;
@@ -22,6 +24,7 @@ int exec(char *exe) {
 	int *(*exe_image)(void);
 	int ret;
   int count = 0;
+  process_t *task;
 
 	file = fopen(exe, "r");
 
@@ -37,15 +40,19 @@ int exec(char *exe) {
 	/*copy the file into a buffer*/
   for (count = 0; count < 55; count++) {
 	  ch  = (char)fgetc(file);
-		program[i++] = ch;
+		program[count] = ch;
 	}
+
 
 	fclose(file);
 
 	/*execute the program*/
-	exe_image = (void *)program;
-	ret = exe_image();
+	task = multitasking_process_new(program, exe, PRIORITY_LOW, PROCESS_DRIVER);
+	multitasking_process_add(task);
 
+  KDEBUG("added task");
+
+  /*
   kprint("returned value: ");
   put_int(ret, 10);
   kprint("\n");
@@ -53,6 +60,14 @@ int exec(char *exe) {
 	mm_virtual_page_free(&page);
 
 	return ret;
+  */
+  return 5;
+}
+
+static void test() {
+  asm("int $0x45");
+  kprint("hello world!");
+  while(1);
 }
 
 

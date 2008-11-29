@@ -4,7 +4,7 @@ AS=nasm
 AR=ar
 ARFLAGS=-rs
 ARCH=i586
-STATIC_LIBRARY_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -march=${ARCH} -m32  -static
+STATIC_LIBRARY_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions -march=${ARCH} -m32  -static
 STATIC_LIBRARY_INCLUDES=../includes
 LD_TARGET=i386linux
 

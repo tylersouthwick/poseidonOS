@@ -8,7 +8,7 @@
 void idt_user_setup()
 {
   kprint("adding user_interrupt_hook_asm2");
-	idt_interrupt_add(0x45, user_interrupt_hook_asm2, 0);
+	idt_interrupt_add(0x45, user_interrupt_hook_asm2, 3);
 	//idt_interrupt_add(0x46, user_interrupt_hook_asm2, 3);
 }
 
