@@ -7,8 +7,9 @@
 
 void idt_user_setup()
 {
-	idt_interrupt_add(0x45, user_interrupt_hook_asm, 3);
-	idt_interrupt_add(0x46, user_interrupt_hook_asm2, 3);
+  kprint("adding user_interrupt_hook_asm2");
+	idt_interrupt_add(0x45, user_interrupt_hook_asm2, 0);
+	//idt_interrupt_add(0x46, user_interrupt_hook_asm2, 3);
 }
 
 void user_interrupt_hook(char test) {
@@ -16,12 +17,14 @@ void user_interrupt_hook(char test) {
 }
 
 void user_interrupt_hook2() {
-	char *buffer;
+	//char *buffer;
 	kprint("getting string...\n");
 
+  /*
 	buffer = (char *)kmalloc(512);
 	gets(buffer, 512);
 	kprint("done: ");
 	kprint(buffer);
 	kprint("\n");
+  */
 }

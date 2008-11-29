@@ -119,11 +119,13 @@ void kernel_init() {
 	}
 	kprint("\n");
 
+  /*
 	kprint("installing userspace interrupts....");
 	idt_user_setup();
 	screen_set_color(SCREEN_FG_GREEN | SCREEN_BG_BLACK);
 	kprint("ok\n");
 	screen_set_color(SCREEN_DEFAULT);
+  */
 
 	kprint("loading drivers...");
 	drivers_count = drivers_load();

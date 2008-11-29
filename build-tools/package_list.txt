@@ -1,3 +1,4 @@
 ../kernel/poseidon.sys
 ../system/shell/shell.app
 ../system/init/init.app
+test

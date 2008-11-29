@@ -50,6 +50,8 @@ void idt_setup()
 	idt_interrupt_add(30, 0, 0);
 	idt_interrupt_add(31, 0, 0);
 
+  idt_user_setup();
+
 	//idt_interrupt_add(0x20, timer_isr, 0);
 	idtr_t *IDTRptr = &idtr;
 

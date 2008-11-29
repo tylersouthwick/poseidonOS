@@ -8,9 +8,6 @@
 
 #include <mm/virtual_mem.h>
 
-/*this is implemented in exec.asm*/
-extern void exec_asm(void *);
-
 /*****************************************
  * int exec(char *exe)
  *
@@ -22,8 +19,9 @@ int exec(char *exe) {
 	char *program;
 	int i = 0;
 	page_t page;
-	void *(*exe_image)(void);
+	int *(*exe_image)(void);
 	int ret;
+  int count = 0;
 
 	file = fopen(exe, "r");
 
@@ -32,12 +30,13 @@ int exec(char *exe) {
 	}
 
 	//get a virtual page for this process in userspace
-	page.count = 1;
+	page.count = 3;
 	mm_virtual_page_alloc(&page);
 	program = (char *)page.address;
 
 	/*copy the file into a buffer*/
-	while ((ch  = (char)fgetc(file)) != EOF) {
+  for (count = 0; count < 55; count++) {
+	  ch  = (char)fgetc(file);
 		program[i++] = ch;
 	}
 
@@ -45,10 +44,15 @@ int exec(char *exe) {
 
 	/*execute the program*/
 	exe_image = (void *)program;
-	ret = (int)exe_image();
+	ret = exe_image();
+
+  kprint("returned value: ");
+  put_int(ret, 10);
+  kprint("\n");
 
 	mm_virtual_page_free(&page);
 
 	return ret;
 }
+
 

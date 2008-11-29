@@ -1,5 +1,6 @@
 #include <stdio.h>
 
-void main(char * args) {
-  print("hello world!");
+int main(char * args) {
+  print();//"hello world!");
+return 7;
 }

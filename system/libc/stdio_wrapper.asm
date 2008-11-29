@@ -1,6 +1,5 @@
 [global print]
 print:
-	mov ebx, 0x0
 	int 45h
 	ret
 

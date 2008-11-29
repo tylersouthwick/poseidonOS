@@ -4,7 +4,7 @@ AS=nasm
 AR=ar
 ARFLAGS=-rs
 ARCH=i586
-STATIC_LIBRARY_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -march=${ARCH} -m32
+STATIC_LIBRARY_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-prototypes -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -march=${ARCH} -m32  -static
 STATIC_LIBRARY_INCLUDES=../includes
 LD_TARGET=i386linux
 
@@ -14,7 +14,7 @@ default : ${APP_NAME}.app
 
 ${APP_NAME}.app : ${ASM_OBJS} ${C_OBJS}
 	@echo "Building app ${APP_NAME}"
-	ld -m${LD_TARGET} -o ${APP_NAME}.app ${C_OBJS} ${ASM_OBJS} ${LIBS}
+	ld -m${LD_TARGET} --oformat binary -o ${APP_NAME}.app ${C_OBJS} ${ASM_OBJS} ${LIBS} 
 
 ############################################compile stuff#####################################
 
@@ -30,7 +30,7 @@ ${APP_NAME}.app : ${ASM_OBJS} ${C_OBJS}
 ######
 %.o : %.c
 	@echo "(CC) $<"
-	@$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 ######
 # generate dependencies
