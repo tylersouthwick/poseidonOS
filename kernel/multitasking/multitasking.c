@@ -22,9 +22,6 @@
 struct process_queue_item *processes;		/*the pointer to the currently running queue item*/
 process_t *current_process;
 
-/*the global system_tss*/
-tss_t system_tss;
-
 extern void kernel_init(void);
 void idle_loop(void);
 
@@ -59,36 +56,20 @@ void multitasking_init() {
 	process_t *kernel_task;
 
 	//reprogram pit
-	KLOG_DEBUG("\nReprogramming pit...");
+	KDEBUG("\nReprogramming pit...");
 	pit_setup(100);
-	KLOG_DEBUG("ok\n");
+	KDEBUG("ok\n");
 	
-	KLOG_DEBUG("get tss descriptor: ");
-	KLOG_INT_DEBUG(gdt_get_selector(gdt_tss), 10);
-	KLOG_DEBUG("\n");
+  tss_init();
 
-	//setup system tss
-	//FIXME: switch from software taskswitching to hardware
-	/*
-	system_tss.esp0 = read_esp();
-	system_tss.cr3 = read_cr3();
-	setup_tss(gdt_tss);
-	*/
-	
 	///create system idle task
 	idle_task = multitasking_process_new(idle_loop, "idle task", PRIORITY_LOW, DPL_RING0);
 	
-	///add the two test processes to the process queue
-	///the first process has to be added manually
 	///by creating the process queue
 	processes = kmalloc(sizeof(struct process_queue_item));
 	processes->next = processes;
 	processes->prev = processes;
 	processes->pid = idle_task;
-	
-	///at the moment this is a waste of memory
-	current_process = kmalloc(sizeof(process_t));
-	memset(current_process, sizeof(process_t), 0);
 	
 	///create the kernel task
 	kernel_task = multitasking_process_new(kernel_init, "kernel_init", PRIORITY_LOW, DPL_RING0);
@@ -97,6 +78,7 @@ void multitasking_init() {
 	///load the scheduler ISR into the IDT
 	idt_interrupt_add(0x20, scheduler_isr, 0);
 	
+  KDEBUG("starting interrupts");
 	asm volatile ("sti");
 	irq_umask(IRQ_0);
 
@@ -127,6 +109,7 @@ process_t *multitasking_process_new(void *handler, char *pname, int priority, in
 	//only while testing!
 //	dpl = 0;
 
+  /*
 	if (dpl == PROCESS_USER)
 	{
 		code_selector = gdt_user_code | dpl;
@@ -135,28 +118,31 @@ process_t *multitasking_process_new(void *handler, char *pname, int priority, in
 		code_selector = gdt_kernel_code | dpl;
 		data_selector = gdt_kernel_data | dpl;
 	}
+  */
+  data_selector = 0x10;
 	
 	//create a new process
 	temp_process = (process_t *)kmalloc(sizeof(process_t));
 	
 	//setup process' stack values
-	temp_stack = (unsigned int*)((unsigned int)kmalloc(MULTITASKING_UPROCESS_STACK_SIZE) + MULTITASKING_UPROCESS_STACK_SIZE);
+	temp_stack = (unsigned int*)((unsigned int)kmalloc(USTACK_SIZE) + USTACK_SIZE);
 	*temp_stack--;
 	*temp_stack--=(unsigned int)task_cleanup;
-	*temp_stack--=0x0202;								//EFlags
-	*temp_stack--=code_selector;									//CS
+	*temp_stack--=0x0202;
+	*temp_stack--=0x08;
+	//*temp_stack--=code_selector;									//CS
 	*temp_stack--=(unsigned int)handler;				//EIP
-	*temp_stack--=0xEA;									//eax
-	*temp_stack--=0xEC;									//ecx
-	*temp_stack--=0xED1;									//edx
-	*temp_stack--=0xEB1;									//ebx
-	*temp_stack--;										//increment esp by 4
-	*temp_stack--=0xEB2;									//ebp
-	*temp_stack--=0xE2;									//esi
-	*temp_stack--=0xED2;									//edi
-	*temp_stack--=data_selector;									//ds
-	*temp_stack--=data_selector;									//es
-	*temp_stack--=data_selector;									//fs
+	*temp_stack--=0;                            //ebp
+	*temp_stack--=0;                            //esp
+	*temp_stack--=0;                            //edi
+	*temp_stack--=0;                            //esi
+	*temp_stack--=0;                            //edx
+	*temp_stack--=0;                            //ecx
+	*temp_stack--=0;                            //ebx
+	*temp_stack--=0;                            //eax
+	*temp_stack--=data_selector;								//ds
+	*temp_stack--=data_selector;								//es
+	*temp_stack--=data_selector;								//fs
 	*temp_stack=data_selector;									//gs
 	
 	temp_process->esp=(unsigned int)temp_stack;
@@ -230,6 +216,10 @@ void multitasking_process_add(process_t *pid) {
 	/*make sure that no task switch will occur :) */
 	asm volatile("cli");
 
+  KDEBUG("adding process ");
+  KDEBUG(pid->name);
+  KDEBUG("\n");
+
 	/*allocate space for the new queue item*/
 	new_queue_item = kmalloc(sizeof(struct process_queue_item));
 	
@@ -252,6 +242,10 @@ void multitasking_process_add(process_t *pid) {
 
 void task_cleanup()
 {	
+  KDEBUG("killing task ");
+  KDEBUG(current_process->name);
+  KDEBUG("\n");
+
 	multitasking_process_kill(current_process);
 	
 	/*this point should never be reached

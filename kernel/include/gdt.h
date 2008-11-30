@@ -24,50 +24,32 @@
 #define GDT_TYPE_CODE_EXECUTE_ONLY_READ_ONLY_CONFORMING 14
 #define GDT_TYPE_CODE_EXECUTE_READ_ONLY_CONFORMING_ACCESSED 15
 
-void gdt_init(void);
+#define GDT_ENTRY_COUNT 32
 
-extern int gdt_kernel_code;
-extern int gdt_kernel_data;
-extern int gdt_user_code;
-extern int gdt_user_data;
-extern int gdt_tss;
+#define GDT_ENTRY_NULL 0
+#define GDT_ENTRY_KERNEL_CODE 1
+#define GDT_ENTRY_KERNEL_DATA 2
+#define GDT_ENTRY_USERSPACE_CODE 3
+#define GDT_ENTRY_USERSPACE_DATA 4
+#define GDT_ENTRY_TSS 5
 
-extern struct gdt_descriptor GDT;
+void gdt_init();
+void gdt_flush();
 
 struct gdt_descriptor {
 	unsigned short limit;
-	unsigned short base015;
-	unsigned char base1623;
+	unsigned short base_lo;
+	unsigned char base_mid;
 	unsigned char access;
 	unsigned char granularity;
-	unsigned char base2431;
+	unsigned char base_hi;
 }__attribute__((packed));
 
-static inline void gdt_add_descriptor(struct gdt_descriptor* gdt_entry, int base, int limit, char granularity, int sys_available, int present, int dpl, int system, int type) {
-#ifdef DEBUG_GDT
-	int operation_size = 1;
-	KLOG_DEBUG("adding gdt_descriptor:\n\tbase: ");
-	KLOG_INT_DEBUG(base, 0x10);
-	KLOG_DEBUG("\n\tlimit: ");
-	KLOG_INT_DEBUG(limit, 0x10);
-	KLOG_DEBUG("\n\tgranularity: ");
-	KLOG_INT_DEBUG(granularity, 10);
-	KLOG_DEBUG("\n\toperation_size: ");
-	KLOG_INT_DEBUG(operation_size, 10);
-	KLOG_DEBUG("\n\tsys_available: ");
-	KLOG_INT_DEBUG(sys_available, 10);
-	KLOG_DEBUG("\n\tpresent: ");
-	KLOG_INT_DEBUG(present, 10);
-	KLOG_DEBUG("\n\tdpl: ");
-	KLOG_INT_DEBUG(dpl, 10);
-	KLOG_DEBUG("\n\tsystem: ");
-	KLOG_INT_DEBUG(system, 10);
-	KLOG_DEBUG("\n\ttype: ");
-	KLOG_INT_DEBUG(type, 10);
-	KLOG_DEBUG("\n");
-#endif
-}
+struct gdt_table {
+  unsigned short limit;
+  unsigned int base;
+} __attribute__((packed));
 
-int gdt_get_selector(int selector);
+void gdt_set_gate(unsigned int num, unsigned int base, unsigned int limit, char access, unsigned int gran);
 
 #endif

@@ -11,8 +11,8 @@
 #include <gdt.h>
 
 //constants
-#define MULTITASKING_UPROCESS_STACK_SIZE 2048
-#define MULTITASKING_KPROCESS_STACK_SIZE 1024
+#define USTACK_SIZE 4096
+#define KSTACK_SIZE 4096
 
 /*priority levels*/
 #define PRIORITY_LOW			1
@@ -88,6 +88,6 @@ void multitasking_process_add(process_t *);
 void task_cleanup(void);
 void sleep(int);
 void pit_setup(int);
-void setup_tss(int);
+void tss_init();
 
 #endif

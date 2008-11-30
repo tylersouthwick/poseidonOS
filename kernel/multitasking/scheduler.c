@@ -5,7 +5,6 @@
 
 #include <ktypes.h>
 #include <kdebug.h>
-#define KDEBUG
 
 #include <scheduler.h>
 #include <mm/paging.h>
@@ -21,7 +20,7 @@ int timer_count = 0;
 void floppy_timer(void);
 int get_current_process(void);
 
-int get_current_process()
+int schedule()
 {
 	millisecond_count++;
 	if (millisecond_count > 100)

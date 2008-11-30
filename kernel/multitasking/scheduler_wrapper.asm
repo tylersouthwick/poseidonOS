@@ -26,53 +26,11 @@
 
 [global scheduler_isr]
 scheduler_isr:
-	; Store state
-	cld
-	pushad
-	push ds
-	push es
-	push fs
-	push gs
-
-	; Store current esp into the current process thread structure
-	mov ecx, dword[current_process]
-	mov [ecx], esp
-	
-	;change to kernel code segment
-	jmp 0x8:switch_to_kernel
-
-switch_to_kernel:
-	;change data segment
-	mov eax, 0x10
-	mov ds, eax
-
+  REG_SAVE
 	;call the scheduler that will decide what thread to execute next it
-	call get_current_process
-	
-	; Exchange the stack with the new process' stack
-	; which is returned in eax by getCurrentProcess
-	mov esp, eax;
-		
-	;send the processor the end of interrupt message (EOI)
-	mov al, 0x20
-	out 0x20, al
-	
-	; Restore state
-	pop gs
-	pop fs
-	pop es
-	pop ds
-	popad
-	
-	push eax
-
-	mov eax, fs
-	mov ss, eax
-	pop eax
-
-	;return from interrupts
-	iretd
+	call schedule
+  REG_RESTORE
 
 ; global variables needed by the scheduler
 [extern current_process] 				; the pointer to the process_queue
-[extern get_current_process]		; fuction that runs the scheduler and gets
+[extern schedule]		; fuction that runs the scheduler and gets

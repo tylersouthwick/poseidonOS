@@ -3,45 +3,39 @@
 #include <gdt.h>
 #include <multitasking.h>
 #include <kdebug.h>
+#include <memory.h>
 
-extern void gdt_asm_init();
-extern tss_t * system_tss;
+struct gdt_table gdt_table;
+
+static struct gdt_descriptor gdt[GDT_ENTRY_COUNT];
 
 void gdt_init() {
-#ifdef USE_DYNAMIC_GDT
-	struct gdt_descriptor *gdt = kmalloc(sizeof(struct gdt_descriptor) * 7);
-	tss_t *tss = system_tss;
-	int i = 0;
+  gdt_table.limit = (sizeof(struct gdt_descriptor) * GDT_ENTRY_COUNT) -1;
+  gdt_table.base = (unsigned int)&gdt;
 
-	/*null segment*/
-	memset(gdt, 0, sizeof(struct gdt_descriptor));
-	i++;
+  memset(gdt, 0, sizeof( struct gdt_descriptor) * GDT_ENTRY_COUNT);
 
-	/*kernel code segment*/
-	//gdt_add_descriptor(&gdt[i], 0, 0xFFFF, 1, 1, 1, 0, 0, GDT_TYPE_CODE_EXECUTE_ONLY);
-	i++;
+  gdt_set_gate(GDT_ENTRY_NULL, 0, 0, 0, 0);
+  gdt_set_gate(GDT_ENTRY_KERNEL_CODE, 0, 0xFFFFFFFF, 0x9A, 0xCF);
+  gdt_set_gate(GDT_ENTRY_KERNEL_DATA, 0, 0xFFFFFFFF, 0x92, 0xCF);
+  gdt_set_gate(GDT_ENTRY_USERSPACE_CODE, 0, 0xFFFFFFFF, 0xFA, 0xCF);
+  gdt_set_gate(GDT_ENTRY_USERSPACE_DATA, 0, 0xFFFFFFFF, 0xF2, 0xCF);
 
-	/*kernel code segment*/
-	i++;
-
-	/*kernel code segment*/
-	i++;
-
-	/*kernel code segment*/
-	i++;
-
-	/*kernel code segment*/
-	gdt[i].limit = sizeof(tss_t);
-	gdt[i].base015 =(int)&tss;
-	gdt[i].base1623=(int)&tss >>16;
-	gdt[i].access =0x89;//0x80+0x9
-	gdt[i].granularity=0;
-	gdt[i].base2431=(int)&tss>>24;
-	
-#endif
-	gdt_asm_init();
+  gdt_flush();
 }
 
-int gdt_get_selector(int selector) {
-	return 0;
+void gdt_set_gate(unsigned int num, unsigned int base, unsigned int limit, char access, unsigned int gran) {
+  if (num >= GDT_ENTRY_COUNT) {
+    return;
+  }
+
+  gdt[num].base_lo = base &0xFFFF;
+  gdt[num].base_mid = (base >> 16) & 0xFF;
+  gdt[num].base_hi = (base >> 24) & 0xFF;
+
+  gdt[num].limit = limit & 0xFFFF;
+  gdt[num].granularity = (limit >> 16) & 0x0f;
+
+  gdt[num].granularity |= (gran & 0xF0);
+  gdt[num].access = access;
 }
