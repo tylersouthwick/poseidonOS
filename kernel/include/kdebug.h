@@ -6,11 +6,13 @@
 #define KLOG_INFO(a) kprint(a)
 #define KLOG_INT_INFO(a,b) put_int(a,b)
 
-#define KLOG_DEBUG(a) /*kprint(a)*/
-#define KLOG_INT_DEBUG(a,b) /*put_int(a,b)*/
-
-#define KDEBUG(a) kprint(a)
-#define KDEBUG_HEX(a) put_int(a, 16)
+#ifdef DEBUG
+  #define KDEBUG(a) kprint(a)
+  #define KDEBUG_HEX(a) put_int(a, 16)
+#else
+  #define KDEBUG(a)
+  #define KDEBUG_HEX(a)
+#endif
 
 #define KLOG_ERROR(a) kprint(a)
 #define KLOG_INT_ERROR(a,b) put_int(a,b)

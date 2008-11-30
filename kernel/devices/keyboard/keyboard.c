@@ -82,9 +82,9 @@ void keyboard_irq() {
 	scancode = inportb(0x60);
 	ch = convert_scancode(scancode);
 
-	KLOG_DEBUG("status: ");
-	KLOG_INT_DEBUG(status, 10);
-	KLOG_DEBUG("\n");
+	KDEBUG("status: ");
+	KDEBUG_HEX(status);
+	KDEBUG("\n");
 
 	/*
 	if (ch)

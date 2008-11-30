@@ -14,9 +14,9 @@ extern map_t *mounts;
 int mount(char *dev, char *path, char *type) {
 	int (*__fs_mount)(vfs_mount *);
 	unsigned long status;
-	KLOG_DEBUG("mounting filesytstem of type: ");
-	KLOG_DEBUG(type);
-	KLOG_DEBUG("\n");
+	KDEBUG("mounting filesytstem of type: ");
+	KDEBUG(type);
+	KDEBUG("\n");
 	__fs_mount = (void *)filesystems->get(filesystems, type);
 	vfs_mount *vmount;
 
