@@ -1,4 +1,6 @@
-default: PoseidonOS.img
+default: image
+
+default: run
 
 kernel :
 	@make -C kernel

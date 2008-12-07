@@ -33,9 +33,6 @@
 #define GDT_ENTRY_USERSPACE_DATA 4
 #define GDT_ENTRY_TSS 5
 
-void gdt_init();
-void gdt_flush();
-
 struct gdt_descriptor {
 	unsigned short limit;
 	unsigned short base_lo;
@@ -51,5 +48,9 @@ struct gdt_table {
 } __attribute__((packed));
 
 void gdt_set_gate(unsigned int num, unsigned int base, unsigned int limit, char access, unsigned int gran);
+void gdt_init();
+
+void gdt_load(struct gdt_table *);
+void gdt_flush();
 
 #endif

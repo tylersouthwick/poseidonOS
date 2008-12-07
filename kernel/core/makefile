@@ -1,9 +1,9 @@
-LIB_NAME = gdt
+LIB_NAME = core
 
 C_OBJS = \
 				gdt.o
 
 ASM_OBJS = \
-				gdt_wrapper.o
+				core.o
 
 include ../kernel.mk

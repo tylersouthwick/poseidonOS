@@ -5,7 +5,7 @@
 #include <kdebug.h>
 #include <memory.h>
 
-struct gdt_table gdt_table;
+static struct gdt_table gdt_table;
 
 static struct gdt_descriptor gdt[GDT_ENTRY_COUNT];
 
@@ -20,8 +20,6 @@ void gdt_init() {
   gdt_set_gate(GDT_ENTRY_KERNEL_DATA, 0, 0xFFFFFFFF, 0x92, 0xCF);
   gdt_set_gate(GDT_ENTRY_USERSPACE_CODE, 0, 0xFFFFFFFF, 0xFA, 0xCF);
   gdt_set_gate(GDT_ENTRY_USERSPACE_DATA, 0, 0xFFFFFFFF, 0xF2, 0xCF);
-
-  gdt_flush();
 }
 
 void gdt_set_gate(unsigned int num, unsigned int base, unsigned int limit, char access, unsigned int gran) {
@@ -38,4 +36,8 @@ void gdt_set_gate(unsigned int num, unsigned int base, unsigned int limit, char 
 
   gdt[num].granularity |= (gran & 0xF0);
   gdt[num].access = access;
+}
+
+void gdt_flush() {
+  gdt_load(&gdt_table);
 }

@@ -13,7 +13,7 @@ KERNEL_STATIC_LIBS= \
 		fs/fat/libfat.a \
 		util/libutil.a \
 		string/libstring.a \
-		gdt/libgdt.a
+		core/libcore.a
 
 KERNEL_LINKER_LIBS= \
 		-lscreen.a \
@@ -28,7 +28,7 @@ KERNEL_LINKER_LIBS= \
 		-lfs/fat/fat.a \
 		-lutil/util.a \
 		-lstring/string.a \
-		-lgdt/gdt.a
+		-lcore/core.a
 
 KERNEL_OBJS = \
 		kernel_wrapper.o \
@@ -46,7 +46,7 @@ compile:
 	@$(MAKE) -C fs
 	@$(MAKE) -C util
 	@$(MAKE) -C exec
-	@$(MAKE) -C gdt
+	@$(MAKE) -C core
 	@$(MAKE) ${KERNEL_FILE}
 
 ####################################System################################3
@@ -73,6 +73,7 @@ clean:
 	@$(MAKE) -C fs clean
 	@$(MAKE) -C util clean
 	@$(MAKE) -C exec clean
+	@$(MAKE) -C core clean
 	@echo "(RM) ${KERNEL_OBJS} ${KERNEL_FILE}"
 	@rm -f ${KERNEL_OBJS} ${KERNEL_FILE} 
 
@@ -86,6 +87,7 @@ depclean:
 	@$(MAKE) -C fs depclean
 	@$(MAKE) -C util depclean
 	@$(MAKE) -C exec depclean
+	@$(MAKE) -C core depclean
 	@echo "(RM) ${KERNEL_OBJS} ${KERNEL_FILE}"
 	@rm -f ${KERNEL_OBJS} ${KERNEL_FILE} 
 	@rm -f kernel.aux kernel.log kernel.pdf
