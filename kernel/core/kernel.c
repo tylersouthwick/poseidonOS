@@ -4,7 +4,6 @@
 void kmain() {
     initScreen();
     clear_screen();
-    INFO("Booting PoseidonOS v1.0\n");
-    DEBUG("test");
+    INFO(("Booting PoseidonOS v1.0\n"));
     while(1);
 }

@@ -48,6 +48,8 @@ extern int scr_y, scr_x;
 extern int screenAttributes;
 extern unsigned char *video_mem;
 
+void kprintf(const char *format, ...);
+
 #include <bios.h>
 static inline void update_cursor() {
 	unsigned temp;

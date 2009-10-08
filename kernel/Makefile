@@ -1,7 +1,7 @@
 KERNEL_FILE=poseidon.sys
 
 CORE_OBJS=core/loader.o core/kernel.o 
-SCREEN_OBJS=screen/screen.o screen/screen_write.o
+SCREEN_OBJS=screen/screen.o screen/screen_write.o screen/kprintf.o
 UTIL_OBJS=util/string.o util/string_wrapper.o
 
 KERNEL_OBJS=$(CORE_OBJS) $(SCREEN_OBJS) $(UTIL_OBJS)
