@@ -1,9 +1,6 @@
 default : run
 
-package : image
-
-compile :
-	@make -C kernel
+package : PoseidonOS.img
 
 clean : clean_image
 	@make -C kernel clean
@@ -12,12 +9,12 @@ clean_image :
 	@rm -f PoseidonOS.img
 	@cd build-tools; ./create_image --clean -f PoseidonOS.img
 
-image : compile
+PoseidonOS.img : 
+	@make -C kernel
 	@cd build-tools; ./create_image --clean -f PoseidonOS.img
 	@cd build-tools; ./create_image --create -f PoseidonOS.img
 	@mv build-tools/PoseidonOS.img .
 
-PoseidonOS.img : image
 
-run : PoseidonOS.img
+run : clean_image PoseidonOS.img
 	bochs -q -f bochs.conf

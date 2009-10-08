@@ -1,6 +1,6 @@
 KERNEL_FILE=poseidon.sys
 
-CORE_OBJS=core/loader.o core/kernel.o 
+CORE_OBJS=core/loader.o core/kernel.o core/idt.o core/interrupts.o core/isr.o core/gdt.o core/gdt_core.o
 SCREEN_OBJS=screen/screen.o screen/screen_write.o screen/kprintf.o
 UTIL_OBJS=util/string.o util/string_wrapper.o
 
@@ -16,9 +16,9 @@ ARCH=i586
 KERNEL_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -march=${ARCH} -m32 -Iinclude/ -fno-leading-underscore
 CFLAGS = $(KERNEL_CFLAGS)
 
-default : package
+default : $(KERNEL_FILE)
 
-package : kernel.ld ${KERNEL_OBJS}
+$(KERNEL_FILE) : kernel.ld ${KERNEL_OBJS}
 	@echo "(LD) ${KERNEL_FILE}"
 	ld -melf_i386 -T kernel.ld -o ${KERNEL_FILE} $(KERNEL_OBJS) 
 	@echo "Sanity Check"

@@ -9,6 +9,8 @@
 
 #define ERROR(a) MESSAGE("ERROR", a)
 
+#define FATAL(a) MESSAGE("FATAL", a)
+
 #define MESSAGE(t, a) kprintf("%s [%s:%i] ", t, __FILE__, __LINE__); kprintf a; write_char('\n')
 
 #endif
