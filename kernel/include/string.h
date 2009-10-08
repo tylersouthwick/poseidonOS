@@ -17,7 +17,7 @@ void *memmove(void *, void *, int);
 void *memccpy(void *, void *, int, int);
 
 //set n bytes of s to c
-void memset(void *, int, int);
+void memset(void * s, int n, int c);
 
 //compare n bytes of s1 and s2
 int memcmp(void *, void *, int);
@@ -25,7 +25,7 @@ int memcmp(void *, void *, int);
 //search n bytes of s for c
 void *memchr (void *, int, int);
 
-//sopy src to dest
+//copy src to dest
 char *strcpy(char *, char *);
 
 //copy no more than N characters of src to dest
@@ -38,7 +38,7 @@ char *strcat(char *, char *);
 char *strncat(char *, char *, int);
 
 //compare s1 and s2
-bool strcmp(char *, char *);
+int strcmp(char *, char *);
 
 //compare n characters of s1 and s2
 int strncmp(char *, char *, int);

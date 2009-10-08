@@ -4,13 +4,8 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-void kprint(char *str);
-void screen_clear(void);
-void put_char(char c);
-void put_int(unsigned int num, unsigned int base);
-void screen_set_color(int color);
-
-#define converToPos(a,b) 2*(80*b+a)
+//Control Characters
+#define TAB 4		//how many spaces to display when given the '\t' character
 
 /******************************Colors************************************/
 #define SCREEN_BLINK		2<<7
@@ -42,5 +37,31 @@ void screen_set_color(int color);
 #define SCREEN_BG_WHITE						0x70
 
 #define SCREEN_DEFAULT		SCREEN_BG_BLACK | SCREEN_FG_WHITE
+
+void initScreen();
+void clear_screen();
+void write_base10(int number);
+void write_integer(unsigned int number, unsigned int base);
+void write_char(char c);
+void write_string(char *c);
+extern int scr_y, scr_x;
+extern int screenAttributes;
+extern unsigned char *video_mem;
+
+#include <bios.h>
+static inline void update_cursor() {
+	unsigned temp;
+	
+	//update cursor pos
+	temp = scr_y*80+scr_x;
+	outportb(crtc_io_adr+0, 14);
+	outportb(crtc_io_adr+1, temp >> 8);
+	outportb(crtc_io_adr+0, 15);
+	outportb(crtc_io_adr+1, temp);
+}
+
+static inline void set_screen_color(int color) {
+	screenAttributes = color;
+}
 
 #endif

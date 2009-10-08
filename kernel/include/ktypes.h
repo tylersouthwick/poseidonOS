@@ -21,8 +21,6 @@ struct kdate
 	unsigned short year:7;
 };
 
-typedef enum { false=0,true=1 } bool; /* boolean value */
-
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;

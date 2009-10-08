@@ -12,11 +12,18 @@ sub findFile($);
 open (REQUIRED_FILES, "build-tools/required_files.txt");
 
 my $record;
+my $error = "";
+
 while ($record = <REQUIRED_FILES>) {
   checkForFile(trim($record));
 }
 
 close(REQUIRED_FILES);
+
+if ($error eq "true") {
+  print "\n\nPlease install missing files (or put them on the path) and rerun config\n\n";
+  exit -1;
+}
 
 exit;
 
@@ -59,8 +66,7 @@ sub findFile($) {
     close(TMP_FILE);
     return trim($foundFile);
   } else { 
-    print ("NOT FOUND");
-    print "\n\nPlease install $file and rerun config\n\n";
-    exit;
+    $error = "true";
+    return "NOT FOUND";
   }
 }

@@ -128,17 +128,8 @@ sub install_grub {
 		$grub = "grub";
 	}
 
-	#write install script
-	`rm -f .grub_install_script &> /dev/null`;
-	open FH, ">>.grub_install_script" or die print "unable to create grub install script\n";
-	print FH "device (fd0) $floppy_image_name\n";
-	print FH "install (fd0)/boot/grub/stage1 (fd0) (fd0)/boot/grub/stage2 p (fd0)/boot/grub/menu.lst\n";
-	print FH "quit";
-	close FH;
-	`rm -f .grub_install_script`;
-
 	#run install script
-	$out = system("$grub --batch << EOF  &> /dev/null || exit 1
+	$out = system("$grub --batch << EOF  || exit 1
 			device (fd0) $floppy_image_name
 			install (fd0)/boot/grub/stage1 (fd0) (fd0)/boot/grub/stage2 p (fd0)/boot/grub/menu.lst
 			quit
