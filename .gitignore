@@ -1,0 +1,4 @@
+PoseidonOS.img
+*.sys
+*.o
+*.dep
