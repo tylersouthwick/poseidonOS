@@ -1,0 +1,5 @@
+*.o
+*.dep
+*.swo
+*.swp
+/PoseidonOS.img
