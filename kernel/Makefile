@@ -1,11 +1,7 @@
 KERNEL_FILE=poseidon.sys
+LIBRARIES = core screen util
 
-CORE_OBJS=core/loader.o core/kernel.o core/idt.o core/interrupts.o core/isr.o core/gdt.o core/gdt_core.o
-SCREEN_OBJS=screen/screen.o screen/screen_write.o screen/kprintf.o
-UTIL_OBJS=util/string.o util/string_wrapper.o
-
-KERNEL_OBJS=$(CORE_OBJS) $(SCREEN_OBJS) $(UTIL_OBJS)
-
+########################################3
 AS=nasm
 AS_FORMAT=elf
 CC=gcc
@@ -13,50 +9,30 @@ AR=ar
 ARFLAGS=-rs
 ARCH=i586
 
-KERNEL_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -march=${ARCH} -m32 -Iinclude/ -fno-leading-underscore
-CFLAGS = $(KERNEL_CFLAGS)
-
 default : $(KERNEL_FILE)
 
-$(KERNEL_FILE) : kernel.ld ${KERNEL_OBJS}
+LIBS = $(addsuffix /lib.ar,$(LIBRARIES))
+
+$(KERNEL_FILE) : libraries kernel.ld ${KERNEL_OBJS}
 	@echo "(LD) ${KERNEL_FILE}"
-	ld -melf_i386 -T kernel.ld -o ${KERNEL_FILE} $(KERNEL_OBJS) 
+	ld -melf_i386 -T kernel.ld -o ${KERNEL_FILE} $(LIBS) 
 	@echo "Sanity Check"
 	@mbchk ${KERNEL_FILE}
 
-######
-# assembly dependencies
-######
-%.o : %.asm
-	@echo "(AS) $<"
-	@$(AS) -f $(AS_FORMAT) -o $@ $<
+#################
+## libraries
+#################
+LIBS = $(addsuffix /lib.ar,$(LIBRARIES))
+libraries : $(LIBS)
+%/lib.ar : %
+	make -C $<
 
-######
-# cpp files
-######
-%.o : %.c
-	@echo "(CC) $<"
-	@$(CC) $(CFLAGS) -c -o $@ $<
+%/lib.ar.clean : %
+	make -C $< clean
 
-######
-# generate dependencies
-######
-%.dep : %.c
-	@echo "(DEP) $<"
-	@set -e; rm -f $@; \
-		$(CC) -M $(CFLAGS) $< > $@.$$$$; \
-		sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
-		rm -f $@.$$$$
-
-C_SRCS=$(subst .o,.c,$(KERNEL_OBJS))
-MAKEFILES_D=$(subst .c,.dep,$(C_SRCS))
-
--include $(MAKEFILES_D)
-
-clean :
-	rm -f $(KERNEL_OBJS)
+CLEAN_LIBRARIES=$(subst .ar,.ar.clean,$(LIBS))
+clean : ${CLEAN_LIBRARIES}
 	rm -f ${KERNEL_FILE}
-	rm -f $(MAKEFILES_D)
 
 image : package
 	@cd build-tools; ./create_image --clean -f PoseidonOS.img

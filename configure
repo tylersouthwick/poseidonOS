@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+use Cwd;
 
 #declare subroutines
 sub trim($);
@@ -24,6 +25,11 @@ if ($error eq "true") {
   print "\n\nPlease install missing files (or put them on the path) and rerun config\n\n";
   exit -1;
 }
+
+open(SETTINGS_FILE, ">kernel/settings.mk");
+my $dir = getcwd;
+print SETTINGS_FILE "KERNEL_DIR=$dir";
+close(SETTINGS_FILE);
 
 exit;
 
