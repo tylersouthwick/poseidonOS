@@ -48,7 +48,7 @@ MAKEFILES_D=$(addprefix .,$(subst .c,.dep,$(C_SOURCE)))
 -include $(MAKEFILES_D)
 
 clean :
-	rm -f *.o
-	rm -f *.ar
-	rm -f .*.dep
+	@rm -f *.o
+	@rm -f *.ar
+	@rm -f .*.dep
 
