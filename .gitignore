@@ -2,3 +2,5 @@ PoseidonOS.img
 *.sys
 *.o
 *.dep
+*.swp
+*.swo
