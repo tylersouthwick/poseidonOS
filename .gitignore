@@ -1,6 +1,6 @@
 PoseidonOS.img
 *.sys
 *.o
-*.dep
+*.dep*
 *.swp
 *.swo
