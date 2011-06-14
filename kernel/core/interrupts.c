@@ -1,5 +1,9 @@
 #include <kdebug.h>
 
+void interrupt0();
+void keyboard_interrupt();
+void timer_interrupt();
+
 void interrupt0() {
     FATAL(("Attempted to divide by zero."));
     DEBUG(("Eventually, this should only kill the current task."));

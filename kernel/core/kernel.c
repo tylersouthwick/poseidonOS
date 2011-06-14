@@ -2,6 +2,9 @@
 #include <screen.h>
 #include <gdt.h>
 #include <idt.h>
+#include <string.h>
+
+void kmain();
 
 void kmain() {
     initScreen();
