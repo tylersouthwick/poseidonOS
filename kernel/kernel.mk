@@ -36,19 +36,19 @@ ${AR_LIB_NAME} : ${C_OBJS} ${ASM_OBJS}
 ######
 # generate dependencies
 ######
-%.dep : %.c
+.%.dep : %.c
 	@echo "(DEP) $<"
 	@set -e; rm -f $@; \
 		$(CC) -M $(CFLAGS) $< > $@.$$$$; \
 		sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
 		rm -f $@.$$$$
 
-MAKEFILES_D=$(subst .c,.dep,$(C_SOURCE))
+MAKEFILES_D=$(addprefix .,$(subst .c,.dep,$(C_SOURCE)))
 
 -include $(MAKEFILES_D)
 
 clean :
 	rm -f *.o
 	rm -f *.ar
-	rm -f *.dep
+	rm -f .*.dep
 
