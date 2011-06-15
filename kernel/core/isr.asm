@@ -34,20 +34,3 @@ keyboard_isr:
     popa
     iret
 
-[global timer_isr]
-timer_isr:
-    pusha
-    push gs
-    push fs
-    push ds
-    push es
-    
-    extern timer_interrupt
-    call timer_interrupt
-
-    pop es
-    pop ds
-    pop fs
-    pop gs
-    popa
-    iret

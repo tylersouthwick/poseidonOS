@@ -2,7 +2,6 @@
 
 void interrupt0();
 void keyboard_interrupt();
-void timer_interrupt();
 
 void interrupt0() {
     FATAL(("Attempted to divide by zero."));
@@ -12,8 +11,4 @@ void interrupt0() {
 
 void keyboard_interrupt() {
     DEBUG(("keyboard!"));
-}
-
-void timer_interrupt() {
-    DEBUG(("timer"));
 }

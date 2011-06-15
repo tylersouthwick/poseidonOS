@@ -4,6 +4,7 @@
 #include <idt.h>
 #include <version.h>
 #include <string.h>
+#include <core/timer.h>
 
 void kmain();
 
@@ -15,6 +16,8 @@ void kmain() {
     idt_setup();
 
     gdt_init();
+
+    timer_init();
 
     enable_ints();
 
