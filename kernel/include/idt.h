@@ -31,6 +31,6 @@ void idt_user_setup(void);
 
 #include <bios.h>
 
-#define enable_ints() outportb(0x21, 0x00)
+#define enable_ints() outportb(0x21, 0x00); asm("sti")
 
 #endif
