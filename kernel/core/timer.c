@@ -13,8 +13,8 @@ void timer_init() {
 
 void timer_interrupt() {
 	count++;
-	if (count == 1000) {
-    		DEBUG(("timer"));
+	if (count == 10000) {
+    		DEBUG(("timer: %i->%i", system_timer_ms, system_timer_fractions));
 		count = 0;
 	}
 }

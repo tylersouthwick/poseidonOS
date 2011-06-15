@@ -6,4 +6,7 @@ void timer_init();
 void timer_interrupt();
 void timer_isr();
 
+extern int system_timer_fractions;
+extern int system_timer_ms;
+
 #endif

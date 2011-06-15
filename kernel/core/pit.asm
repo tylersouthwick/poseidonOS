@@ -1,5 +1,7 @@
 section .bss
+[global system_timer_fractions]
 system_timer_fractions		resd 1
+[global system_timer_ms]
 system_timer_ms			resd 1
 IRQ0_fractions			resd 1
 IRQ0_ms				resd 1
