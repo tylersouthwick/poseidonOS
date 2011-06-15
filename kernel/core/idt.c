@@ -1,8 +1,8 @@
-#include <interrupts.h>
-#include <idt.h>
+#include <core/interrupts.h>
+#include <core/idt.h>
 #include <kdebug.h>
 #include <bios.h>
-#include <irq.h>
+#include <core/irq.h>
 #include <string.h>
 
 static idtr_t idtr;

@@ -1,6 +1,6 @@
 #include <ktypes.h>
 #include <screen.h>
-#include <gdt.h>
+#include <core/gdt.h>
 #include <kdebug.h>
 #include <string.h>
 

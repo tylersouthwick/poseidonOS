@@ -1,7 +1,7 @@
 #include <kdebug.h>
 #include <screen.h>
-#include <gdt.h>
-#include <idt.h>
+#include <core/gdt.h>
+#include <core/idt.h>
 #include <version.h>
 #include <string.h>
 #include <core/timer.h>
