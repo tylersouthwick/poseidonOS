@@ -1,10 +1,10 @@
 section .bss
-[global system_timer_fractions]
 system_timer_fractions		resd 1
 [global system_timer_ms]
 system_timer_ms			resd 1
 IRQ0_fractions			resd 1
 IRQ0_ms				resd 1
+[global IRQ0_frequency]
 IRQ0_frequency			resd 1
 PIT_reload_value		resw 1
 
@@ -108,6 +108,7 @@ timer_isr:
 	mov ebx, [IRQ0_ms]			;eax.ebx = amount of time between IRQs
 	add [system_timer_fractions], eax	;Update system time tick fractions
 	adc [system_timer_ms], ebx		;Update system timer tick milli-seconds
+
 	extern timer_interrupt
 	call timer_interrupt
 

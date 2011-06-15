@@ -8,13 +8,13 @@ void timer_init() {
     DEBUG(("init pit"));
     idt_interrupt_add(0x20, timer_isr, 0);
     pit_init();
-    DEBUG(("pit inited"));
+    DEBUG(("pit inited @%iHz", IRQ0_frequency));
 }
 
 void timer_interrupt() {
 	count++;
 	if (count == 10000) {
-    		DEBUG(("timer: %i->%i", system_timer_ms, system_timer_fractions));
+    		DEBUG(("timer: %i", system_timer_ms));
 		count = 0;
 	}
 }
