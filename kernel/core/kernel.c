@@ -3,6 +3,9 @@
 #include <gdt.h>
 #include <idt.h>
 #include <version.h>
+#include <string.h>
+
+void kmain();
 
 void kmain() {
     initScreen();

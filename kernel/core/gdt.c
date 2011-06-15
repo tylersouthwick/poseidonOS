@@ -2,6 +2,7 @@
 #include <screen.h>
 #include <gdt.h>
 #include <kdebug.h>
+#include <string.h>
 
 static struct gdt_table gdt_table;
 
