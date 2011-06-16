@@ -1,5 +1,5 @@
 KERNEL_FILE=poseidon.sys
-LIBRARIES = core screen util
+LIBRARIES = core screen util mm
 
 ########################################3
 AS=nasm
