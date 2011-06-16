@@ -1,20 +1,19 @@
 section .bss
 system_timer_fractions		resd 1
-[global system_timer_ms]
 system_timer_ms			resd 1
 IRQ0_fractions			resd 1
 IRQ0_ms				resd 1
-[global IRQ0_frequency]
 IRQ0_frequency			resd 1
-PIT_reload_value		resw 1
+PIT_reload_value		resd 1
 
 section .text
 [global pit_init]
 pit_init:
-	pushad
-	mov ebx, 8000
+	push ebx
+	mov ebx, [esp+8]
 	call initPIT
-	popad
+	mov eax, IRQ0_fractions
+	pop ebx
 	ret
 
 ;Input
@@ -71,6 +70,10 @@ initPIT:
 .l4:
 	mov [IRQ0_frequency], eax	;store the actual frequency for displaying later
 
+	; Calculate the amount of time between IRQs in 32.32 fixed point
+
+	; Note: The basic formula is:
+	;	time in ms = reload_value / (3579545 / 3) * 1000
 	pop ebx			;ebx = reload_value
 	mov eax, 0xDBB3A062	;eax = 3000 * (2^42) /3579545
 	mul ebx			;edx:eax = reload value * 3000 * (2^42) /3579545
@@ -110,7 +113,10 @@ timer_isr:
 	adc [system_timer_ms], ebx		;Update system timer tick milli-seconds
 
 	extern timer_interrupt
+	mov eax, [system_timer_ms]
+	push eax
 	call timer_interrupt
+	pop eax
 
 	mov al, 0x20
 	out 0x20, al				;Send the EOI to the PIC
