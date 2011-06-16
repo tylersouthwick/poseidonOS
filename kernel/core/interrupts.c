@@ -12,3 +12,7 @@ void interrupt0() {
 void keyboard_interrupt() {
     DEBUG(("keyboard!"));
 }
+
+void empty_interrupt() {
+	DEBUG(("empty interrupt"));
+}

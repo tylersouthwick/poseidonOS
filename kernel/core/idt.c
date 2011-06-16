@@ -8,12 +8,17 @@
 static idtr_t idtr;
 static x86_interrupt IDT[INTERRUPT_COUNT];
 
+void isr_empty();
 void idt_setup() {
+	int i;
     DEBUG(("Setting up IDT"));
     idtr.limit = INTERRUPT_COUNT * (sizeof(x86_interrupt) - 1);
     idtr.base = IDT;
 
     memset(IDT, 0, sizeof(IDT));
+    for (i = 0; i < INTERRUPT_COUNT; i++) {
+	    idt_interrupt_add(i, isr_empty, 0);
+    }
     idt_interrupt_add(0, isr0, 0);
 
     idtr_t *IDTRptr = &idtr;

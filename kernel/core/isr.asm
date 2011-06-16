@@ -16,16 +16,16 @@ isr0:
     popa
     iret
 
-[global keyboard_isr]
-keyboard_isr:
+[global isr_empty]
+isr_empty:
     pusha
     push gs
     push fs
     push ds
     push es
     
-    extern keyboard_interrupt
-    call keyboard_interrupt
+    extern empty_interrupt
+    call empty_interrupt
 
     pop es
     pop ds
@@ -33,4 +33,3 @@ keyboard_isr:
     pop gs
     popa
     iret
-
