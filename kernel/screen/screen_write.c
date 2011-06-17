@@ -18,11 +18,11 @@ void write_string(char *str) {
 				break;
 		}
 	}
-    update_cursor();
+	update_cursor();
 }
 
 void write_base10(int number) {
-    return write_integer(number, 10);
+	return write_integer(number, 10);
 }
 
 void write_integer(unsigned int number, unsigned int base) {
@@ -61,7 +61,7 @@ void write_integer(unsigned int number, unsigned int base) {
 	} while (number /= base);
 
 	{
-        int i;
+		int i;
 		int length = strlen(buffer1);
 		for (i=0; i<length; i++)
 			buffer2[i] = buffer1[length-i - 1];

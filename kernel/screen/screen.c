@@ -12,9 +12,9 @@ int scr_x, scr_y;
 unsigned char *video_mem;
 
 void initScreen() {
-    video_mem = (unsigned char *)0xB8000;
-    scr_x = scr_y = 0;
-    screenAttributes=SCREEN_FG_WHITE | SCREEN_BG_BLACK;
+	video_mem = (unsigned char *)0xB8000;
+	scr_x = scr_y = 0;
+	screenAttributes=SCREEN_FG_WHITE | SCREEN_BG_BLACK;
 }
 
 void clear_screen() {
@@ -26,5 +26,5 @@ void clear_screen() {
 		i++;
 	};
 	scr_x=scr_y=0;
-    update_cursor();
+	update_cursor();
 }
