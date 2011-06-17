@@ -5,7 +5,7 @@ AR=ar
 ARFLAGS=-rs
 ARCH=i586
 
-KERNEL_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -march=${ARCH} -m32 -I${KERNEL_DIR}/kernel/include/ -fno-leading-underscore
+KERNEL_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -march=${ARCH} -m32 -I${KERNEL_DIR}/kernel/include/ -fno-leading-underscore -std=c99
 CFLAGS = $(KERNEL_CFLAGS)
 
 AR_LIB_NAME=lib.ar

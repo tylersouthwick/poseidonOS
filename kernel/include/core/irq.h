@@ -24,18 +24,18 @@ extern unsigned int irq_mask;
 
 static inline void irq_mask_all(void)
 {
-	asm volatile ("cli"); 
+	__asm__ volatile ("cli"); 
 	irq_mask = 0; 
-	asm volatile ("outb %%al,%%dx": :"d" (0x21), "a" (~(0xFF & irq_mask))); 
-	asm volatile ("sti");
+	__asm__ volatile ("outb %%al,%%dx": :"d" (0x21), "a" (~(0xFF & irq_mask))); 
+	__asm__ volatile ("sti");
 }
 
 static inline void irq_umask(int a)
 {
-	asm volatile ("cli"); 
+	__asm__ volatile ("cli"); 
 	irq_mask |= a; 
-	asm volatile ("outb %%al,%%dx": :"d" (0x21), "a" (~(0xFF & irq_mask))); 
-	asm volatile ("sti");
+	__asm__ volatile ("outb %%al,%%dx": :"d" (0x21), "a" (~(0xFF & irq_mask))); 
+	__asm__ volatile ("sti");
 }
 
 void pics_init(int, int);

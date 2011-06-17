@@ -5,20 +5,18 @@
 #include <version.h>
 #include <string.h>
 #include <core/timer.h>
-#include <mm/mm.h>
 
 void kmain();
 
-void kmain(multiboot_info *mbt, unsigned int magic) {
+void kmain() {
     initScreen();
     clear_screen();
     INFO(("Booting PoseidonOS v%s", KERNEL_VERSION));
 
+    kprintf("test: %llx", 0xABCDEFFEDCBA);
     idt_setup();
 
     gdt_init();
-
-    mm_init();
 
 //    timer_init();
 

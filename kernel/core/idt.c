@@ -27,7 +27,7 @@ void idt_setup() {
     pics_init(0x20, 0x28);
 
     //load IDTR with lidt
-    asm volatile("LIDT (%0) ": :"p" (IDTRptr));
+    __asm__ volatile("LIDT (%0) ": :"p" (IDTRptr));
 }
 
 void pics_init(int pic1, int pic2) {
@@ -53,7 +53,7 @@ void idt_interrupt_add(int number, void *handler, unsigned int dpl) {
     unsigned int offset = (unsigned int) handler;
 
     //get CS selector
-    asm volatile("movw %%cs,%0" :"=g"(selector));
+    __asm__ volatile("movw %%cs,%0" :"=g"(selector));
 
     //set settings based on dpl
     switch (dpl) {
