@@ -54,4 +54,7 @@ static void mm_physical_summary(multiboot_info_t *mm_info) {
 	memory_display("Free", free);
 	memory_display("Reserved", reserved + acpi_reclaimable + acpi_nvs);
 	memory_display("Bad", bad);
+
+	int total = free + reserved + acpi_reclaimable + acpi_nvs + bad;
+	memory_display("Total", total);
 }
