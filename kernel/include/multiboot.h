@@ -103,14 +103,10 @@ typedef struct module
 typedef struct memory_map
 {
   unsigned long size;
-  unsigned long long int base_addr;
-  /*
   unsigned long base_addr_low;
   unsigned long base_addr_high;
   unsigned long length_low;
   unsigned long length_high;
-  */
-  unsigned long long int length;
   unsigned long type;
 } memory_map_t;
 

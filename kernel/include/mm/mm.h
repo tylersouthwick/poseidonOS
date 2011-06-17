@@ -1,8 +1,8 @@
 #ifndef KERNEL_MM_H
 #define KERNEL_MM_H
 
-#include <grub.h>
+#include <multiboot.h>
 
-void mm_init(multiboot_memory_map *mmap);
+void mm_init(multiboot_info_t *mm_info);
 
 #endif

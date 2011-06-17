@@ -1,8 +1,8 @@
 #ifndef KERNEL_MM_PHYSICAL_H
 #define KERNEL_MM_PHYSICAL_H
 
-#include <grub.h>
+#include <multiboot.h>
 
-void mm_physical_init(multiboot_info *mbt);
+void mm_physical_init(multiboot_info_t *mm_info);
 
 #endif

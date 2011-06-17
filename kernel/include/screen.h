@@ -40,30 +40,12 @@
 
 void initScreen();
 void clear_screen();
+void set_screen_color(int color);
 void write_base10(int number);
 void write_integer(unsigned int number, unsigned int base);
 void write_char(char c);
 void write_string(char *c);
-extern int scr_y, scr_x;
-extern int screenAttributes;
-extern unsigned char *video_mem;
 
 void kprintf(const char *format, ...);
-
-#include <bios.h>
-static inline void update_cursor() {
-	unsigned temp;
-	
-	//update cursor pos
-	temp = scr_y*80+scr_x;
-	outportb(crtc_io_adr+0, 14);
-	outportb(crtc_io_adr+1, temp >> 8);
-	outportb(crtc_io_adr+0, 15);
-	outportb(crtc_io_adr+1, temp);
-}
-
-static inline void set_screen_color(int color) {
-	screenAttributes = color;
-}
 
 #endif
