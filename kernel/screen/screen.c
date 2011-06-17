@@ -64,10 +64,12 @@ void write_integer(unsigned int number, unsigned int base) {
 		number *= -1;
 	}
 
+	/*
 	if (base == 0x10) {
 		write_char('0');
 		write_char('x');
 	}
+	*/
 
 	if (!number) {
 		return write_char('0');
