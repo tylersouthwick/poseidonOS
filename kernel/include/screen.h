@@ -46,6 +46,8 @@ void write_integer(unsigned int number, unsigned int base);
 void write_char(char c);
 void write_string(char *c);
 
+void pad_unsigned_number(long number, unsigned int base, char padding_char, int padding);
+
 void kprintf(const char *format, ...);
 
 #endif

@@ -54,6 +54,46 @@ void write_base10(int number) {
 	return write_integer(number, 10);
 }
 
+void pad_unsigned_number(long number, unsigned int base, char padding_char, int padding) {
+	if (!padding) {
+		return write_integer(number, base);
+	}
+	int index = 0;
+	char buffer1[12];
+	char buffer2[12];
+	char final[padding + 1];
+
+	memset(buffer1, 0, 12);
+	memset(buffer2, 0, 12);
+
+	memset(final, padding_char, padding);
+	final[padding] = 0;
+
+	if (number) {
+		do {
+			int digit = number % base;
+			char ch;
+
+			if (digit < 10)
+				ch = '0' + (number % base);
+			else
+				ch =  'A' + (number % base) - 10 ;
+
+			buffer1[index++] = ch;
+		} while (number /= base);
+	}
+
+	int length = strlen(buffer1);
+	if (length) {
+		for (int i=0; i<length; i++)
+			buffer2[i] = buffer1[length-i - 1];
+
+		strcpy(final + padding - length, buffer2);
+	}
+
+	return write_string(final);
+}
+
 void write_integer(unsigned int number, unsigned int base) {
 	int index = 0;
 	char buffer1[12];
