@@ -1,4 +1,4 @@
-C_SOURCE=kprintf.c screen.c screen_write.c
+C_SOURCE=screen.c kprintf.c
 
 include ../settings.mk
 include ../kernel.mk
