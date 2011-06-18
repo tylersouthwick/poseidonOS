@@ -1,5 +1,5 @@
 #include <mm/physical.h>
-#include <mm/physical_mem.h>
+#include <mm/physical_pages.h>
 #include <multiboot.h>
 #include <kdebug.h>
 #include <string.h>

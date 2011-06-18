@@ -1,7 +1,7 @@
 #include <ktypes.h>
 #include <kdebug.h>
 
-#include <mm/physical_mem.h>
+#include <mm/physical_pages.h>
 #include <string.h>
 #include <screen.h>
 
