@@ -1,4 +1,5 @@
 #include <mm/physical.h>
+#include <mm/physical_mem.h>
 #include <multiboot.h>
 #include <kdebug.h>
 #include <string.h>
@@ -7,6 +8,7 @@ static void mm_physical_summary(multiboot_info_t *mm_info);
 
 void mm_physical_init(multiboot_info_t *mm_info) {
 	mm_physical_summary(mm_info);
+	mm_physical_pages_init(mm_info);
 }
 
 #define memory_display(type, amount) if (amount) {DEBUG(("%s Memory: %dkb", type, (amount) >> 10));}
@@ -57,4 +59,6 @@ static void mm_physical_summary(multiboot_info_t *mm_info) {
 
 	int total = free + reserved + acpi_reclaimable + acpi_nvs + bad;
 	memory_display("Total", total);
+
+	DEBUG(("mem_upper: %i", mm_info->mem_upper));
 }
