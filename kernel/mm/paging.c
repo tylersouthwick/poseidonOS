@@ -4,7 +4,11 @@
 #include <mm/physical_pages.h>
 #include <mm/paging.h>
 
+#include <core/idt.h>
+
 extern mm_physical_page_zones memory_zones;
+void mm_page_fault_int(void *);
+void mm_page_fault_isr();
 
 void mm_paging_init() {
 	unsigned long *page_directory;
@@ -50,6 +54,8 @@ void mm_paging_init() {
 
 	page_directory[PAGING_GET_DIRECTORY(page_directory)] = (long)page_directory_table;
 	page_directory[PAGING_GET_DIRECTORY(page_directory)] |= 3 | 4;
+
+	idt_interrupt_add(14, mm_page_fault_isr, 0);
 
 	write_cr3(page_directory);
 	write_cr0(read_cr0() | 0x80000000);
@@ -110,3 +116,8 @@ void *mm_paging_pde_insert() {
 }
 */
 
+void mm_page_fault_int(void *address) {
+    FATAL(("Page Fault: 0x%x", address));
+    DEBUG(("Eventually, this should handle the page fault"));
+    __asm__("hlt");
+}

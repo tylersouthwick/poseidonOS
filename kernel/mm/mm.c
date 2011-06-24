@@ -10,4 +10,11 @@ void mm_init(multiboot_info_t *mm_info) {
 	mm_physical_init(mm_info);
 
 	mm_paging_init();
+
+	/* tests the page fault code
+	char *test = 0x4000000;
+	test[0] = 'd';
+	test[1] = 0;
+	DEBUG(("test: %s", test));
+	*/
 }
