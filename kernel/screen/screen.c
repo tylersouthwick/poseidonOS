@@ -142,6 +142,9 @@ void write_integer(unsigned int number, unsigned int base) {
 }
 
 void write_char(char c) {
+	outportb(0x37a, 0x04|0x08);
+	outportb(0x378, (unsigned char) c);
+	outportb(0x37a, 0x01);
 	switch (c) {
 		case '\n': {
 			scr_y++;
