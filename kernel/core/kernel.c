@@ -17,9 +17,9 @@ void kmain(multiboot_info_t *mm_info) {
 
     idt_setup();
 
-    mm_init(mm_info);
-
     gdt_init();
+
+    mm_init(mm_info);
 
 //    timer_init();
 
