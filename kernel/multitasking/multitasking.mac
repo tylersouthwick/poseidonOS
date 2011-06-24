@@ -1,0 +1,45 @@
+%ifndef MULTITASKING_MACROS
+%define MULTITASKING_MACROS
+
+;;;;;;;;;;;;;
+;; macros
+%macro REG_SAVE 0
+  ;store state
+  cld
+  pushad
+  push ds
+  push es
+  push fs
+  push gs
+  ; Store current esp into the current process thread structure
+  mov eax, [current_process]
+  mov [eax], esp
+
+  ;switch to the kernel's own stack
+  lea eax, [kstackend]
+
+  mov esp, eax
+%endmacro
+
+%macro REG_RESTORE 0
+  mov eax, [current_process]
+	; Exchange the stack with the new process' stack
+	; which is returned in eax by getCurrentProcess
+  mov esp, [eax]
+  mov ebx, [eax+8]
+
+  mov [sys_tss+4], ebx ;update system tss
+
+	;send the processor the end of interrupt message (EOI)
+  mov al, 0x20
+  out 0x20, al
+	; Restore state
+  pop gs
+  pop fs
+  pop es
+  pop ds
+  popad
+  iretd
+%endmacro
+
+%endif

@@ -1,5 +1,5 @@
 KERNEL_FILE=poseidon.sys
-LIBRARIES = core screen util mm
+LIBRARIES = core screen multitasking util mm
 
 ########################################3
 AS=nasm
@@ -15,7 +15,7 @@ LIBS = $(addsuffix /lib.ar,$(LIBRARIES))
 
 $(KERNEL_FILE) : libraries kernel.ld ${KERNEL_OBJS}
 	@echo "(LD) ${KERNEL_FILE}"
-	@ld -melf_i386 -T kernel.ld -o ${KERNEL_FILE} $(LIBS) 
+	@ld -melf_i386 -T kernel.ld -o ${KERNEL_FILE} --start-group $(LIBS) --end-group
 	@echo "Sanity Check"
 	@mbchk ${KERNEL_FILE}
 

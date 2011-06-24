@@ -14,7 +14,6 @@ void mm_physical_init(multiboot_info_t *mm_info) {
 #define memory_display(type, amount) if (amount) {DEBUG(("%s Memory: %dkb", type, (amount) >> 10));}
 
 static void mm_physical_summary(multiboot_info_t *mm_info) {
-	int size = 0, i = 0;
 	unsigned long free, reserved, acpi_reclaimable, acpi_nvs, bad;
 	char memory_type[255];
 

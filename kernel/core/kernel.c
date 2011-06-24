@@ -4,7 +4,7 @@
 #include <core/idt.h>
 #include <version.h>
 #include <string.h>
-#include <core/timer.h>
+#include <multitasking/multitasking.h>
 #include <multiboot.h>
 #include <mm/mm.h>
 
@@ -21,9 +21,15 @@ void kmain(multiboot_info_t *mm_info) {
 
     mm_init(mm_info);
 
-//    timer_init();
+    multitasking_init();
 
-    enable_ints();
+    FATAL(("shouldn't get here!"));
 
     while(1);
+}
+
+void kernel_init() {
+	INFO(("Entered multitasking environment"));
+
+	while(1);
 }

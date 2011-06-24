@@ -1,4 +1,4 @@
-#include <core/timer.h>
+#include <multitasking/timer.h>
 #include <kdebug.h>
 #include <core/idt.h>
 
