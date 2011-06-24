@@ -10,6 +10,8 @@ CFLAGS = $(KERNEL_CFLAGS)
 
 AR_LIB_NAME=lib.ar
 
+.PHONY: default clean
+
 default : ${AR_LIB_NAME}
 
 C_OBJS=$(subst .c,.o,$(C_SOURCE))

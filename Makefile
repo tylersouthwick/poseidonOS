@@ -1,3 +1,5 @@
+.PHONY : default package run clean clean_image
+
 default : run
 
 package : PoseidonOS.img

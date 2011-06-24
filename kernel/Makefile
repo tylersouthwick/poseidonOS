@@ -9,11 +9,13 @@ AR=ar
 ARFLAGS=-rs
 ARCH=i586
 
+.PHONY: $(LIBRARIES) default clean image
+
 default : $(KERNEL_FILE)
 
 LIBS = $(addsuffix /lib.ar,$(LIBRARIES))
 
-$(KERNEL_FILE) : libraries kernel.ld ${KERNEL_OBJS}
+$(KERNEL_FILE) : $(LIBRARIES) kernel.ld
 	@echo "(LD) ${KERNEL_FILE}"
 	@ld -melf_i386 -T kernel.ld -o ${KERNEL_FILE} --start-group $(LIBS) --end-group
 	@echo "Sanity Check"
@@ -22,22 +24,11 @@ $(KERNEL_FILE) : libraries kernel.ld ${KERNEL_OBJS}
 #################
 ## libraries
 #################
-LIBS = $(addsuffix /lib.ar,$(LIBRARIES))
-libraries : $(LIBS)
-%/lib.ar : %
-	@echo "(MAKE) $<"
-	@make -C $<
+$(LIBRARIES):
+	@echo "(MAKE) $@"
+	@make -C $@
 
-%/lib.ar.clean : %
-	@echo "(Clean) $<"
-	@make -C $< clean
-
-CLEAN_LIBRARIES=$(subst .ar,.ar.clean,$(LIBS))
 clean : ${CLEAN_LIBRARIES}
 	@rm -f ${KERNEL_FILE}
-
-image : package
-	@cd build-tools; ./create_image --clean -f PoseidonOS.img
-	@cd build-tools; ./create_image --create -f PoseidonOS.img
-	@mv build-tools/PoseidonOS.img .
+	@for d in $(LIBRARIES); do make -C $$d clean; done
 
