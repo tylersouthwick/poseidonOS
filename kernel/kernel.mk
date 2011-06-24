@@ -37,7 +37,7 @@ ${AR_LIB_NAME} : ${C_OBJS} ${ASM_OBJS}
 # generate dependencies
 ######
 .%.dep : %.c
-	@echo "(DEP) $<"
+#	@echo "(DEP) $<"
 	@set -e; rm -f $@; \
 		$(CC) -M $(CFLAGS) $< > $@.$$$$; \
 		sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
