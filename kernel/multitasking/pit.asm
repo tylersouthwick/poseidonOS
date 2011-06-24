@@ -112,10 +112,10 @@ timer_isr:
 	add [system_timer_fractions], eax	;Update system time tick fractions
 	adc [system_timer_ms], ebx		;Update system timer tick milli-seconds
 
-	extern timer_interrupt
+	extern schedule
 	mov eax, [system_timer_ms]
 	push eax
-	call timer_interrupt
+	call schedule
 	pop eax
 
 	mov al, 0x20

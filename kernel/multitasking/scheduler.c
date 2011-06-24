@@ -20,8 +20,9 @@ int timer_count = 0;
 void floppy_timer(void);
 int get_current_process(void);
 
-int schedule()
+int schedule(long system_timer_ms)
 {
+	DEBUG(("called system timer"));
 	millisecond_count++;
 	if (millisecond_count > 100)
 	{

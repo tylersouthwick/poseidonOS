@@ -9,11 +9,3 @@ void timer_init() {
     DEBUG(("PIT initialized %iHz every %i.%ims", pitReturn->irq0_frequency, pitReturn->irq0_ms, pitReturn->irq0_fractions));
 }
 
-static int lastSecond = 0;
-void timer_interrupt(long system_timer_ms) {
-	int second = system_timer_ms / 1000;
-	if (second > lastSecond) {
-    		DEBUG(("timer: %is (%ims)", second, system_timer_ms));
-		lastSecond = second;
-	}
-}
