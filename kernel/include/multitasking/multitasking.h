@@ -30,14 +30,15 @@
 
 //#define
 
-#define PRIORITY_TO_TIMETORUN	4
+#define PRIORITY_TO_TIMETORUN	50
 
 //define multitasking structures and types
 typedef struct {
 	unsigned int esp;			//position of process' esp
 	unsigned int ss;			//stack segment
-	unsigned int stack;		//top of process' stack
-	unsigned long *cr3;
+	unsigned int kstack;		//top of process' stack
+	unsigned int ustack;		//top of process' stack
+	unsigned int cr3;
 	unsigned int number;
 	unsigned int parent;
 	unsigned int owner;

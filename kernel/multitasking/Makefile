@@ -4,3 +4,5 @@ ASM_SOURCE=pit.asm
 
 include ../settings.mk
 include ../kernel.mk
+
+pit.asm : multitasking.mac

@@ -56,6 +56,9 @@ void multitasking_init() {
 	process_t *idle_task;
 	process_t *kernel_task;
 
+	//stop interrupts, just in case
+	__asm__ volatile ("cli");
+
 	//setup timer
 	timer_init();
 
@@ -71,17 +74,12 @@ void multitasking_init() {
 	processes->pid = idle_task;
 	
 	///create the kernel task
-	kernel_task = multitasking_process_new(kernel_init, "kernel_init", PRIORITY_LOW, DPL_RING0);
+	kernel_task = multitasking_process_new(kernel_init, "kernel_init", PRIORITY_HIGH, DPL_RING0);
 	multitasking_process_add(kernel_task);
 	
-	///load the scheduler ISR into the IDT
-	idt_interrupt_add(0x20, scheduler_isr, 0);
-	
-	DEBUG(("starting interrupts"));
-	irq_umask(IRQ_0);
-	__asm__ volatile ("sti");
+	schedule_start(kernel_task);
 
-	while(1);	
+	FATAL(("Shoouldn't get here"));
 }
 
 /********************************************************************************
@@ -118,19 +116,19 @@ process_t *multitasking_process_new(void *handler, char *pname, int priority, in
 		data_selector = gdt_kernel_data | dpl;
 	}
   */
-  data_selector = 0x10;
+	data_selector = 0x10;
+	code_selector = 0x08;
 	
 	//create a new process
 	temp_process = (process_t *)kmalloc(sizeof(process_t));
 	
 	//setup process' stack values
-	temp_stack = (unsigned int*)((unsigned int)kmalloc(USTACK_SIZE) + USTACK_SIZE);
+	temp_process->kstack = temp_stack = (unsigned int*)((unsigned int)kmalloc(USTACK_SIZE) + USTACK_SIZE);
 	*temp_stack--;
 	*temp_stack--=(unsigned int)task_cleanup;
 	*temp_stack--=0x0202;
-	*temp_stack--=0x08;
-	//*temp_stack--=code_selector;									//CS
-	*temp_stack--=(unsigned int)handler;				//EIP
+	*temp_stack--=code_selector;
+	*temp_stack--=(unsigned int)handler;		//EIP
 	*temp_stack--=0;                            //ebp
 	*temp_stack--=0;                            //esp
 	*temp_stack--=0;                            //edi
@@ -145,6 +143,7 @@ process_t *multitasking_process_new(void *handler, char *pname, int priority, in
 	*temp_stack=data_selector;									//gs
 	
 	temp_process->esp=(unsigned int)temp_stack;
+	temp_process->ustack = (unsigned int*)((unsigned int)kmalloc(USTACK_SIZE) + USTACK_SIZE);
 	temp_process->ss=data_selector;
 	temp_process->priority=priority;
 	temp_process->timetorun=priority*PRIORITY_TO_TIMETORUN;
@@ -154,6 +153,7 @@ process_t *multitasking_process_new(void *handler, char *pname, int priority, in
 	
 	strcpy(temp_process->name, pname);
 	
+	DEBUG(("created process %s [stack: @0x%x]", temp_process->name, temp_stack));
 	return temp_process;
 }
 

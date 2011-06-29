@@ -20,9 +20,10 @@
 #include <core/gdt.h>
 
 /*the global system_tss*/
-static tss_t system_tss;
+tss_t system_tss;
 
 static unsigned char kernel_stack[KSTACK_SIZE];
+void *kstackend;
 
 void tss_init() {
 	DEBUG(("TSS descriptor: 0x%x", GDT_ENTRY_TSS * sizeof(struct gdt_descriptor)));
@@ -30,7 +31,8 @@ void tss_init() {
 	//setup system tss
 	system_tss.ldt = 0;
 	system_tss.ss0 = 0x10;
-	system_tss.esp0 = ((unsigned int) kernel_stack) + KSTACK_SIZE;
+	DEBUG(("Creating KSTACK %i", KSTACK_SIZE));
+	system_tss.esp0 = kstackend = ((unsigned int) kernel_stack) + KSTACK_SIZE - 1000;
 	//system_tss.cr3 = read_cr3();
 	
 	DEBUG(("adding TSS to GDT"));

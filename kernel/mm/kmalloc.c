@@ -50,8 +50,11 @@ void *kmalloc(unsigned int nBytes) {
 			chunk_start->prev = 0;
 			chunk_start->next = 0;
 
-			return (void *)((int)chunk_start + sizeof(struct kmalloc_free_type));
+			void *addr = (void *)((int)chunk_start + sizeof(struct kmalloc_free_type));
+			DEBUG(("returning %i bytes @0x%x", nBytes, addr));
+			return addr;
 		}
+
 		free_mem_temp = free_mem_temp->next;
 	}
 

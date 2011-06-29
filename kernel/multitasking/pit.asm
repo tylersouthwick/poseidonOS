@@ -99,14 +99,12 @@ initPIT:
 	popad
 	ret
 
+%include "multitasking.mac"
+
 [global timer_isr]
 timer_isr:
-	pusha
-	push gs
-	push fs
-	push ds
-	push es
-	
+	REG_SAVE
+
 	mov eax, [IRQ0_fractions]
 	mov ebx, [IRQ0_ms]			;eax.ebx = amount of time between IRQs
 	add [system_timer_fractions], eax	;Update system time tick fractions
@@ -116,14 +114,6 @@ timer_isr:
 	mov eax, [system_timer_ms]
 	push eax
 	call schedule
-	pop eax
 
-	mov al, 0x20
-	out 0x20, al				;Send the EOI to the PIC
+	REG_RESTORE
 
-	pop es
-	pop ds
-	pop fs
-	pop gs
-	popa
-	iret

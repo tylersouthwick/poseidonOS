@@ -1,6 +1,10 @@
 %ifndef MULTITASKING_MACROS
 %define MULTITASKING_MACROS
 
+[extern current_process] 			; the pointer to the process_queue
+[extern system_tss] 				; the pointer to the system_tss
+[extern kstackend] 				; the pointer to the system stack
+
 ;;;;;;;;;;;;;
 ;; macros
 %macro REG_SAVE 0
@@ -16,8 +20,7 @@
   mov [eax], esp
 
   ;switch to the kernel's own stack
-  lea eax, [kstackend]
-
+  mov eax, [kstackend]
   mov esp, eax
 %endmacro
 
@@ -28,7 +31,7 @@
   mov esp, [eax]
   mov ebx, [eax+8]
 
-  mov [sys_tss+4], ebx ;update system tss
+  mov [system_tss+4], ebx ;update system tss
 
 	;send the processor the end of interrupt message (EOI)
   mov al, 0x20
@@ -39,6 +42,10 @@
   pop es
   pop ds
   popad
+
+  ;mov eax, 16
+  ;extern write_integer
+  ;call write_integer
   iretd
 %endmacro
 

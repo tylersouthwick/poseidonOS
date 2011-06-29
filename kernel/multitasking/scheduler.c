@@ -6,12 +6,13 @@
 #include <ktypes.h>
 #include <kdebug.h>
 
+#include <core/irq.h>
 #include <multitasking/scheduler.h>
 #include <mm/paging.h>
 #include <multitasking/multitasking.h>
 
 extern struct process_queue_item *processes;		/*the pointer to the currently running queue item*/
-static process_t *current_process;
+process_t *current_process;
 
 int millisecond_count = 0;
 int second_count = 0;
@@ -20,15 +21,22 @@ int timer_count = 0;
 void floppy_timer(void);
 int get_current_process(void);
 
+static void starting_task() {
+	while(1);
+}
+
+void schedule_start(process_t *task) {
+	DEBUG(("starting scheduler"));
+	current_process = multitasking_process_new(starting_task, "starting task", PRIORITY_LOW, DPL_RING0);
+	irq_umask(IRQ_0);
+	__asm__ volatile ("sti");
+
+	while(1);	
+}
+
 int schedule(long system_timer_ms)
 {
-	DEBUG(("called system timer"));
-	millisecond_count++;
-	if (millisecond_count > 100)
-	{
-		millisecond_count = 0;
-		second_count++;
-	}
+	//DEBUG(("called system timer: %s", current_process->name));
 	
 	///check to see if the process is finished with its timeslice
 	if (current_process->timetorun-- <= 0)
@@ -46,11 +54,11 @@ int schedule(long system_timer_ms)
 		///when found, point current_process to the
 		///non-sleeping thread
 		current_process = processes->pid;	
-		DEBUG(("new process: %s", current_process->name));
+		//DEBUG(("switched process: %s [stack: @0x%x]", current_process->name, current_process->esp));
 
 		//change cr3
 #ifdef CHANGE_CR3
-		write_cr3(current_process->cr3);
+		//write_cr3(current_process->cr3);
 #endif
 	}
 	
