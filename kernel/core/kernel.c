@@ -29,7 +29,8 @@ void kmain(multiboot_info_t *mm_info) {
 }
 
 void kernel_init() {
-	INFO(("Entered multitasking environment"));
+	DEBUG(("Entered multitasking environment"));
+	INFO(("Initializing Kernel Subsystems"));
 
 	while(1);
 }
