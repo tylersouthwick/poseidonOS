@@ -1,14 +1,7 @@
-<<<<<<< HEAD
-*.o
-*.dep
-*.swo
-*.swp
-/PoseidonOS.img
-=======
-PoseidonOS.img
 *.sys
 *.o
 *.dep*
-*.swp
 *.swo
->>>>>>> 43ea47403a25c3c205f37c1ee80bffa1aad5c357
+*.swp
+PoseidonOS.img
+debug_out.txt
