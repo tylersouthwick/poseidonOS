@@ -1,5 +1,5 @@
 KERNEL_FILE=poseidon.sys
-LIBRARIES = core screen multitasking util mm
+LIBRARIES = core screen multitasking util mm devices
 
 ########################################3
 AS=nasm
@@ -13,7 +13,7 @@ ARCH=i586
 
 default : $(KERNEL_FILE)
 
-LIBS = $(addsuffix /lib.ar,$(LIBRARIES))
+LIBS = $(addsuffix /lib.a,$(LIBRARIES))
 
 $(KERNEL_FILE) : $(LIBRARIES) kernel.ld
 	@echo "(LD) ${KERNEL_FILE}"

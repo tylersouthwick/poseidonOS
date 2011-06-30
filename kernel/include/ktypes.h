@@ -32,9 +32,11 @@ typedef signed long long s64;
 
 typedef int size_t;
 
-typedef char bool;
+typedef unsigned int bool;
 
 #define TRUE 1
+#define true 1
 #define FALSE 0
+#define false 0
 
 #endif
