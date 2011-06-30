@@ -32,4 +32,9 @@ typedef signed long long s64;
 
 typedef int size_t;
 
+typedef char bool;
+
+#define TRUE 1
+#define FALSE 0
+
 #endif
