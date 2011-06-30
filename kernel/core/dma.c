@@ -2,7 +2,7 @@
 copied from GazOS Operating System
 */
 
-#include <dma.h>
+#include <core/dma.h>
 #include <bios.h>
 
 /* Just helps in making things look cleaner.  :) */
@@ -44,7 +44,7 @@ void dma_xfer(uchar channel, unsigned long address, unsigned int length, unsigne
 static void _dma_xfer(uchar DMA_channel, unsigned char page, unsigned int offset, unsigned int length, uchar mode)
 {
     /* Don't let anyone else mess up what we're doing. */
-    asm volatile("cli");
+    __asm__ volatile("cli");
 
     /* Set up the DMA channel so we can use it.  This tells the DMA */
     /* that we're going to be using this channel.  (It's masked) */
@@ -72,5 +72,5 @@ static void _dma_xfer(uchar DMA_channel, unsigned char page, unsigned int offset
     outportb(MaskReg[DMA_channel], DMA_channel);
 
     /* Re-enable interrupts before we leave. */
-    asm volatile("sti");
+    __asm__ volatile("sti");
 }
