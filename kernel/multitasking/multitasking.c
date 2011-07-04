@@ -23,10 +23,9 @@
 struct process_queue_item *processes;		/*the pointer to the currently running queue item*/
 process_t *current_process;
 
-extern void kernel_init(void);
-void idle_loop(void);
+static void idle_loop(void);
 
-void idle_loop(void) {
+static void idle_loop(void) {
 	while(1);
 }
 
@@ -52,7 +51,7 @@ void idle_loop(void) {
  * 	Process creation can now be done from multitasking_process_new()
  * ******************************************************************************/ 
 
-void multitasking_init() {
+void multitasking_init(void (*kernel_init)()) {
 	process_t *idle_task;
 	process_t *kernel_task;
 

@@ -11,6 +11,7 @@
 #include <vfs.h>
 
 void kmain(multiboot_info_t *mm_info);
+static void kernel_init();
 
 void kmain(multiboot_info_t *mm_info) {
     initScreen();
@@ -23,14 +24,14 @@ void kmain(multiboot_info_t *mm_info) {
 
     mm_init(mm_info);
 
-    multitasking_init();
+    multitasking_init(kernel_init);
 
     FATAL(("shouldn't get here!"));
 
     while(1);
 }
 
-void kernel_init() {
+static void kernel_init() {
 	DEBUG(("Entered multitasking environment"));
 	INFO(("Initializing Kernel Subsystems"));
 
