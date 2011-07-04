@@ -4,6 +4,7 @@
  * manages vfs stuff
  * *********************************/
 #include <ktypes.h>
+#include <kdebug.h>
 
 #include <util/map.h>
 
@@ -20,10 +21,13 @@ void vfs_register_fs(char *filesystem, void *mount_fs) {
 }
 
 void vfs_init() {
+	DEBUG(("Setting up VFS"));
 	filesystems = linked_list_map_create();
 	mounts = linked_list_map_create();
 
 	file_handles = kmalloc(sizeof(file_handles_t) * VFS_FILE_HANDLES);
 
 	fat_init();
+
+	DEBUG(("Setting up VFS"));
 }
