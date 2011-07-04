@@ -51,6 +51,6 @@ MAKEFILES_D=$(addprefix .,$(subst .c,.dep,$(C_SOURCE)))
 
 clean :
 	@rm -f *.o
-	@rm -f *.ar
+	@rm -f *.a
 	@rm -f .*.dep
 
