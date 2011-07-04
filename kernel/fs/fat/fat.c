@@ -312,7 +312,7 @@ int fat_get_next_sector(vfs_mount *vmount, int sector) {
 		return fat_cluster_to_sector(next_cluster);
 	}
 
-	KDEBUG("fat_get_next_sector :: error!\n");
+	DEBUG(("fat_get_next_sector :: error!"));
 	return -1;
 }
 
@@ -341,17 +341,11 @@ int fat_mount(vfs_mount *vmount) {
 	fat_root_sector_count = ((fat_data->RootEntCnt * 32) + (fat_data->BytsPerSec - 1)) / (fat_data->BytsPerSec);
 	fat_root_sector_start = fat_data->RsvdSecCnt + (fat_data->NumFATs * FATSz);
 
-	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
-	KLOG_INFO("fd0: mounted as fat\n");
-	screen_set_color(SCREEN_DEFAULT);
+	INFO(("fd0: mounted as fat\n"));
 
-	KDEBUG("vmount: ");
-	KDEBUG_HEX((int)(&vmount));
-	KDEBUG("\n");
+	DEBUG(("vmount: 0x%x", (int)(&vmount)));
 
-	KDEBUG("vmount.fopen: ");
-	KDEBUG_HEX((int)(&(vmount->fopen)));
-	KDEBUG("\n");
+	DEBUG(("vmount.fopen: 0x%x", (int)(&(vmount->fopen))));
 
 	return 1;
 }

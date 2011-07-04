@@ -1,4 +1,4 @@
-C_SOURCE=fat.o file.o directory.o 
+C_SOURCE=fat.c file.c directory.c
 
 include ../../settings.mk
 include ../../kernel.mk
