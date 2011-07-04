@@ -61,6 +61,7 @@ bool floppy_log_disk(drive_geometry *);
  * *****************************************************************************/
 void floppy_init()
 {
+	DEBUG(("Initializing floppy controller"));
 	process_t *floppy_timer_process;
 	int floppy_count = 0;
 	unsigned char c;
@@ -91,6 +92,7 @@ void floppy_init()
 	multitasking_process_add(floppy_timer_process);
 
 	floppy_reset();
+	DEBUG(("Initialized floppy controller"));
 }
 
 /*******************************************************************************

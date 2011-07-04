@@ -21,7 +21,11 @@ static map_t *device_map;
  * *****************************************************************************/
 void devicemanager_init()
 {	
+	DEBUG(("Initializing devices"));
 	device_map = linked_list_map_create();
+	DEBUG(("Devices Initialized"));
+
+	devicemanager_init_devices();
 }
 
 
@@ -32,17 +36,6 @@ void devicemanager_init()
 void devicemanager_init_devices()
 {
 	floppy_init();
-
-#ifdef KLOG_INFO_ENABLED
-	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
-	KLOG_INFO("floppy ");
-	screen_set_color(SCREEN_DEFAULT);
-
-	screen_set_color(SCREEN_FG_CYAN | SCREEN_BG_BLACK);
-	KLOG_INFO("keyboard ");
-	screen_set_color(SCREEN_DEFAULT);
-#endif
-
 	keyboard_init();
 }
 

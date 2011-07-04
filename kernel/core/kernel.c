@@ -7,6 +7,7 @@
 #include <multitasking/multitasking.h>
 #include <multiboot.h>
 #include <mm/mm.h>
+#include <devices/manager.h>
 
 void kmain(multiboot_info_t *mm_info);
 
@@ -31,6 +32,8 @@ void kmain(multiboot_info_t *mm_info) {
 void kernel_init() {
 	DEBUG(("Entered multitasking environment"));
 	INFO(("Initializing Kernel Subsystems"));
+
+	devicemanager_init();
 
 	while(1);
 }
