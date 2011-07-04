@@ -1,4 +1,4 @@
-C_SOURCE=multitasking.c timer.c tss.c scheduler.c
+C_SOURCE=multitasking.c timer.c tss.c scheduler.c sleep.c
 
 ASM_SOURCE=pit.asm
 
