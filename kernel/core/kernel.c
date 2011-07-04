@@ -11,6 +11,7 @@
 #include <vfs.h>
 
 void kmain(multiboot_info_t *mm_info);
+void shutdown();
 static void kernel_init();
 
 void kmain(multiboot_info_t *mm_info) {
@@ -39,5 +40,29 @@ static void kernel_init() {
 
 	vfs_init();
 
+	INFO(("Mounting root filesystem (read-only) at /"));
+	int status = mount("fd0", "/", "fat");
+	if (status == -1) {
+		ERROR(("Unable to mount root"));
+		shutdown();
+		return;
+	}
+	INFO(("Mounted root filesystem (read-only) at /"));
+
+	while(1);
+}
+
+void shutdown() {
+	__asm__ volatile ("cli");
+	INFO(("System Shutting Down"));
+
+	INFO(("Unmounting all devices"));
+	umount_all();
+
+	INFO(("System Halted"));
+
+	__asm__ volatile ("hlt");
+
+	//shouldn't be needed.. just in case
 	while(1);
 }
