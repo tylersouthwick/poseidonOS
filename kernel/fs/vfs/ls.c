@@ -6,7 +6,7 @@
 #include <string.h>
 #include <kmalloc.h>
 
-char *months[] = {
+static char *months[] = {
 		"Jan",
 		"Feb",
 		"Mar",
@@ -58,37 +58,16 @@ vfs_entry *ls(char *path)
 
 			attributes[4] = 0;
 			
-			KLOG_DEBUG (attributes);
-			KLOG_DEBUG("  ");
-			if (entries[i].size < 10)
-				put_char(' ');
-			if (entries[i].size < 100)
-				put_char(' ');
-			if (entries[i].size < 1000)
-				put_char(' ');
-			if (entries[i].size < 10000)
-				put_char(' ');
+			char date_s[25];
+			memset(date_s, 0, sizeof(date_s));
+			struct kdate date;
+			memcpy(&date, &entries[i].modified_date, sizeof(struct kdate));
 
-			put_int(entries[i].size, 10);
-			KLOG_DEBUG("  ");
-			{
-				struct kdate date;
-				memcpy(&date, &entries[i].modified_date, sizeof(struct kdate));
-				if (date.day < 10)
-					put_char(' ');
-
-				put_int(date.day, 10);
-				put_char(' ');
-				KLOG_DEBUG(months[date.month]);
-				put_char(' ');
-				put_int(date.year, 10);
-			}
-			KLOG_DEBUG("  ");
-			KLOG_DEBUG(entries[i].name);
-			KLOG_DEBUG("\n");
+			INFO(("%s %i [%i %s %i] -> %s", attributes, entries[i].size, date.day, months[date.month], date.year, entries[i].name));
 		}
-	} else 
-		KLOG_ERROR("invalid path!\n");
+	} else {
+		ERROR(("invalid path!"));
+	}
 
 	return entries;
 }
