@@ -9,7 +9,6 @@
 #include <kdebug.h>
 
 #include <multitasking/scheduler.h>						/*imports scheduler definitions and prototypes*/
-#include <multitasking/tasks.h>								/*includes prototypes for two dummy tasks*/
 #include <multitasking/timer.h>
 #include <core/irq.h>
 #include <multitasking/multitasking.h>
