@@ -13,5 +13,6 @@
 
 #define MESSAGE(t, a) kprintf("%s [%s:%i] ", t, __FILE__, __LINE__); kprintf a; write_char('\n')
 
+#define assert(a) //TODO: implement
 #endif
 
