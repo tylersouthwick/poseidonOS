@@ -1,19 +1,33 @@
 
 ;void mutex_lock(mutext *mutex);
+[global mutex_lock]
 mutex_lock:
-	mov eax, [esp+4] ;the pointer to the mutex structure
-	mov ebx, 1
-	.loop:
+	push ebx
+	mov ebx, [esp+8] ;the pointer to the mutex structure
+	pushad
+.loop:
+	mov eax, 0
+	mov ecx, 1
 	lock
-	cmpxchg 0, ebx
-	je .loop
+	cmpxchg [ebx], ecx
+	jne .loop
+	popad
+	pop ebx
 	ret
 
 ;void mutex_unlock(mutext *mutex);
+[global mutex_unlock]
 mutex_unlock:
-	mov eax, [esp+4] ;the pointer to the mutex structure
-	mov ebx, 0
-	;update to 0 only if it was a 1
+	push ebx
+	mov ebx, [esp+8] ;the pointer to the mutex structure
+	pushad
+	mov eax, 1
+	mov ecx, 0
+	.loop:
 	lock
-	cmpxchg 1, ebx
+	cmpxchg [ebx], ecx
+	je .loop
+	popad
+	pop ebx
+	ret
 	ret
