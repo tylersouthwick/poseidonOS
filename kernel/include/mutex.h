@@ -1,15 +1,18 @@
 #ifndef MUTEX_H
 #define MUTEX_H
 
+#include <ktypes.h>
+
 struct mutex {
 	bool locked;
-} mutex_t;
+} typedef mutex_t;
 
 
-static inline void mutex_initialize(mutext *mutex, bool locked) {
+static inline void mutex_initialize(mutex_t *mutex, bool locked) {
+	mutex->locked = locked;
 }
 
-void mutex_lock(mutext *mutex);
+void mutex_lock(mutex_t *mutex);
 
-void mutex_unlock(mutext *mutex);
+void mutex_unlock(mutex_t *mutex);
 #endif
