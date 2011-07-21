@@ -26,7 +26,7 @@ int memcmp(void *, void *, int);
 void *memchr (void *, int, int);
 
 //copy src to dest
-char *strcpy(char *, char *);
+char *strcpy(char *, const char *);
 
 //copy no more than N characters of src to dest
 char *strncpy (char *, char *, int);
@@ -44,7 +44,7 @@ int strcmp(char *, char *);
 int strncmp(char *, char *, int);
 
 ///get the length of a string
-int strlen(char *);
+int strlen(const char *);
 
 void tolower(char *);
 

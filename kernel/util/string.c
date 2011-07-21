@@ -17,7 +17,7 @@ int strcmp(char *s1, char *s2)
 	return 1;
 }
 
-int strlen(char *str)
+int strlen(const char *str)
 {
 	int i=0;
 	
