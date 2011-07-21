@@ -9,6 +9,7 @@
 #include <mm/mm.h>
 #include <devices/manager.h>
 #include <vfs.h>
+#include <mutex.h>
 
 void kmain(multiboot_info_t *mm_info);
 void shutdown();
@@ -35,6 +36,10 @@ void kmain(multiboot_info_t *mm_info) {
 static void kernel_init() {
 	DEBUG(("Entered multitasking environment"));
 	INFO(("Initializing Kernel Subsystems"));
+
+#ifdef INTEGRATION_TESTS
+	mutex_test();
+#endif
 
 	devicemanager_init();
 
