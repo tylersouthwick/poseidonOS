@@ -5,17 +5,20 @@ AR=ar
 ARFLAGS=-rs
 ARCH=i586
 
-KERNEL_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -march=${ARCH} -m32 -I${KERNEL_DIR}/kernel/include/ -fno-leading-underscore -std=c99
-CFLAGS = $(KERNEL_CFLAGS)
+SHARED_CFLAGS=-I${KERNEL_DIR}/kernel/include/ -std=c99
+# -m32 -march=${ARCH}
+KERNEL_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -fno-leading-underscore $(SHARED_CFLAGS)
+TEST_CFLAGS=$(CFLAGS) $(SHARED_CFLAGS)
 
 AR_LIB_NAME=lib.a
 
-.PHONY: default clean
-
-default : ${AR_LIB_NAME}
+.PHONY: default clean test
 
 C_OBJS=$(subst .c,.o,$(C_SOURCE))
 ASM_OBJS=$(subst .asm,.o,$(ASM_SOURCE))
+
+default : ${AR_LIB_NAME}
+
 
 ${AR_LIB_NAME} : ${C_OBJS} ${ASM_OBJS}
 	@echo "(LIB) $@"
@@ -33,7 +36,7 @@ ${AR_LIB_NAME} : ${C_OBJS} ${ASM_OBJS}
 ######
 %.o : %.c
 	@echo "(GCC) $<"
-	@$(CC) $(CFLAGS) -c -o $@ $<
+	@$(CC) -c $(KERNEL_CFLAGS) -o $@ $<
 
 ######
 # generate dependencies
@@ -41,7 +44,7 @@ ${AR_LIB_NAME} : ${C_OBJS} ${ASM_OBJS}
 .%.dep : %.c
 #	@echo "(DEP) $<"
 	@set -e; rm -f $@; \
-		$(CC) -M $(CFLAGS) $< > $@.$$$$; \
+		$(CC) -M $(KERNEL_CFLAGS) $< > $@.$$$$; \
 		sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
 		rm -f $@.$$$$
 
@@ -53,4 +56,18 @@ clean :
 	@rm -f *.o
 	@rm -f *.a
 	@rm -f .*.dep
+	@rm -f test.out
 
+test : default test.out
+ifdef TEST_SOURCE
+	./test.out
+else
+	@echo "no tests" &> /dev/null
+endif
+
+test.out : $(TEST_SOURCE)
+ifdef TEST_SOURCE
+	gcc $(TEST_CFLAGS) $(TEST_SOURCE) -o test.out
+else
+	@echo "no test sources" &> /dev/null
+endif
