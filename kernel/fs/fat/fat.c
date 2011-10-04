@@ -239,7 +239,7 @@ vfs_entry *fat_do_ls(vfs_mount *vmount, int sector_start, int sector_count, int 
 		memset(vfs_entries[i].name, 0, VFS_NAME_MAXLEN + 1);
 		strip_whitespace(fat_entries[fat_counter].name, FAT_NAME_MAXLEN);
 		memcpy(vfs_entries[i].name, fat_entries[fat_counter].name, FAT_NAME_MAXLEN);
-		tolower(vfs_entries[i].name);
+		str_tolower(vfs_entries[i].name);
 
 		///copy attributes,dates,times
 		vfs_entries[i].attributes = fat_entries[fat_counter].attr;
@@ -261,7 +261,7 @@ vfs_entry *fat_do_ls(vfs_mount *vmount, int sector_start, int sector_count, int 
 		if ((!FAT_IS_DIRECTORY(vfs_entries[i].attributes)) && (fat_entries[fat_counter].ext[0] != 0)) {
 			char *temp_name;
 			temp_name = vfs_entries[i].name;
-			tolower(fat_entries[fat_counter].ext);
+			str_tolower(fat_entries[fat_counter].ext);
 
 			temp_name[strlen(temp_name)] = '.';
 			memcpy((char *)((int)temp_name + strlen(temp_name)), fat_entries[fat_counter].ext, FAT_EXT_MAXLEN);

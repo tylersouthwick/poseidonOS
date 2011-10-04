@@ -6,10 +6,10 @@
 #define STRING_H
 
 //copy n bytes from src to dest
-void *memcpy(void *, void *, int);
+void *memcpy(void *dest, const void *src, size_t n);
 
 //copy n bytes from src to dest, guarenteeing correct behavior for overlapping strings
-void *memmove(void *, void *, int);
+void *memmove(void *dest, const void *src, size_t n);
 
 //copy no more than n bytes of src to dest, stopping when c is found
 //return the position in dest one byte past where C was copied,
@@ -17,36 +17,36 @@ void *memmove(void *, void *, int);
 void *memccpy(void *, void *, int, int);
 
 //set n bytes of s to c
-void memset(void * s, int n, int c);
+void *memset(void *s, int c, size_t n);
 
 //compare n bytes of s1 and s2
-int memcmp(void *, void *, int);
+int memcmp(const void *s1, const void *s2, size_t n);
 
 //search n bytes of s for c
-void *memchr (void *, int, int);
+void *memchr (const void *s, int c, size_t n);
 
 //copy src to dest
 char *strcpy(char *, const char *);
 
 //copy no more than N characters of src to dest
-char *strncpy (char *, char *, int);
+char *strncpy(char *dest, const char *src, size_t n);
 
 //concantinate src onto dest
-char *strcat(char *, char *);
+char *strcat(char *dest, const char *src);
 
 //append no more than n characters from src onto dest
-char *strncat(char *, char *, int);
+char *strncat(char *dest, const char *src, size_t n);
 
 //compare s1 and s2
-int strcmp(char *, char *);
+int strcmp(const char *s1, const char *s2);
 
 //compare n characters of s1 and s2
-int strncmp(char *, char *, int);
+int strncmp(const char *s1, const char *s2, size_t n);
 
 ///get the length of a string
-int strlen(const char *);
+size_t strlen(const char *);
 
-void tolower(char *);
+void str_tolower(char *);
 
 char *strip_whitespace(char *, int);
 

@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-int strcmp(char *s1, char *s2)
+int strcmp(const char *s1, const char *s2)
 {
 	int i;
 	
@@ -17,7 +17,7 @@ int strcmp(char *s1, char *s2)
 	return 1;
 }
 
-int strlen(const char *str)
+size_t strlen(const char *str)
 {
 	int i=0;
 	
@@ -28,7 +28,7 @@ int strlen(const char *str)
 }
 
 
-void tolower(char *str)
+void str_tolower(char *str)
 {
 	int i;
 	
