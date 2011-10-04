@@ -5,7 +5,7 @@ AR=ar
 ARFLAGS=-rs
 ARCH=i586
 
-SHARED_CFLAGS=-I${KERNEL_DIR}/kernel/include/ -std=c99
+SHARED_CFLAGS=-I${KERNEL_DIR}/kernel/include/ -std=c99 -m32
 # -m32 -march=${ARCH}
 KERNEL_CFLAGS=-ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -fno-leading-underscore $(SHARED_CFLAGS)
 TEST_CFLAGS=$(CFLAGS) $(SHARED_CFLAGS)
