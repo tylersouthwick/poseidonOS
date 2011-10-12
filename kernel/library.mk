@@ -1,6 +1,7 @@
 LIBS = $(addsuffix /lib.a,$(MODULES))
 
-.PHONY: default depclean clean $(LIBS)
+.PHONY: default depclean clean $(LIBS) test
+
 default :
 	@for d in $(MODULES); do make -C $$d; done
 	@echo "(AR)"
@@ -12,3 +13,7 @@ depclean :
 
 clean :
 	@for d in $(MODULES); do make -C $$d clean; done
+
+test :
+	@for d in $(MODULES); do make -C $$d test; done
+

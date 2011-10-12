@@ -1,4 +1,4 @@
-.PHONY : default package run clean clean_image
+.PHONY : default package run clean clean_image test
 
 default : run
 
@@ -6,6 +6,9 @@ package : PoseidonOS.img
 
 clean : clean_image
 	@make -C kernel clean
+
+test : 
+	@make -C kernel test
 
 clean_image :
 	@rm -f PoseidonOS.img

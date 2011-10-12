@@ -9,7 +9,7 @@ AR=ar
 ARFLAGS=-rs
 ARCH=i586
 
-.PHONY: $(LIBRARIES) default clean image
+.PHONY: $(LIBRARIES) default clean image test
 
 default : $(KERNEL_FILE)
 
@@ -28,6 +28,9 @@ $(LIBRARIES):
 	@echo "(MAKE) $@"
 	@make -C $@
 
+test :
+	@for d in $(LIBRARIES); do make -C $$d test; done
+	
 clean : ${CLEAN_LIBRARIES}
 	@rm -f ${KERNEL_FILE}
 	@for d in $(LIBRARIES); do make -C $$d clean; done
