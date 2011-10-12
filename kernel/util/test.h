@@ -7,6 +7,7 @@ struct test_result {
 	unsigned int failed;
 } typedef test_result_t;
 
-int priority_queue_tests(test_result_t *test_result);
+int test_summary(test_result_t *results, int count);
+void test_run(int (test)(test_result_t *result), test_result_t *result);
 
 #endif
