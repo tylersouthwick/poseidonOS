@@ -3,6 +3,7 @@
 *.dep*
 *.swo
 *.swp
+*.swn
 lib.a
 PoseidonOS.img
 debug_out.txt
