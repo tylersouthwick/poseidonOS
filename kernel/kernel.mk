@@ -58,7 +58,7 @@ clean :
 	@rm -f .*.dep
 	@rm -f test.out
 
-test : default test.out
+test : test.out
 ifdef TEST_SOURCE
 	./test.out
 else
@@ -67,7 +67,7 @@ endif
 
 test.out : $(TEST_SOURCE)
 ifdef TEST_SOURCE
-	gcc $(TEST_CFLAGS) $(TEST_SOURCE) -o test.out
+	gcc -DTEST $(TEST_CFLAGS) $(TEST_SOURCE) -o test.out
 else
 	@echo "no test sources" &> /dev/null
 endif
