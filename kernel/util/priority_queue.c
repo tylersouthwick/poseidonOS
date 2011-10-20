@@ -1,13 +1,9 @@
 #include <util/priority_queue.h>
 #include <kdebug.h>
 #include <string.h>
-#include <kmalloc.h>
 
-#define malloc(a) kmalloc(a)
-#define EMPTY_TASK -1
-
-static pq_node *create_node(unsigned int data, unsigned int priority) {
-	pq_node *node = malloc(sizeof(pq_node));
+static pq_node *create_node(priority_queue *queue, unsigned int data, unsigned int priority) {
+	pq_node *node = &(queue->nodes[queue->count++]);
 	memset(node, 0, sizeof(pq_node));
 	node->data = data;
 	node->priority = priority;
@@ -17,7 +13,6 @@ static pq_node *create_node(unsigned int data, unsigned int priority) {
 void priority_queue_create(priority_queue *queue, const char *name) {
 	DEBUG(("Creating queue %s", name));
 	memset(queue, 0, sizeof(priority_queue));
-	queue->name = malloc(strlen(name) + 1);
 	strcpy(queue->name, name);
 	queue->count = 0;
 }
@@ -25,15 +20,11 @@ void priority_queue_create(priority_queue *queue, const char *name) {
 void priority_queue_destroy(priority_queue * queue) {
 	pq_node *node;
 	DEBUG(("Destorying queue %s", queue->name));
-	kfree(queue->name);
 	node = queue->first;
 	while (node) {
 		pq_node *n = node->next;
-		kfree(node);
 		node = n;
 	}
-	queue->name = 0;
-	kfree(queue);
 }
 
 static int contains(priority_queue *queue, unsigned int data) {
@@ -66,7 +57,7 @@ void priority_queue_insert(priority_queue *queue, unsigned int data, unsigned in
 
 	if (queue->count == 0) {
 		DEBUG(("Inserting %i into queue[%s]", data, queue->name));
-		queue->first = queue->last = create_node(data, priority);
+		queue->first = queue->last = create_node(queue, data, priority);
 		queue->count = 1;
 		return;
 	}
@@ -87,7 +78,7 @@ void priority_queue_insert(priority_queue *queue, unsigned int data, unsigned in
 
 		if (priority <= node->priority) continue;
 
-		insert_node(queue, node, create_node(data, priority));
+		insert_node(queue, node, create_node(queue, data, priority));
 		queue->count++;
 
 		return;
@@ -96,7 +87,7 @@ void priority_queue_insert(priority_queue *queue, unsigned int data, unsigned in
 	DEBUG(("Inserting %i at end of queue[%s]", data, queue->name));
 	{
 		pq_node *last = queue->last;
-		last->next = create_node(data, priority);
+		last->next = create_node(queue, data, priority);
 		last->next->prev = last;
 		queue->last = last->next;
 	}
@@ -113,14 +104,14 @@ int priority_queue_head(priority_queue *queue) {
 
 	queue->count--;
 	pq_node *n = queue->first;
-	assert(n != NULL);
+	//assert(n != NULL);
 	unsigned int data = n->data;
 	queue->first = n->next;
 	if (queue->first)
 		queue->first->prev = NULL;
 	if (n == queue->last)
 		queue->last = NULL;
-	kfree(n);
+	//kfree(n);
 
 	return data;
 }

@@ -1,15 +1,19 @@
 #ifndef MULTITTASKING_PRIORITY_QUEUE_H
 #define MULTITTASKING_PRIORITY_QUEUE_H
 
+#define PQ_NODE_COUNT 25
+
 typedef struct pq_node {
 	unsigned int data;
 	unsigned int priority;
-	struct pq_node *next, *prev;
+	struct pq_node *prev, *next;
 } pq_node;
 
 typedef struct priority_queue {
 	int count;
-	char *name;
+	int size;
+	char name[255];
+	pq_node nodes[PQ_NODE_COUNT];
 	pq_node *first, *last;
 } priority_queue;
 
