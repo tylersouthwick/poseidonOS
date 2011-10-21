@@ -11,7 +11,7 @@ static pq_node *create_node(priority_queue *queue, unsigned int data, unsigned i
 }
 
 void priority_queue_create(priority_queue *queue, const char *name) {
-	DEBUG(("Creating queue %s", name));
+	DEBUG_MSG(("Creating queue %s", name));
 	memset(queue, 0, sizeof(priority_queue));
 	strcpy(queue->name, name);
 	queue->count = 0;
@@ -19,7 +19,7 @@ void priority_queue_create(priority_queue *queue, const char *name) {
 
 void priority_queue_destroy(priority_queue * queue) {
 	pq_node *node;
-	DEBUG(("Destorying queue %s", queue->name));
+	DEBUG_MSG(("Destorying queue %s", queue->name));
 	node = queue->first;
 	while (node) {
 		pq_node *n = node->next;
@@ -52,27 +52,27 @@ static void insert_node(priority_queue *queue, pq_node *after, pq_node *n) {
 }
 
 void priority_queue_insert(priority_queue *queue, unsigned int data, unsigned int priority) {
-	int i = 0;
 	pq_node *node;
 
 	if (queue->count == 0) {
-		DEBUG(("Inserting %i into queue[%s]", data, queue->name));
+		DEBUG_MSG(("Inserting %i into queue[%s]", data, queue->name));
 		queue->first = queue->last = create_node(queue, data, priority);
 		queue->count = 1;
 		return;
 	}
 
 	if (contains(queue, data)) {
-		DEBUG(("Queue %s already contains [%i]", queue->name, data));
+		DEBUG_MSG(("Queue %s already contains [%i]", queue->name, data));
 		return;
 	}
 
 	node = queue->first;
-	DEBUG(("iterating to insert %i into %s", data, queue->name));
+	DEBUG_MSG(("iterating to insert %i into %s with %i items", data, queue->name, queue->count));
+	int i = 0;
 	while (node && i < queue->count) {
 		i++;
 		if (node->data == data) {
-			DEBUG(("%i already exists in queue [%s]", data, queue->name));
+			DEBUG_MSG(("%i already exists in queue [%s]", data, queue->name));
 			return;
 		}
 
@@ -84,7 +84,7 @@ void priority_queue_insert(priority_queue *queue, unsigned int data, unsigned in
 		return;
 	}
 
-	DEBUG(("Inserting %i at end of queue[%s]", data, queue->name));
+	DEBUG_MSG(("Inserting %i at end of queue[%s]", data, queue->name));
 	{
 		pq_node *last = queue->last;
 		last->next = create_node(queue, data, priority);
@@ -100,7 +100,7 @@ int priority_queue_head(priority_queue *queue) {
 		return -1;
 	}
 
-	DEBUG(("getting head from queue [%s]", queue-> name));
+	DEBUG_MSG(("getting head from queue [%s]", queue-> name));
 
 	queue->count--;
 	pq_node *n = queue->first;
@@ -117,7 +117,7 @@ int priority_queue_head(priority_queue *queue) {
 }
 
 static void remove_node(priority_queue *queue, pq_node *n) {
-	DEBUG(("removing node..."));
+	DEBUG_MSG(("removing node..."));
 	if (n->prev)
 		n->prev->next = n->next;
 	else
@@ -131,7 +131,7 @@ static void remove_node(priority_queue *queue, pq_node *n) {
 
 void priority_queue_remove(priority_queue *queue, unsigned int data) {
 	pq_node *n;
-	DEBUG(("Removing %i from queue [%s]", data, queue->name));
+	DEBUG_MSG(("Removing %i from queue [%s]", data, queue->name));
 	n = queue->first;
 	while (n) {
 		if (n->data != data) {
