@@ -11,7 +11,6 @@ typedef struct pq_node {
 
 typedef struct priority_queue {
 	int count;
-	int size;
 	char name[255];
 	pq_node nodes[PQ_NODE_COUNT];
 	pq_node *first, *last;
