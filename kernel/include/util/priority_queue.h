@@ -10,10 +10,11 @@ typedef struct pq_node {
 } pq_node;
 
 typedef struct priority_queue {
-	int count;
+	int size;
 	char name[255];
 	pq_node nodes[PQ_NODE_COUNT];
 	pq_node *first, *last;
+	int node_count;
 } priority_queue;
 
 void priority_queue_create(priority_queue *queue, const char *name);

@@ -6,20 +6,20 @@
 #define QUEUE_TEST(testName, body) TESTCASE(testName, {priority_queue queue; priority_queue_create(&queue, FUNCTION_NAME(testName)); body})
 
 QUEUE_TEST(empty_queue, {
-	test_assert_true(queue.count == 0);
+	test_assert_true(queue.size == 0);
 });
 
 QUEUE_TEST(add_one_item, {
 	priority_queue_insert(&queue, 10, 5);
 	test_assert_true(queue.first != 0);
 	test_assert_true(queue.first->data == 10);
-	test_assert_true(queue.count == 1);
+	test_assert_true(queue.size == 1);
 });
 
 QUEUE_TEST(add_two_items, {
 	priority_queue_insert(&queue, 10, 5);
 	priority_queue_insert(&queue, 7, 10);
-	test_assert_true(queue.count == 2);
+	test_assert_true(queue.size == 2);
 });
 
 #define TEST_COUNT 25
