@@ -20,6 +20,16 @@ QUEUE_TEST(add_two_items, {
 	priority_queue_insert(&queue, 10, 5);
 	priority_queue_insert(&queue, 7, 10);
 	test_assert_true(queue.size == 2);
+
+	int head1 = priority_queue_head(&queue);
+	test_assert_true(head1 == 10);
+	priority_queue_remove(&queue, 10);
+	test_assert_true(queue.size == 1);
+
+	int head2 = priority_queue_head(&queue);
+	test_assert_true(head2 == 7);
+	priority_queue_remove(&queue, 7);
+	test_assert_true(queue.size == 0);
 });
 
 #define TEST_COUNT 25
