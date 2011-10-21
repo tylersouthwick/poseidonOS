@@ -57,6 +57,7 @@ clean :
 	@rm -f *.a
 	@rm -f .*.dep
 	@rm -f test.out
+	@rm -f test.out.debug
 
 test : test.out
 ifdef TEST_SOURCE
@@ -68,6 +69,20 @@ endif
 test.out : $(TEST_SOURCE)
 ifdef TEST_SOURCE
 	gcc -DTEST $(TEST_CFLAGS) $(TEST_SOURCE) -o test.out
+else
+	@echo "no test sources" &> /dev/null
+endif
+
+debugtest : test.out.debug
+ifdef TEST_SOURCE
+	./test.out.debug
+else
+	@echo "no tests" &> /dev/null
+endif
+
+test.out.debug : $(TEST_SOURCE)
+ifdef TEST_SOURCE
+	gcc -DDEBUG -DTEST $(TEST_CFLAGS) $(TEST_SOURCE) -o test.out.debug
 else
 	@echo "no test sources" &> /dev/null
 endif
