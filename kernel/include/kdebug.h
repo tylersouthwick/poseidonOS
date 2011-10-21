@@ -8,7 +8,11 @@
 	#include <screen.h>
 #endif
 
-#define DEBUG_MSG(a) MESSAGE("DEBUG", a)
+#ifdef DEBUG
+	#define DEBUG_MSG(a) MESSAGE("DEBUG", a)
+#else
+	#define DEBUG_MSG(a)
+#endif
 
 #define INFO_MSG(a) kprintf a; kprintf("\n")
 
