@@ -17,7 +17,7 @@ void mm_paging_init() {
 	unsigned int i;
 	unsigned int address;
 
-	DEBUG(("Initializing Virtual Paging"));
+	DEBUG_MSG(("Initializing Virtual Paging"));
 
 	/*get pages*/
 	page_directory = (unsigned long*)mm_physical_page_alloc(MM_TYPE_NORMAL);
@@ -60,7 +60,7 @@ void mm_paging_init() {
 	write_cr3(page_directory);
 	write_cr0(read_cr0() | 0x80000000);
 
-	DEBUG(("Initialized Virtual Paging"));
+	DEBUG_MSG(("Initialized Virtual Paging"));
 }
 
 /***************************************************************
@@ -117,7 +117,7 @@ void *mm_paging_pde_insert() {
 */
 
 void mm_page_fault_int(void *address) {
-    FATAL(("Page Fault: 0x%x", address));
-    DEBUG(("Eventually, this should handle the page fault"));
+    FATAL_MSG(("Page Fault: 0x%x", address));
+    DEBUG_MSG(("Eventually, this should handle the page fault"));
     __asm__("hlt");
 }

@@ -11,7 +11,7 @@ static x86_interrupt IDT[INTERRUPT_COUNT];
 void isr_empty();
 void idt_setup() {
 	int i;
-    DEBUG(("Setting up IDT"));
+    DEBUG_MSG(("Setting up IDT"));
     idtr.limit = INTERRUPT_COUNT * (sizeof(x86_interrupt) - 1);
     idtr.base = IDT;
 

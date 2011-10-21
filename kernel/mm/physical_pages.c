@@ -16,7 +16,7 @@ void mm_physical_pages_init(multiboot_info_t *mm_info) {
 
 	page_count = (mm_info->mem_upper)/4;
 
-	DEBUG(("Creating %i physical pages"));
+	DEBUG_MSG(("Creating %i physical pages"));
 
 	memory_zones.dma_page_count = 4096; /*16 MB of 4KB pages*/
 	if (memory_zones.dma_page_count > page_count)
@@ -58,7 +58,7 @@ void *mm_physical_page_alloc(int type) {
 	}
 mm_physical_page_alloc_error:
 	__asm__ volatile ("cli");
-	ERROR(("error allocating page!"));
+	ERROR_MSG(("error allocating page!"));
 	while(1);
 }
 
@@ -106,7 +106,7 @@ void *mm_physical_page_alloc_dma()
 void mm_physical_page_free(void *p_addr) {
 	//int superpage_index, subpage_index;
 
-	DEBUG(("mm_physical_page_free :: warning -> page not free'd!\n"));
+	DEBUG_MSG(("mm_physical_page_free :: warning -> page not free'd!\n"));
 
 	//get indexes
 	//superpage_index = MM_PHYSICAL_BITMAP_SP((int)p_addr);

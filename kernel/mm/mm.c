@@ -5,7 +5,7 @@
 #include <mm/paging.h>
 
 void mm_init(multiboot_info_t *mm_info) {
-	INFO(("Initializing Memory Management"));
+	INFO_MSG(("Initializing Memory Management"));
 
 	mm_physical_init(mm_info);
 

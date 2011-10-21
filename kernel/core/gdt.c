@@ -9,7 +9,7 @@ static struct gdt_table gdt_table;
 static struct gdt_descriptor gdt[GDT_ENTRY_COUNT];
 
 void gdt_init() {
-  DEBUG(("Setting up GDT"));
+  DEBUG_MSG(("Setting up GDT"));
 
   gdt_table.limit = (sizeof(struct gdt_descriptor) * GDT_ENTRY_COUNT) -1;
   gdt_table.base = (unsigned int)&gdt;

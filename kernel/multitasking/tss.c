@@ -25,21 +25,21 @@ static unsigned char kernel_stack[KSTACK_SIZE];
 void *kstackend;
 
 void tss_init() {
-	DEBUG(("TSS descriptor: 0x%x", GDT_ENTRY_TSS * sizeof(struct gdt_descriptor)));
+	DEBUG_MSG(("TSS descriptor: 0x%x", GDT_ENTRY_TSS * sizeof(struct gdt_descriptor)));
 
 	//setup system tss
 	system_tss.ldt = 0;
 	system_tss.ss0 = 0x10;
-	DEBUG(("Creating KSTACK %i", KSTACK_SIZE));
+	DEBUG_MSG(("Creating KSTACK %i", KSTACK_SIZE));
 	system_tss.esp0 = kstackend = ((unsigned int) kernel_stack) + KSTACK_SIZE - 1000;
 	//system_tss.cr3 = read_cr3();
 	
-	DEBUG(("adding TSS to GDT"));
+	DEBUG_MSG(("adding TSS to GDT"));
 	gdt_set_gate(GDT_ENTRY_TSS, (unsigned int) &system_tss, sizeof(tss_t), 0x89, 0x0F);
 
 	gdt_flush();
 
-	DEBUG(("loading tss"));
+	DEBUG_MSG(("loading tss"));
  
 	__asm__ volatile ("ltr %%ax" : : "a" (GDT_ENTRY_TSS * sizeof(struct gdt_descriptor)) );
 }

@@ -77,7 +77,7 @@ void multitasking_init(void (*kernel_init)()) {
 	
 	schedule_start(kernel_task);
 
-	FATAL(("Shoouldn't get here"));
+	FATAL_MSG(("Shoouldn't get here"));
 }
 
 /********************************************************************************
@@ -151,7 +151,7 @@ process_t *multitasking_process_new(void *handler, char *pname, int priority, in
 	
 	strcpy(temp_process->name, pname);
 	
-	DEBUG(("created process %s [stack: @0x%x]", temp_process->name, temp_stack));
+	DEBUG_MSG(("created process %s [stack: @0x%x]", temp_process->name, temp_stack));
 	return temp_process;
 }
 
@@ -213,7 +213,7 @@ void multitasking_process_add(process_t *pid) {
 	/*make sure that no task switch will occur :) */
 	__asm__ volatile("cli");
 
-	DEBUG(("adding process %s", pid->name));
+	DEBUG_MSG(("adding process %s", pid->name));
 
 	/*allocate space for the new queue item*/
 	new_queue_item = kmalloc(sizeof(struct process_queue_item));
@@ -237,7 +237,7 @@ void multitasking_process_add(process_t *pid) {
 
 void task_cleanup()
 {	
-	DEBUG(("killing task %s", current_process->name));
+	DEBUG_MSG(("killing task %s", current_process->name));
 
 	multitasking_process_kill(current_process);
 	

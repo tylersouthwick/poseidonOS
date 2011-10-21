@@ -61,7 +61,7 @@ bool floppy_log_disk(drive_geometry *);
  * *****************************************************************************/
 void floppy_init()
 {
-	DEBUG(("Initializing floppy controller"));
+	DEBUG_MSG(("Initializing floppy controller"));
 	process_t *floppy_timer_process;
 	int floppy_count = 0;
 	unsigned char c;
@@ -81,7 +81,7 @@ void floppy_init()
 	}
 	
 	if (b > 0) {
-		ERROR(("only one floppy disk supported!"));
+		ERROR_MSG(("only one floppy disk supported!"));
 	}
 
 	floppy_dma_address = mm_physical_page_alloc(MM_TYPE_DMA);
@@ -92,7 +92,7 @@ void floppy_init()
 	multitasking_process_add(floppy_timer_process);
 
 	floppy_reset();
-	DEBUG(("Initialized floppy controller"));
+	DEBUG_MSG(("Initialized floppy controller"));
 }
 
 /*******************************************************************************
@@ -518,7 +518,7 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
 			floppy_seek(1);
 			floppy_recalibrate();
 			floppy_motor_stop();
-			ERROR(("FDC: Disk change detected. Trying again."));
+			ERROR_MSG(("FDC: Disk change detected. Trying again."));
 			return floppy_rw(block, blockbuff, read, nosectors);
 		}
 		
@@ -526,7 +526,7 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
 		if (!floppy_seek(track))
 		{
 			floppy_motor_stop();
-			ERROR(("FDC: Seek error"));
+			ERROR_MSG(("FDC: Seek error"));
 			return false;
 		}
 		
@@ -559,7 +559,7 @@ bool floppy_rw(int block, unsigned char *blockbuff, unsigned char read, unsigned
 		
 		///wait for commmand completion
 		if (!floppy_wait(true)) {
-			ERROR(("Timed out, trying operation again after reset"));
+			ERROR_MSG(("Timed out, trying operation again after reset"));
 			floppy_reset();
 			return floppy_rw(block, blockbuff, read, nosectors);
 		}

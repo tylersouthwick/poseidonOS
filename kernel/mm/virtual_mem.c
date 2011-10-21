@@ -120,11 +120,11 @@ void mm_virtual_page_free(page_t *page) {
 	unsigned int pte_index = mm_virtual_get_pte(page->address);
 	unsigned long *current_pde = (unsigned long *)(page_directory[pde_index] & 0xFFFFF000);
 
-	DEBUG(("address first: 0x%x", page->address));
+	DEBUG_MSG(("address first: 0x%x", page->address));
 
 	for (i=pte_index; i<(pte_index + page->count); i++) {
 		unsigned long address = current_pde[i];
-		DEBUG(("address: 0x%x", address));
+		DEBUG_MSG(("address: 0x%x", address));
 		current_pde[i] = 0;
 	}
 }
@@ -140,7 +140,7 @@ unsigned long *mm_virtual_mem_new_address_space() {
 	//unsigned long *current_pte;
 	page_t page;
 
-	INFO(("creating new address space"));
+	INFO_MSG(("creating new address space"));
 	__asm__ volatile ("cli");
 
 
@@ -148,15 +148,15 @@ unsigned long *mm_virtual_mem_new_address_space() {
 	page.count = 1;
 	mm_virtual_page_alloc(&page);//mm_physical_page_alloc(MM_TYPE_NORMAL);
 	new_cr3 = page.address;
-	DEBUG(("new_cr3: 0x%x", new_cr3));
+	DEBUG_MSG(("new_cr3: 0x%x", new_cr3));
 
 	current_cr3 = read_cr3();
 
 	for (pde = KERNELSPACE_PAGE_START; pde < KERNELSPACE_PAGE_END; pde++) {
-		DEBUG(("current_cr3[pde]: 0x%x", current_cr3[pde]));
+		DEBUG_MSG(("current_cr3[pde]: 0x%x", current_cr3[pde]));
 		if (!(current_cr3[pde] & 1)) continue;
 
-		DEBUG(("copying cr3 entry..."));
+		DEBUG_MSG(("copying cr3 entry..."));
 		new_cr3[pde] = current_cr3[pde];
 		/*
 		for (pte=0; pte < 1024; pte++)
@@ -166,7 +166,7 @@ unsigned long *mm_virtual_mem_new_address_space() {
 		}
 		*/
 	}
-	DEBUG(("created new address space!"));
+	DEBUG_MSG(("created new address space!"));
 
 	__asm__ volatile ("sti");
 	return new_cr3;

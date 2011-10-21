@@ -14,7 +14,7 @@ extern map_t *mounts;
 int mount(char *dev, char *path, char *type) {
 	int (*__fs_mount)(vfs_mount *);
 	unsigned long status;
-	DEBUG(("mounting filesytstem of type: %s", type));
+	DEBUG_MSG(("mounting filesytstem of type: %s", type));
 	__fs_mount = (void *)filesystems->get(filesystems, type);
 	vfs_mount *vmount;
 
@@ -52,7 +52,7 @@ void vfs_mount_parse(char *path, char *new_path, vfs_mount *vmount) {
 			new_path[len] = 0;
 		}
 	}
-	ERROR(("error! didn't find mount"));
+	ERROR_MSG(("error! didn't find mount"));
 }
 
 void umount_all() {

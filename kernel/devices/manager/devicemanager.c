@@ -21,9 +21,9 @@ static map_t *device_map;
  * *****************************************************************************/
 void devicemanager_init()
 {	
-	DEBUG(("Initializing devices"));
+	DEBUG_MSG(("Initializing devices"));
 	device_map = linked_list_map_create();
-	DEBUG(("Devices Initialized"));
+	DEBUG_MSG(("Devices Initialized"));
 
 	devicemanager_init_devices();
 }

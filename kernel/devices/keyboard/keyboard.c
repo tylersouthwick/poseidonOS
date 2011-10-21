@@ -29,14 +29,14 @@ static char scancodes[] = KEYBOARD_QWERTY;
 static char caps_scancodes[] = KEYBOARD_QWERTY_CAPS;
 
 void keyboard_init() {
-	DEBUG(("Initializing keyboard"));
+	DEBUG_MSG(("Initializing keyboard"));
 	idt_interrupt_add(0x21, keyboard_isr, 0);
 	irq_umask(IRQ_1);
 
 	/*initilize keyboard buffer*/
 	keyboard_buffer = 0;
 	keyboard_buffer_index = 0;
-	DEBUG(("Keyboard Initialized"));
+	DEBUG_MSG(("Keyboard Initialized"));
 }
 
 static bool is_shifted;
@@ -84,7 +84,7 @@ void keyboard_irq() {
 	scancode = inportb(0x60);
 	ch = convert_scancode(scancode);
 
-	DEBUG(("status: 0x%x", status));
+	DEBUG_MSG(("status: 0x%x", status));
 
 	/*
 	if (ch)

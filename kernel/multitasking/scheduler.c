@@ -26,7 +26,7 @@ static void starting_task() {
 }
 
 void schedule_start(process_t *task) {
-	DEBUG(("starting scheduler"));
+	DEBUG_MSG(("starting scheduler"));
 	current_process = multitasking_process_new(starting_task, "starting task", PRIORITY_LOW, DPL_RING0);
 	irq_umask(IRQ_0);
 	__asm__ volatile ("sti");

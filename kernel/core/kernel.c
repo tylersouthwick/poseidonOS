@@ -18,7 +18,7 @@ static void kernel_init();
 void kmain(multiboot_info_t *mm_info) {
     initScreen();
     clear_screen();
-    INFO(("Booting PoseidonOS v%s", KERNEL_VERSION));
+    INFO_MSG(("Booting PoseidonOS v%s", KERNEL_VERSION));
 
     idt_setup();
 
@@ -28,14 +28,14 @@ void kmain(multiboot_info_t *mm_info) {
 
     multitasking_init(kernel_init);
 
-    FATAL(("shouldn't get here!"));
+    FATAL_MSG(("shouldn't get here!"));
 
     while(1);
 }
 
 static void kernel_init() {
-	DEBUG(("Entered multitasking environment"));
-	INFO(("Initializing Kernel Subsystems"));
+	DEBUG_MSG(("Entered multitasking environment"));
+	INFO_MSG(("Initializing Kernel Subsystems"));
 
 #ifdef INTEGRATION_TESTS
 	mutex_test();
@@ -45,26 +45,26 @@ static void kernel_init() {
 
 	vfs_init();
 
-	INFO(("Mounting root filesystem (read-only) at /"));
+	INFO_MSG(("Mounting root filesystem (read-only) at /"));
 	int status = mount("fd0", "/", "fat");
 	if (status == -1) {
-		ERROR(("Unable to mount root"));
+		ERROR_MSG(("Unable to mount root"));
 		shutdown();
 		return;
 	}
-	INFO(("Mounted root filesystem (read-only) at /"));
+	INFO_MSG(("Mounted root filesystem (read-only) at /"));
 
 	while(1);
 }
 
 void shutdown() {
 	__asm__ volatile ("cli");
-	INFO(("System Shutting Down"));
+	INFO_MSG(("System Shutting Down"));
 
-	INFO(("Unmounting all devices"));
+	INFO_MSG(("Unmounting all devices"));
 	umount_all();
 
-	INFO(("System Halted"));
+	INFO_MSG(("System Halted"));
 
 	__asm__ volatile ("hlt");
 

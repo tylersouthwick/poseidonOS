@@ -21,7 +21,7 @@ void vfs_register_fs(char *filesystem, void *mount_fs) {
 }
 
 void vfs_init() {
-	DEBUG(("Setting up VFS"));
+	DEBUG_MSG(("Setting up VFS"));
 	filesystems = linked_list_map_create();
 	mounts = linked_list_map_create();
 
@@ -29,5 +29,5 @@ void vfs_init() {
 
 	fat_init();
 
-	DEBUG(("Setting up VFS"));
+	DEBUG_MSG(("Setting up VFS"));
 }

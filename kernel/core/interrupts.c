@@ -4,15 +4,15 @@ void interrupt0();
 void keyboard_interrupt();
 
 void interrupt0() {
-    FATAL(("Attempted to divide by zero."));
-    DEBUG(("Eventually, this should only kill the current task."));
+    FATAL_MSG(("Attempted to divide by zero."));
+    DEBUG_MSG(("Eventually, this should only kill the current task."));
     __asm__("hlt");
 }
 
 void keyboard_interrupt() {
-    DEBUG(("keyboard!"));
+    DEBUG_MSG(("keyboard!"));
 }
 
 void empty_interrupt() {
-	DEBUG(("empty interrupt"));
+	DEBUG_MSG(("empty interrupt"));
 }
