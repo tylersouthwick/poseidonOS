@@ -5,7 +5,8 @@ AR=ar
 ARFLAGS=-rs
 ARCH=i586
 
-SHARED_CFLAGS=-I${KERNEL_DIR}/kernel/include/ -std=c99
+INCLUDE_DIR=$(KERNEL_DIR)/kernel/include/
+SHARED_CFLAGS=-I${INCLUDE_DIR} -std=c99
 # -m32 -march=${ARCH}
 KERNEL_CFLAGS=-m32 -ffreestanding -nostdlib -fno-builtin -Wall -Winline -Wmissing-declarations -Wredundant-decls -finline-functions -fpic -fno-leading-underscore $(SHARED_CFLAGS)
 TEST_CFLAGS=$(CFLAGS) $(SHARED_CFLAGS)
@@ -66,7 +67,7 @@ else
 	@echo "no tests" &> /dev/null
 endif
 
-test.out : $(TEST_SOURCE)
+test.out : $(TEST_SOURCE) $(INCLUDE_DIR)/test.h
 ifdef TEST_SOURCE
 	gcc -DTEST $(TEST_CFLAGS) $(TEST_SOURCE) -o test.out
 else
@@ -80,7 +81,7 @@ else
 	@echo "no tests" &> /dev/null
 endif
 
-test.out.debug : $(TEST_SOURCE)
+test.out.debug : $(TEST_SOURCE) $(INCLUDE_DIR)/test.h
 ifdef TEST_SOURCE
 	gcc -DDEBUG -DTEST $(TEST_CFLAGS) $(TEST_SOURCE) -o test.out.debug
 else
