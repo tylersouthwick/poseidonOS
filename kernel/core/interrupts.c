@@ -2,6 +2,7 @@
 
 void interrupt0();
 void keyboard_interrupt();
+void empty_interrupt();
 
 void interrupt0() {
     FATAL_MSG(("Attempted to divide by zero."));

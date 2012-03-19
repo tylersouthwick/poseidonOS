@@ -123,8 +123,8 @@ void mm_virtual_page_free(page_t *page) {
 	DEBUG_MSG(("address first: 0x%x", page->address));
 
 	for (i=pte_index; i<(pte_index + page->count); i++) {
-		unsigned long address = current_pde[i];
-		DEBUG_MSG(("address: 0x%x", address));
+		//unsigned long address = current_pde[i];
+		//DEBUG_MSG(("address: 0x%x", address));
 		current_pde[i] = 0;
 	}
 }

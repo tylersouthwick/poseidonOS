@@ -6,7 +6,10 @@
 #ifndef SCHEDULING_H
 #define SCHEDULING_H
 
+#include <multitasking/multitasking.h>
+
 void scheduler_isr(void);
 int schedule();
+void schedule_start(process_t *task);
 
 #endif

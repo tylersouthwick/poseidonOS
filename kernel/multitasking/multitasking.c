@@ -121,7 +121,8 @@ process_t *multitasking_process_new(void *handler, char *pname, int priority, in
 	temp_process = (process_t *)kmalloc(sizeof(process_t));
 	
 	//setup process' stack values
-	temp_process->kstack = temp_stack = (unsigned int*)((unsigned int)kmalloc(USTACK_SIZE) + USTACK_SIZE);
+	temp_stack = (unsigned int*)((unsigned int)kmalloc(USTACK_SIZE) + USTACK_SIZE);
+	temp_process->kstack = (int) temp_stack;
 	*temp_stack--;
 	*temp_stack--=(unsigned int)task_cleanup;
 	*temp_stack--=0x0202;
@@ -141,7 +142,7 @@ process_t *multitasking_process_new(void *handler, char *pname, int priority, in
 	*temp_stack=data_selector;									//gs
 	
 	temp_process->esp=(unsigned int)temp_stack;
-	temp_process->ustack = (unsigned int*)((unsigned int)kmalloc(USTACK_SIZE) + USTACK_SIZE);
+	temp_process->ustack = (unsigned int)kmalloc(USTACK_SIZE) + USTACK_SIZE;
 	temp_process->ss=data_selector;
 	temp_process->priority=priority;
 	temp_process->timetorun=priority*PRIORITY_TO_TIMETORUN;

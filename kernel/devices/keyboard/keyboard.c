@@ -76,17 +76,12 @@ static char convert_scancode(int scancode)
 }
 
 void keyboard_irq() {
-	static unsigned char scancode;
-	unsigned char status;
-	char ch;
+	//unsigned char status = inportb(0x64);
+	unsigned char scancode = inportb(0x60);
+	char ch = convert_scancode(scancode);
 
-	status = inportb(0x64);
-	scancode = inportb(0x60);
-	ch = convert_scancode(scancode);
+	//DEBUG_MSG(("status: 0x%x", status));
 
-	DEBUG_MSG(("status: 0x%x", status));
-
-	/*
 	if (ch)
 	{
 		if (keyboard_buffer)
@@ -96,19 +91,19 @@ void keyboard_irq() {
 				if (keyboard_buffer_index > 0)
 				{
 					keyboard_buffer_index--;
-					put_char(ch);
+					kprintf("%c", ch);
 				}
 			}
 			else {
 				keyboard_buffer[keyboard_buffer_index++] = ch;
-				put_char(ch);
+				kprintf("%c", ch);
 				if (ch == KEY_ENTER)
 					is_done = 1;
 			}
-		} else
-			put_char(ch);
+		} else {
+			kprintf("%c", ch);
+		}
 	}
-	*/
 }
 
 void gets(char *buffer, int length)
