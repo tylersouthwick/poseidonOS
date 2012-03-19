@@ -18,8 +18,8 @@ LIBS = $(addsuffix /lib.a,$(LIBRARIES))
 $(KERNEL_FILE) : $(LIBRARIES) kernel.ld
 	@echo "(LD) ${KERNEL_FILE}"
 	@ld -melf_i386 -T kernel.ld -o ${KERNEL_FILE} --start-group $(LIBS) --end-group
-	@echo "Sanity Check"
-	@mbchk ${KERNEL_FILE}
+#	@echo "Sanity Check"
+#	@mbchk ${KERNEL_FILE}
 
 #################
 ## libraries

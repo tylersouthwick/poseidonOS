@@ -75,7 +75,7 @@ if ($clean) {
 if ($build_floppy) {
 	&generate_mtools_config;
 	&build_floppy_image;
-	&install_grub;
+	&install_syslinux;
   &copy_files;
 }
 
@@ -115,25 +115,29 @@ sub build_floppy_image {
 	}
 }
 
-sub install_grub {
-	print "Installing GRUB...\n";
+sub install_syslinux {
+	print "Installing SYSLINUX...\n";
 
-	system("MTOOLSRC=$mtools_config_file mmd a:/boot");
-	system("MTOOLSRC=$mtools_config_file mmd a:/boot/grub");
-	system("MTOOLSRC=$mtools_config_file mcopy grub/* a:/boot/grub");
+	$out = system("MTOOLSRC=$mtools_config_file mcopy syslinux.cfg a:/");
+	if ($out != 0) {
+		print STDERR "Unable to copy syslinux.cfg\n";
+		exit -1;
+	}
 
-	$grub = $ENV{GRUB};
-	if (!defined $grub)
+	$out = system("MTOOLSRC=$mtools_config_file mcopy /usr/share/syslinux/mboot.c32 a:/");
+	if ($out != 0) {
+		print STDERR "Unable to copy syslinux.cfg\n";
+		exit -1;
+	}
+
+	$syslinux = $ENV{SYSLINUX};
+	if (!defined $syslinux)
 	{
-		$grub = "grub";
+		$syslinux = "syslinux";
 	}
 
 	#run install script
-	$out = system("$grub --batch << EOF  || exit 1
-			device (fd0) $floppy_image_name
-			install (fd0)/boot/grub/stage1 (fd0) (fd0)/boot/grub/stage2 p (fd0)/boot/grub/menu.lst
-			quit
-			EOF");
+	$out = system("$syslinux -i $floppy_image_name");
 	if ($out != 0)
 	{
 		print STDERR "ERROR: something went wrong with the grub install.  Make sure that you have grub on your system and that it is either in your \$PATH or in \$GRUB\n";

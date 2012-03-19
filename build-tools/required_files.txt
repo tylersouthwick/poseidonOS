@@ -1,8 +1,8 @@
 make
 bochs
 mtools
-grub
 nasm
 gcc
 ar
 ld
+syslinux
