@@ -11,7 +11,7 @@ static x86_interrupt IDT[INTERRUPT_COUNT];
 void isr_empty();
 void idt_setup() {
 	int i;
-    DEBUG_MSG(("Setting up IDT"));
+    DEBUG_MSG(("Setting up IDT -> interrupts 0..%i", INTERRUPT_COUNT));
     idtr.limit = INTERRUPT_COUNT * (sizeof(x86_interrupt) - 1);
     idtr.base = IDT;
 
@@ -53,7 +53,7 @@ void idt_interrupt_add(int number, void *handler, unsigned int dpl) {
     unsigned int offset = (unsigned int) handler;
 
     //get CS selector
-    __asm__ volatile("movw %%cs,%0" :"=g"(selector));
+//    __asm__ volatile("movw %%cs,%0" :"=g"(selector));
 
     //set settings based on dpl
     switch (dpl) {
@@ -72,4 +72,8 @@ void idt_interrupt_add(int number, void *handler, unsigned int dpl) {
     IDT[number].selector = selector;
     IDT[number].settings = settings;
     IDT[number].high_offset = (offset >> 16);
+    TRACE_MSG(("IDT[%i].low_offset = %i", number, IDT[number].low_offset));
+    TRACE_MSG(("IDT[%i].selector = %i", number, IDT[number].selector));
+    TRACE_MSG(("IDT[%i].settings = %i", number, IDT[number].settings));
+    TRACE_MSG(("IDT[%i].high_offset = %i", number, IDT[number].high_offset));
 }
