@@ -1,0 +1,49 @@
+#!/bin/bash
+IMAGE_SIZE=$((4*1024*1024)) #4 megabytes
+KERNEL="poseidon.sys"
+IMAGE="PoseidonOS.img"
+MBOOT=/usr/share/syslinux/mboot.c32
+
+function fail() {
+	echo "$1";
+	exit 1;
+}
+
+function prereq() {
+	local c x
+	if [ "$1" = "f" ]; then c=stat;x=file; else c=which;x=program; fi
+	if [ -z "$3" ]; then
+		$c "$2" &>/dev/null || fail "$x $2 not found"
+	else
+		$c "$2" &>/dev/null || fail "$x $2 (from package $3) not found"
+	fi
+}
+
+prereq x mkfs.vfat dosfstools
+prereq x mcopy mtools
+prereq x syslinux
+prereq f "$MBOOT" syslinx
+
+rm -f "$IMAGE"
+
+echo "create image"
+dd if=/dev/zero of="$IMAGE" bs=4k count=$((IMAGE_SIZE/4096)) 2> /dev/null
+
+echo "format image"
+mkfs.vfat "$IMAGE" || fail "could not format $IMAGE"
+
+echo "copy kernel"
+mcopy -i "$IMAGE" ../kernel/"$KERNEL" ::/
+
+echo "copy mboot"
+mcopy -i "$IMAGE" "$MBOOT"  ::/
+
+#create syslinux.cfg
+echo "DEFAULT PoseidonOS
+LABEL PoseidonOS
+	SAY Now booting $KERNEL
+	KERNEL mboot.c32
+	APPEND $KERNEL" | mcopy -i "$IMAGE" - ::syslinux.cfg
+
+echo "install syslinux"
+syslinux -i "$IMAGE" || fail "unable to install syslinux to $IMAGE"
