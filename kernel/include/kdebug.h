@@ -8,6 +8,12 @@
 	#include <screen.h>
 #endif
 
+#ifdef TRACE
+	#define TRACE_MSG(a) MESSAGE("TRACE", a)
+#else
+	#define TRACE_MSG(a)
+#endif
+
 #ifdef DEBUG
 	#define DEBUG_MSG(a) MESSAGE("DEBUG", a)
 #else
