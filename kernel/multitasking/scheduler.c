@@ -29,14 +29,14 @@ void schedule_start(process_t *task) {
 	DEBUG_MSG(("starting scheduler"));
 	current_process = multitasking_process_new(starting_task, "starting task", PRIORITY_LOW, DPL_RING0);
 	irq_umask(IRQ_0);
-	__asm__ volatile ("sti");
+	//this implicitly re-enables interrupts
 
 	while(1);	
 }
 
 int schedule(long system_timer_ms)
 {
-	//DEBUG(("called system timer: %s", current_process->name));
+	TRACE_MSG(("called system timer: %s", current_process->name));
 	
 	///check to see if the process is finished with its timeslice
 	if (current_process->timetorun-- <= 0)
@@ -54,7 +54,7 @@ int schedule(long system_timer_ms)
 		///when found, point current_process to the
 		///non-sleeping thread
 		current_process = processes->pid;	
-		//DEBUG(("switched process: %s [stack: @0x%x]", current_process->name, current_process->esp));
+		TRACE_MSG(("switched process: %s [stack: @0x%x]", current_process->name, current_process->esp));
 
 		//change cr3
 #ifdef CHANGE_CR3
