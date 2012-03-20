@@ -19,19 +19,19 @@ void exec(void (*process)());
  * It specifies a region of the executable file to be loaded
  * into memory.
  */
-struct Exe_Segment {
+typedef struct {
     ulong_t offsetInFile;	 /* Offset of segment in executable file */
     ulong_t lengthInFile;	 /* Length of segment data in executable file */
     ulong_t startAddress;	 /* Start address of segment in user memory */
     ulong_t sizeInMemory;	 /* Size of segment in memory */
     int protFlags;		 /* VM protection flags; combination of VM_READ,VM_WRITE,VM_EXEC */
-};
+} exe_segment_t;
 
 #define EXE_MAX_SEGMENTS 3
 
-struct Exe_Format {
-    struct Exe_Segment segmentList[EXE_MAX_SEGMENTS]; /* Definition of segments */
+typedef struct {
+    exe_segment_t segments[EXE_MAX_SEGMENTS]; /* Definition of segments */
     int numSegments;		/* Number of segments contained in the executable */
     ulong_t entryAddr;	 	/* Code entry point address */
-};
+} exe_format_t;
 #endif

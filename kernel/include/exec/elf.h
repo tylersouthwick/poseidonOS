@@ -23,18 +23,13 @@
 #define PT_LOPROC	0x70000000
 #define PT_HIPROC	0x7fffffff
 
-typedef int(*exec_invoker)();
-struct elf_t {
-	exec_invoker invoke;
-};
-
 typedef struct {
 	char magic[4];
 	char ei_class;
 	char ei_data;
 	char ei_version;
 	char ei_padding[9];
-} elf_ident;
+} elf_ident_t;
 
 typedef struct {
 
@@ -53,7 +48,7 @@ typedef struct {
     unsigned  short   shnum;
     unsigned  short   shstrndx;
 
-} elfHeader;
+} elf_header_t;
 
 typedef struct {
 
@@ -66,9 +61,9 @@ typedef struct {
     unsigned  int   flags;
     unsigned  int   alignment;
 
-} ElfProgramHeader;
+} elf_program_header_t;
 
 #include <exec.h>
 
-int elf_parse(unsigned char *data, int size, struct Exe_Format *exe);
+int elf_parse(unsigned char *data, int size, exe_format_t *exe);
 #endif

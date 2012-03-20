@@ -6,12 +6,12 @@
 #include <exec.h>
 #include <exec/elf.h>
 
-void spawn_program(char *exeName, unsigned char *exeFileData, struct Exe_Format *exe) {
+void spawn_program(char *exeName, unsigned char *exeFileData, exe_format_t *exe) {
 	DEBUG_MSG(("spawning exe"));
 
 	ulong_t maxva = 0;
 	for (int i = 0; i < exe->numSegments; ++i) {
-		struct Exe_Segment *segment = &exe->segmentList[i];
+		exe_segment_t *segment = &exe->segments[i];
 		ulong_t topva = segment->startAddress + segment->sizeInMemory;
 
 		if (topva > maxva) {
@@ -26,7 +26,7 @@ void spawn_program(char *exeName, unsigned char *exeFileData, struct Exe_Format 
 	/* Load segment data into memory */
 	DEBUG_MSG(("Loading segments into memory"));
 	for (int i = 0; i < exe->numSegments; ++i) {
-		struct Exe_Segment *segment = &exe->segmentList[i];
+		exe_segment_t *segment = &exe->segments[i];
 
 		memcpy(virtSpace + segment->startAddress,
 			exeFileData + segment->offsetInFile,
@@ -45,7 +45,7 @@ void exec_path(char *path) {
 		ERROR_MSG(("path not found: %s. Unable to execute.", path));
 	} else {
 		DEBUG_MSG(("opened file"));
-		struct Exe_Format exe;
+		exe_format_t exe;
 		int status = elf_parse(f->data, f->size, &exe);
 		if (status == 0) {
 			spawn_program(path, f->data, &exe);

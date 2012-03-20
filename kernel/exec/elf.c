@@ -3,9 +3,9 @@
 #include <kdebug.h>
 #include <string.h>
 
-int elf_validate(elfHeader *header) {
+static int elf_validate(elf_header_t *header) {
 	//check magic numbers
-	elf_ident *ident = (elf_ident *) header->ident;
+	elf_ident_t *ident = (elf_ident_t *) header->ident;
 	char *magic = ident->magic;
 	DEBUG_MSG(("checking ident [%s]", header->ident));
 	if (!(magic[0] == 0x7f && magic[1] == 'E' && magic[2] == 'L' && magic[3] == 'F')) {
@@ -57,7 +57,7 @@ int elf_validate(elfHeader *header) {
 	return 0;
 }
 
-int elf_parse_program_header(ElfProgramHeader *header, struct Exe_Segment *segment) {
+static int elf_parse_program_header(elf_program_header_t *header, exe_segment_t *segment) {
 #ifdef DEBUG
 	DEBUG_MSG(("Program Header"));
 	char type[25];
@@ -111,7 +111,7 @@ int elf_parse_program_header(ElfProgramHeader *header, struct Exe_Segment *segme
 	return 0;
 }
 
-int elf_parse_program_headers(elfHeader *header, struct Exe_Format *exe) {
+static int elf_parse_program_headers(elf_header_t *header, exe_format_t *exe) {
 	DEBUG_MSG(("program headers:"));
 	DEBUG_MSG(("\toffset: 0x%x", header->phoff));
 	DEBUG_MSG(("\tnum: %i", header->phnum));
@@ -128,8 +128,8 @@ int elf_parse_program_headers(elfHeader *header, struct Exe_Format *exe) {
 	DEBUG_MSG(("headers: 0x%x", headers));
 	DEBUG_MSG(("program header size: %i", header->phentsize));
 	for (int i = 0; i < exe->numSegments; i++) {
-		ElfProgramHeader *programHeader = (ElfProgramHeader *)(headers + (i * header->phentsize));
-		struct Exe_Segment *segment = &(exe->segmentList[i]);
+		elf_program_header_t *programHeader = (elf_program_header_t *)(headers + (i * header->phentsize));
+		exe_segment_t *segment = &(exe->segments[i]);
 		int rc = elf_parse_program_header(programHeader, segment);
 		if (rc != 0) {
 			ERROR_MSG(("Invalid program header"));
@@ -140,10 +140,10 @@ int elf_parse_program_headers(elfHeader *header, struct Exe_Format *exe) {
 	return 0;
 }
 
-int elf_parse(unsigned char *data, int size, struct Exe_Format *exe) {
+int elf_parse(unsigned char *data, int size, exe_format_t *exe) {
 	int rc;
 	DEBUG_MSG(("parsing elf file [%i bytes]", size));
-	elfHeader *header = (elfHeader *)data;
+	elf_header_t *header = (elf_header_t *)data;
 	rc = elf_validate(header);
 	if (rc != 0) {
 		ERROR_MSG(("Invalid header"));
