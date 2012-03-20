@@ -1,6 +1,7 @@
 #include <multitasking/multitasking.h>
 #include <kdebug.h>
 #include <mm/sbrk.h>
+#include <mm/paging.h>
 #include <string.h>
 #include <vfs.h>
 #include <exec.h>
@@ -15,7 +16,13 @@ void spawn_program(char *exeName, unsigned char *exeFileData, exe_format_t *exe)
 		size += segment->sizeInMemory;
 	}
 	DEBUG_MSG(("max virtual address: 0x%x", size));
-	void *virtSpace = kmalloc(size);
+	unsigned long *cr3 = mm_virtual_mem_new_address_space();
+	unsigned long *virtSpace = exe->entryAddr;
+	int status = mm_alloc_virtual_address_range(cr3, exe->entryAddr, size);
+	if (status != 0) {
+		ERROR_MSG(("Unable to allocate virtual address range"));
+		return 1;
+	}
 	DEBUG_MSG(("virtSpace: 0x%x", virtSpace));
 	memset((char *) virtSpace, '\0', size);
 
@@ -35,7 +42,8 @@ void spawn_program(char *exeName, unsigned char *exeFileData, exe_format_t *exe)
 	}
 
 	DEBUG_MSG(("creating process"));
-	process_t *process =  multitasking_process_new(/*exe->entryAddr*/ virtSpace, exeName, PRIORITY_HIGH, 0);
+	process_t *process =  multitasking_process_new(exe->entryAddr, exeName, PRIORITY_HIGH, 0);
+	process->cr3 = cr3;
 	DEBUG_MSG(("adding process"));
 	multitasking_process_add(process);
 }

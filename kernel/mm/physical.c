@@ -11,7 +11,7 @@ void mm_physical_init(multiboot_info_t *mm_info) {
 	mm_physical_pages_init(mm_info);
 }
 
-#define memory_display(type, amount) if (amount) {DEBUG_MSG(("%s Memory: %dkb", type, (amount) >> 10));}
+#define memory_display(type, amount) if (amount) {INFO_MSG(("%s Memory: %dkb", type, (amount) >> 10));}
 
 static void mm_physical_summary(multiboot_info_t *mm_info) {
 	unsigned long free, reserved, acpi_reclaimable, acpi_nvs, bad;

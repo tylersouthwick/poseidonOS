@@ -64,13 +64,11 @@ mm_physical_page_alloc_error:
 
 void *mm_physical_page_alloc_normal()
 {
-	int superpage_index, subpage_index, buffer;
-
-	for (superpage_index=0; superpage_index<memory_zones.normal_page_count/8; superpage_index++) {
+	for (int superpage_index=0; superpage_index<memory_zones.normal_page_count/8; superpage_index++) {
 		if (memory_zones.normal_bitmap[superpage_index] != 255)
 			//find a free subpage
-			for (subpage_index = 0; subpage_index < 8; subpage_index++) {
-				buffer = memory_zones.normal_bitmap[superpage_index];
+			for (int subpage_index = 0; subpage_index < 8; subpage_index++) {
+				int buffer = memory_zones.normal_bitmap[superpage_index];
 				buffer = buffer >> subpage_index;
 				buffer = buffer & 0x1;
 				if (buffer == 0) {
@@ -85,13 +83,11 @@ void *mm_physical_page_alloc_normal()
 
 void *mm_physical_page_alloc_dma()
 {
-	int superpage_index, subpage_index, buffer;
-
-	for (superpage_index=0; superpage_index<memory_zones.dma_page_count/8; superpage_index++) {
+	for (int superpage_index=0; superpage_index<memory_zones.dma_page_count/8; superpage_index++) {
 		if (memory_zones.dma_bitmap[superpage_index] != 255)
 			//find a free subpage
-			for (subpage_index = 0; subpage_index < 8; subpage_index++) {
-				buffer = memory_zones.dma_bitmap[superpage_index];
+			for (int subpage_index = 0; subpage_index < 8; subpage_index++) {
+				int buffer = memory_zones.dma_bitmap[superpage_index];
 				buffer = buffer >> subpage_index;
 				buffer = buffer & 0x1;
 				if (buffer == 0) {

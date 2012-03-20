@@ -56,5 +56,6 @@ static inline void paging_flush_cache()
 
 void *mm_paging_pde_new();
 void mm_paging_init();
+unsigned long * mm_create_page_directory();
 
 #endif

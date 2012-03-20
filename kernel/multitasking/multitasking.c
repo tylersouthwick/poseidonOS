@@ -148,7 +148,7 @@ process_t *multitasking_process_new(void *handler, char *pname, int priority, in
 	temp_process->timetorun=priority*PRIORITY_TO_TIMETORUN;
 
 	/*create the new address_space for the process*/
-	//temp_process->cr3 = mm_virtual_mem_new_address_space();;
+	temp_process->cr3 = read_cr3();
 	
 	strcpy(temp_process->name, pname);
 	

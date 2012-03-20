@@ -10,14 +10,14 @@ extern mm_physical_page_zones memory_zones;
 void mm_page_fault_int(void *);
 void mm_page_fault_isr();
 
-void mm_paging_init() {
+unsigned long * mm_create_page_directory() {
 	unsigned long *page_directory;
 	unsigned long *page_directory_table;
 	unsigned long *page_table;
 	unsigned int i;
 	unsigned int address;
 
-	DEBUG_MSG(("Initializing Virtual Paging"));
+	DEBUG_MSG(("Creating Page Directory"));
 
 	/*get pages*/
 	page_directory = (unsigned long*)mm_physical_page_alloc(MM_TYPE_NORMAL);
@@ -54,6 +54,13 @@ void mm_paging_init() {
 
 	page_directory[PAGING_GET_DIRECTORY(page_directory)] = (long)page_directory_table;
 	page_directory[PAGING_GET_DIRECTORY(page_directory)] |= 3 | 4;
+
+	return page_directory;
+}
+
+void mm_paging_init() {
+	DEBUG_MSG(("Initializing Virtual Paging"));
+	unsigned long *page_directory = mm_create_page_directory();
 
 	idt_interrupt_add(14, mm_page_fault_isr, 0);
 

@@ -57,9 +57,7 @@ int schedule(long system_timer_ms)
 		TRACE_MSG(("switched process: %s [stack: @0x%x]", current_process->name, current_process->esp));
 
 		//change cr3
-#ifdef CHANGE_CR3
-		//write_cr3(current_process->cr3);
-#endif
+		write_cr3(current_process->cr3);
 	}
 	
 	///the new esp must be passed back to the scheduler isr!
