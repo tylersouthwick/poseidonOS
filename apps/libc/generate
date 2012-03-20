@@ -1,0 +1,48 @@
+#!/usr/bin/python
+
+def trim(s):
+    return s.strip()
+
+data = open('../../kernel/include/libc.h', 'r').read()
+enums = map(trim, data.partition("{")[2].partition("}")[0].split(","))
+intNumber = 0x80
+
+def writeAsmSubroutine(enum, value):
+    print("global " + enum)
+    print(enum + ":")
+    print("\tpop ebx")
+    print("\tmov eax, " + str(value))
+    print("\tint " + str(intNumber))
+    print("\tret")
+    print("")
+
+def writePrototype(enum):
+    print("void *" + enum + "(void *data);")
+
+def writeAsm():
+    for i, enum in enumerate(enums):
+        writeAsmSubroutine(enum, i)
+
+def writePrototypes():
+    for enum in enums:
+        writePrototype(enum)
+
+from optparse import OptionParser
+
+usage = "usage: %prog [options]"
+parser = OptionParser(usage = usage)
+parser.add_option("-a", "--asm", dest="asm", help="generates assembly code", action="store_true", default = False)
+parser.add_option("-p", "--prototypes", dest="prototypes", help="generates c prototypes", action="store_true", default = False)
+
+(options, args) = parser.parse_args()
+
+generated = False
+if options.asm == True:
+    generated = True
+    writeAsm()
+if options.prototypes == True:
+    generated = True
+    writePrototypes()
+
+if generated == False:
+    parser.print_help()

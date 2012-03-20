@@ -1,5 +1,5 @@
 KERNEL_FILE=poseidon.sys
-LIBRARIES = core screen multitasking util mm devices fs
+LIBRARIES = core screen multitasking util mm devices fs exec libc
 
 ########################################3
 AS=nasm

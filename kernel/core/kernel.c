@@ -10,6 +10,7 @@
 #include <devices/manager.h>
 #include <vfs.h>
 #include <mutex.h>
+#include <libc.h>
 
 void kmain(multiboot_info_t *mm_info);
 void shutdown();
@@ -25,6 +26,8 @@ void kmain(multiboot_info_t *mm_info) {
     gdt_init();
 
     mm_init(mm_info);
+
+    libc_init();
 
     multitasking_init(kernel_init);
 
@@ -53,6 +56,8 @@ static void kernel_init() {
 		return;
 	}
 	INFO_MSG(("Mounted root filesystem (read-only) at /"));
+
+	exec_path("/shell.app");
 
 	while(1);
 }
