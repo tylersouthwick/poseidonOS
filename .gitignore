@@ -7,3 +7,4 @@
 lib.a
 PoseidonOS.img
 debug_out.txt
+*.app
