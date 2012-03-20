@@ -9,24 +9,25 @@
 void spawn_program(char *exeName, unsigned char *exeFileData, exe_format_t *exe) {
 	DEBUG_MSG(("spawning exe"));
 
-	ulong_t maxva = 0;
+	ulong_t size = 0;
 	for (int i = 0; i < exe->numSegments; ++i) {
 		exe_segment_t *segment = &exe->segments[i];
-		ulong_t topva = segment->startAddress + segment->sizeInMemory;
-
-		if (topva > maxva) {
-			maxva = topva;
-		}
+		size += segment->sizeInMemory;
 	}
-	DEBUG_MSG(("max virtual address: 0x%x", maxva));
-	void *virtSpace = sbrk(maxva);
+	DEBUG_MSG(("max virtual address: 0x%x", size));
+	void *virtSpace = kmalloc(size);
 	DEBUG_MSG(("virtSpace: 0x%x", virtSpace));
-	memset((char *) virtSpace, '\0', maxva);
+	memset((char *) virtSpace, '\0', size);
 
 	/* Load segment data into memory */
-	DEBUG_MSG(("Loading segments into memory"));
+	DEBUG_MSG(("Loading %i segments into memory", exe->numSegments));
 	for (int i = 0; i < exe->numSegments; ++i) {
 		exe_segment_t *segment = &exe->segments[i];
+#ifdef DEBUG
+		DEBUG_MSG(("segment %i:", i));
+		DEBUG_MSG(("\tstartAddress: %i", segment->startAddress));
+		DEBUG_MSG(("\tlength: %i", segment->lengthInFile));
+#endif
 
 		memcpy(virtSpace + segment->startAddress,
 			exeFileData + segment->offsetInFile,
@@ -34,7 +35,8 @@ void spawn_program(char *exeName, unsigned char *exeFileData, exe_format_t *exe)
 	}
 
 	DEBUG_MSG(("creating process"));
-	process_t *process =  multitasking_process_new(exe->entryAddr, exeName, PRIORITY_HIGH, 0);
+	process_t *process =  multitasking_process_new(/*exe->entryAddr*/ virtSpace, exeName, PRIORITY_HIGH, 0);
+	DEBUG_MSG(("adding process"));
 	multitasking_process_add(process);
 }
 

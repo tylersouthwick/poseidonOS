@@ -216,24 +216,26 @@ void multitasking_process_add(process_t *pid) {
 
 	DEBUG_MSG(("adding process %s", pid->name));
 
-	/*allocate space for the new queue item*/
+	TRACE_MSG(("allocate space for the new queue item"));
 	new_queue_item = kmalloc(sizeof(struct process_queue_item));
 	
-	/*set up pointers*/
+	TRACE_MSG(("set up pointers"));
 	current_process_queue_item = processes;
 	next = processes->next;
 
-	/*add the proccess pid to the system queue*/
+	TRACE_MSG(("add the proccess pid to the system queue"));
 	new_queue_item->pid = pid;
 	
-	/*add the queue item to the queue*/
+	TRACE_MSG(("add the queue item to the queue"));
 	current_process_queue_item->next = new_queue_item;
 	next->prev = new_queue_item;
 	new_queue_item->prev = current_process_queue_item;
 	new_queue_item->next = next;
 	
-	/*re-enable interrupts so that task switch WILL occur*/
+	TRACE_MSG(("re-enable interrupts so that task switch WILL occur"));
 	__asm__ volatile("sti");
+
+	DEBUG_MSG(("added process %s", pid->name));
 }
 
 void task_cleanup()

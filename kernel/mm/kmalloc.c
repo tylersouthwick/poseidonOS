@@ -58,7 +58,7 @@ void *kmalloc(unsigned int nBytes) {
 		free_mem_temp = free_mem_temp->next;
 	}
 
-	//there wasn't suffient mem space in any chunk
+	DEBUG_MSG(("there wasn't sufficient mem space in any chunk"));
 	chunk_start = (kmalloc_free *)sbrk(nBytes);
 	chunk_start->size = nBytes;
 	chunk_start->prev = 0;
