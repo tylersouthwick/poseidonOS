@@ -1,14 +1,13 @@
 #include <libc.h>
-#define TRACE
 #include <kdebug.h>
 #include <screen.h>
 
-void libc_handler(int operation, void *data) {
+void libc_handler(int operation, int data) {
 	DEBUG_MSG(("Invoking libc handler: %i", operation));
 	switch (operation) {
-		case libc_write_string: {
-			TRACE_MSG(("write string @0x%x", data));
-			write_string((char *) data);
+		case libc_write_character: {
+			TRACE_MSG(("write character %c", data));
+			write_char((char) data);
 			break;
 		}
 		case libc_clear_screen: {

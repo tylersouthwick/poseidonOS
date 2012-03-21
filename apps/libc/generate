@@ -17,7 +17,7 @@ def writeAsmSubroutine(enum, value):
     print("")
 
 def writePrototype(enum):
-    print("void *" + enum + "(void *data);")
+    print("void " + enum + "(int data);")
 
 def writeAsm():
     for i, enum in enumerate(enums):

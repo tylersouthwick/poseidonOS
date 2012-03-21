@@ -5,8 +5,8 @@ libc_clear_screen:
 	int 128
 	ret
 
-global libc_write_string
-libc_write_string:
+global libc_write_character
+libc_write_character:
 	mov ebx, [esp+4]
 	mov eax, 1
 	int 128

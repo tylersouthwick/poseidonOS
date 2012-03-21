@@ -1,2 +1,7 @@
-void *libc_clear_screen(void *data);
-void *libc_write_string(void *data);
+#ifndef LIBC_H
+#define LIBC_H
+
+void clear_screen();
+void print(const char *);
+
+#endif

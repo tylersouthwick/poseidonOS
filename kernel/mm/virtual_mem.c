@@ -1,4 +1,3 @@
-#define TRACE
 #include <ktypes.h>
 #include <kdebug.h>
 

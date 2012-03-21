@@ -1,8 +1,8 @@
 #include <libc.h>
 
 int main() {
-	libc_clear_screen(0);
-	//libc_write_string("hello world!");
+	clear_screen();
+	print("Welcome to the Shell");
 	return 0;
 }
 

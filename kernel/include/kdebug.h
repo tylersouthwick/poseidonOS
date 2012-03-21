@@ -1,8 +1,6 @@
 #ifndef KDEBUG_H
 #define KDEBUG_H
 
-#define DEBUG
-
 #ifdef TEST
 	#include <stdio.h>
 	#define kprintf printf

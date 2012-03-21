@@ -8,7 +8,7 @@ void libc_init();
 //operations
 enum LibC_Opts {
 	libc_clear_screen,
-	libc_write_string
+	libc_write_character
 };
 
 #endif
