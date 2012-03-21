@@ -10,7 +10,7 @@ intNumber = 0x80
 def writeAsmSubroutine(enum, value):
     print("global " + enum)
     print(enum + ":")
-    print("\tpop ebx")
+    print("\tmov ebx, [esp+4]")
     print("\tmov eax, " + str(value))
     print("\tint " + str(intNumber))
     print("\tret")
