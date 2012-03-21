@@ -21,11 +21,11 @@ mm_page_header_t *base_page;
  * 					zero (0) on failure
  * *******************************************************/
 unsigned long *mm_virtual_page_alloc(page_t* page) {
-	unsigned long *current_pde, *temp_pte;
+	unsigned long *temp_pte;
 	int pde_index, pte_index;
 	int count = page->count;
 
-	current_pde = (unsigned long*)((unsigned int)read_cr3() & 0xFFFFF000);
+	const unsigned long *current_pde = (unsigned long*)((unsigned int)read_cr3() & 0xFFFFF000);
 
 	/*simple case: count==1*/
 	if (count == 1)
@@ -130,8 +130,38 @@ void mm_virtual_page_free(page_t *page) {
 	}
 }
 
-void mm_virtual_bind_address(unsigned long *cr3, unsigned long *physical_address, unsigned long *virtual_address) {
-	TRACE_MSG(("binding 0x%x -> 0x%x in page directory @ 0x%x", physical_address, virtual_address, cr3));
+void mm_virtual_bind_address(unsigned long *cr3, unsigned long *physical_address, unsigned long *virtual_address, unsigned int flags) {
+	TRACE_MSG(("binding 0x%x -> 0x%x in page directory @ 0x%x", virtual_address, physical_address, cr3));
+
+	const unsigned long *current_pde = (unsigned long*)((unsigned int)cr3 & 0xFFFFF000);
+
+	const unsigned long pdindex = mm_virtual_get_pde(virtual_address);
+	const unsigned long ptindex = mm_virtual_get_pte(virtual_address);
+
+	TRACE_MSG(("adding page table @ page_dir_index=%i page_table_index=%i", pdindex, ptindex));
+
+	unsigned long pte = cr3[pdindex];
+	unsigned long *pt = (unsigned long *)(pte & 0xFFFFF000);
+
+	if (!MM_IS_PRESENT(pte)) {
+		TRACE_MSG(("page table is non-existant"));
+		//add the pde
+		TRACE_MSG(("Adding pde %i", pdindex));
+		pt = mm_physical_page_alloc(MM_TYPE_NORMAL);
+		TRACE_MSG(("setting pde %i", pdindex));
+		cr3[pdindex] = ((unsigned long)pt) | 3;
+		int new_pdindex = mm_virtual_get_pde(pt);
+		if (new_pdindex == pdindex) {
+			ERROR_MSG(("What to do?"));
+			while(1);
+		}
+		mm_virtual_bind_address(cr3, pt, pt, flags);
+		memset(pt, 0, 4096);
+		TRACE_MSG(("Added pde %i", pdindex));
+	}
+
+	pt[ptindex] = ((unsigned long) physical_address) | (flags & 0xFFF) | PAGE_PRESENT | 3;
+	TRACE_MSG(("bound 0x%x -> 0x%x", virtual_address, physical_address));
 }
 
 /********************************************************
@@ -146,15 +176,16 @@ unsigned long *mm_virtual_mem_new_address_space() {
 
 
 	/*allocate space for the page directory*/
-	unsigned long *current_cr3 = read_cr3();
+	const unsigned long *current_cr3 = read_cr3();
 
 	unsigned long *new_cr3 = mm_physical_page_alloc(MM_TYPE_NORMAL);
 	DEBUG_MSG(("new_cr3: 0x%x", new_cr3));
-	mm_virtual_bind_address(current_cr3, new_cr3, new_cr3);
+	mm_virtual_bind_address(current_cr3, new_cr3, new_cr3, 0);
+	write_cr3(read_cr3());
 
 	for (unsigned int pde = KERNELSPACE_PAGE_START; pde < KERNELSPACE_PAGE_END; pde++) {
+		if (!MM_IS_PRESENT(current_cr3[pde])) continue;
 		TRACE_MSG(("current_cr3[pde]: 0x%x", current_cr3[pde]));
-		if (!(current_cr3[pde] & 1)) continue;
 
 		TRACE_MSG(("copying cr3 entry..."));
 		new_cr3[pde] = current_cr3[pde];
@@ -173,5 +204,16 @@ unsigned long *mm_virtual_mem_new_address_space() {
 }
 
 int mm_alloc_virtual_address_range(unsigned long *cr3, unsigned long *start, size_t size) {
-	return 1;
+	const int pageCount = size / 4096 + 1;
+	TRACE_MSG(("Allocate virtual address range @0x%x of %i pages", start, pageCount));
+	unsigned long current_page = start;
+	const unsigned long *current_cr3 = read_cr3();
+	for (int i = 0; i < pageCount; i++) {
+		TRACE_MSG(("Binding address %i @0x%x", i, current_page));
+		unsigned long *page = mm_physical_page_alloc(MM_TYPE_NORMAL);
+		mm_virtual_bind_address(cr3, page, current_page, 0);
+		mm_virtual_bind_address(current_cr3, page, current_page, 0);
+		current_page += 4096;
+	}
+	return 0;
 }

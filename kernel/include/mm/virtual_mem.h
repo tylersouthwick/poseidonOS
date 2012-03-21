@@ -17,15 +17,16 @@ static inline unsigned long *mm_convert_virtual_address(int pde, int pte)
 
 static inline int mm_virtual_get_pde(void *address)
 {
-	return (((unsigned long)address & 0xFFC00000) >> 12);
+	return (unsigned long)address >> 22;
 }
 
 static inline int mm_virtual_get_pte(void *address)
 {
-	return (((unsigned long)address & 0x3FF000) >> 12);
+	return (unsigned long) address >> 12 & 0x03FF;
 }
 
-#define MM_IS_PRESENT(n) (((int)n) & 1)
+#define PAGE_PRESENT 1
+#define MM_IS_PRESENT(n) (((int)n) & PAGE_PRESENT)
 
 #define KERNELSPACE_PAGE_START 0
 #define KERNELSPACE_PAGE_END 300

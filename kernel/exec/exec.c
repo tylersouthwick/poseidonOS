@@ -1,3 +1,4 @@
+#define TRACE
 #include <multitasking/multitasking.h>
 #include <kdebug.h>
 #include <mm/sbrk.h>
@@ -7,24 +8,38 @@
 #include <exec.h>
 #include <exec/elf.h>
 
-void spawn_program(char *exeName, unsigned char *exeFileData, exe_format_t *exe) {
+int spawn_program(char *exeName, unsigned char *exeFileData, exe_format_t *exe) {
 	DEBUG_MSG(("spawning exe"));
 
-	ulong_t size = 0;
+	unsigned long start_address = 999999999;
+	unsigned long end_address = 0;
 	for (int i = 0; i < exe->numSegments; ++i) {
 		exe_segment_t *segment = &exe->segments[i];
-		size += segment->sizeInMemory;
+		if (segment->startAddress == 0) continue;
+
+		if (segment->startAddress < start_address) {
+			start_address = segment->startAddress;
+		}
+		const unsigned long logical_end = segment->startAddress + segment->sizeInMemory;
+		if (end_address < logical_end) {
+			end_address = logical_end;
+		}
 	}
-	DEBUG_MSG(("max virtual address: 0x%x", size));
-	unsigned long *cr3 = mm_virtual_mem_new_address_space();
-	unsigned long *virtSpace = exe->entryAddr;
-	int status = mm_alloc_virtual_address_range(cr3, exe->entryAddr, size);
+	const int size = end_address - start_address;
+	DEBUG_MSG(("virtual address: 0x%x-0x%x [%i bytes]", start_address, end_address, size));
+
+	unsigned long cr3 = mm_virtual_mem_new_address_space();
+	TRACE_MSG(("Created new cr3: 0x%x", cr3));
+
+	int status = mm_alloc_virtual_address_range(cr3, start_address, size);
 	if (status != 0) {
 		ERROR_MSG(("Unable to allocate virtual address range"));
 		return 1;
 	}
-	DEBUG_MSG(("virtSpace: 0x%x", virtSpace));
-	memset((char *) virtSpace, '\0', size);
+	TRACE_MSG(("Allocated virtual address range: 0x%x", start_address));
+
+	((char *)start_address)[0] = 'h';
+	TRACE_MSG(("test writing: %c", (char *)start_address));
 
 	/* Load segment data into memory */
 	DEBUG_MSG(("Loading %i segments into memory", exe->numSegments));
@@ -32,11 +47,12 @@ void spawn_program(char *exeName, unsigned char *exeFileData, exe_format_t *exe)
 		exe_segment_t *segment = &exe->segments[i];
 #ifdef DEBUG
 		DEBUG_MSG(("segment %i:", i));
-		DEBUG_MSG(("\tstartAddress: %i", segment->startAddress));
+		DEBUG_MSG(("\tstartAddress: 0x%x", segment->startAddress));
 		DEBUG_MSG(("\tlength: %i", segment->lengthInFile));
 #endif
 
-		memcpy(virtSpace + segment->startAddress,
+		if (segment->lengthInFile)
+		memcpy((char *) segment->startAddress,
 			exeFileData + segment->offsetInFile,
 			segment->lengthInFile);
 	}
@@ -46,6 +62,8 @@ void spawn_program(char *exeName, unsigned char *exeFileData, exe_format_t *exe)
 	process->cr3 = cr3;
 	DEBUG_MSG(("adding process"));
 	multitasking_process_add(process);
+
+	return 0;
 }
 
 void exec_path(char *path) {
@@ -58,7 +76,10 @@ void exec_path(char *path) {
 		exe_format_t exe;
 		int status = elf_parse(f->data, f->size, &exe);
 		if (status == 0) {
-			spawn_program(path, f->data, &exe);
+			int spawn_status = spawn_program(path, f->data, &exe);
+			if (spawn_status != 0) {
+				ERROR_MSG(("Unable to spawn program"));
+			}
 		} else {
 			ERROR_MSG(("Unable to load elf file: %i", status));
 		}
