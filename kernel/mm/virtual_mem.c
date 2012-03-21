@@ -181,6 +181,7 @@ unsigned long *mm_virtual_mem_new_address_space() {
 	unsigned long *new_cr3 = mm_physical_page_alloc(MM_TYPE_NORMAL);
 	DEBUG_MSG(("new_cr3: 0x%x", new_cr3));
 	mm_virtual_bind_address(current_cr3, new_cr3, new_cr3, 0);
+	memset(new_cr3, 0, 4096);
 	write_cr3(read_cr3());
 
 	for (unsigned int pde = KERNELSPACE_PAGE_START; pde < KERNELSPACE_PAGE_END; pde++) {
