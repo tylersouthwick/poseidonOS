@@ -3,7 +3,7 @@
 #include <screen.h>
 
 void libc_handler(int operation, void *data) {
-	INFO_MSG(("Invoking libc handler!"));
+	INFO_MSG(("Invoking libc handler: %i", operation));
 	switch (operation) {
 		case libc_write_string: {
 			write_string((char *) data);
